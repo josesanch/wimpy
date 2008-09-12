@@ -1,6 +1,7 @@
 <?
 
-class Database extends PDO {
+class Database extends PDO 
+{
 
 	public function __construct($database) {
 		parent::__construct($database[0], isset($database[1]) ? $database[1] : null, isset($database[2]) ? $database[2] : null, isset($database[3]) ? $database[3] : null);
