@@ -1,5 +1,6 @@
 2008-09-09 José Sánchez Moreno <jose@o2w.es>
 
+	* l10n returns default languaje string if the string is blank in the current languaje.
 	* A new field type "files" contains several files and images similar to $has_images.
 
 2008-08-20 José Sánchez Moreno <jose@o2w.es>
