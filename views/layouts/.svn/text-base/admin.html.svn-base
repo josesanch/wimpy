@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>. . . . : : : : Administración : : : : . . . .</title>
+ <link href="/resources/admin/css/admin.css" rel="stylesheet" type="text/css" />
+
+<style>
+
+</style>
+
+<body style="background-color: {$data->background_color};">
+<div id="header_div" class="clearfix">
+	<a href="/admin/logout"  id="boton_salir" class="no_print">{t:Salir}</a>
+	<h1>Gestión de la web</h1>
+</div>
+
+<div id="menu_div" class="clearfix">
+	<div id="tabsWrapper">
+		<div id="tabs">
+          <ul>
+			{$data->getMenu()}
+          </ul>
+		</div>
+	</div>
+	  <div id="crumbsWrapper">
+        <div id="crumbsBlock">
+          <div id="crumbs">
+            <ul>
+       			{$data->getSubMenu()}
+            </ul>
+          </div>
+        </div>
+      </div>
+</div>
+
+<div id="content_div" class="clearfix">
+{$content}
+</div>
+</body>
+</html>

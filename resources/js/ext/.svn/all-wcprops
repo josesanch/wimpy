@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svnroot/wimpy/!svn/ver/1/resources/js/ext
+END
+uploadform.css
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/uploadform.css
+END
+LICENSE.txt
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/LICENSE.txt
+END
+ext-all.js
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/ext-all.js
+END
+ext-core.js
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/ext-core.js
+END
+searchfield.js
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/searchfield.js
+END
+ext-all-debug.js
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/ext-all-debug.js
+END
+ext-core-debug.js
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/ext-core-debug.js
+END
+uploadform2.js
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/uploadform2.js
+END
+CHANGES.txt
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/CHANGES.txt
+END
+INCLUDE_ORDER.txt
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/INCLUDE_ORDER.txt
+END

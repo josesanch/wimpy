@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svnroot/wimpy/!svn/ver/1/skel/htdocs
+END
+.htaccess
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svnroot/wimpy/!svn/ver/1/skel/htdocs/.htaccess
+END
+index.php
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svnroot/wimpy/!svn/ver/1/skel/htdocs/index.php
+END

@@ -1,0 +1,11 @@
+<?
+class html_form_hidden extends html_object {
+
+	protected $attrs = array
+	(
+		'type'    => 'hidden',
+		'class'   => 'textbox',
+		'value'   => ''
+	);
+}
+?>

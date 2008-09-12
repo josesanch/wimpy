@@ -1,0 +1,153 @@
+<?
+
+class helpers_files extends ActiveRecord {
+	protected $database_table = "files";
+	protected $path = "/files";
+	protected $output_type = "png";
+	protected $fields = array(
+								"id" => "int not_null primary_key auto_increment",
+								"nombre" => "string(255) not_null default=''",
+								"extension" => "varchar(255)",
+								"tipo" => "varchar(255) not_null",
+								"iditem" => "int",
+								"module" => "varchar(255)",
+								"field" => "varchar(35)",
+								"descripcion" => "text",
+								"orden" => "int",
+								"fecha" => "datetime"
+							);
+
+	public function url() {
+		return $this->path."/".$this->id.".".$this->extension;
+	}
+
+	public function phisical($id = '') {
+		if($id) $this->select($id);
+	 	return $_SERVER["DOCUMENT_ROOT"].$this->path."/".$this->id.".".$this->extension;
+	}
+
+	public function get_type() { return array_shift(explode('/', $this->tipo));	}
+	public function get_subtype() { return array_pop(explode('/', $this->tipo));	}
+
+	public function is_video() { return $this->get_type() == 'video' or $this->tipo == 'application/x-flash-video';  }
+
+	public function is_image() { return $this->get_type() == 'image'; }
+
+
+	public function delete($id = '') {
+		if($id) $this->select($id);
+		unlink($this->phisical());
+		parent::delete($id);
+	}
+
+	public function size($id = '') {
+		if($id) $this->select($id);
+	 	return filesize($this->phisical());
+	}
+
+	public function saveUploadedFile($file, $id, $extension) {
+		$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
+       	if(!is_dir($dir)) mkdir($dir, 0755);
+   	   	move_uploaded_file($file, $_SERVER['DOCUMENT_ROOT'].$this->path."/".$id.".".$extension);
+	}
+
+
+	private function generateCachedUrl($width, $height, $op, $xcenter, $ycenter) {
+
+		$string = "$this->path $this->database_table ".$this->phisical()." $width $height $op $this->output_type $xcenter $ycenter";
+		$file = md5($string);
+	    return "/cached/imgs/$file.".$this->output_type;
+	}
+
+    private function isCached($url) {
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return True;
+		return false;
+	}
+
+
+	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $marco = null, $img = null) {
+    	$this->cached_image_url = $url = $this->generateCachedUrl($width, $height, $op, $xcenter, $ycenter);
+    	if(!file_exists($_SERVER["DOCUMENT_ROOT"].$url)) {
+			if(!$img) $img = new image($this->phisical());
+			switch($op) {
+				case "THUMB":
+					if(isset($width) && isset($height)) $img = $img->thumbnail($width, $height);
+					break;
+
+				case "OUTABOX":
+					$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
+					break;
+				case "INABOX":
+					$img = $img->thumbnailInABox($width, $height);
+					break;
+			}
+
+//      		$img = $this->__putMarca($img);
+			$img->setQuality($this->quality);
+			if($this->cache_images)
+				$this->cacheImage($url, $img);
+			else
+				return $img;
+		}
+		return $url;
+	}
+
+
+	function src($size = null, $operation = "THUMB", $xcenter = 1, $ycenter = 1) {
+		if(!$size) return $this->url();
+		$size = explode("x", $size);
+
+    	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[0], $xcenter, $ycenter, $operation);
+
+    	if(file_exists($_SERVER["DOCUMENT_ROOT"].$this->cached_image_url)) {
+	    	return $this->cached_image_url;
+    	}
+
+		if($this->is_image()) {
+			$img = $this->getThumbnail($size[0], $size[1], $ycenter, $xcenter, $operation);
+		} elseif($this->is_video()) {
+			if(class_exists('ffmpeg_movie')) {
+				$movie = new ffmpeg_movie($this->phisical());
+				$frame = $movie->getFrame(round($movie->getFrameCount() / 3));
+				$img = $this->getThumbnail($size[0], $size[1], $ycenter, $xcenter, $operation, null, new image($frame->toGDImage()));
+			}
+		} elseif($this->get_type() == 'audio') {
+			return '/resources/admin/images/music_small.gif';
+		} else {
+			if(class_exists('imagick')) {
+				try {
+				$image = new Imagick($this->phisical().'[0]');
+		        $image->setImageFormat("png");
+				$image->thumbnailImage($size[0], $size[1], true);
+				$image->writeImage($_SERVER["DOCUMENT_ROOT"].$this->cached_image_url);
+				$image->clear();
+				return $this->cached_image_url;
+				} catch(Exception $e) {
+
+				}
+			}
+		}
+
+		return $img;
+	}
+
+
+    private function cacheImage($url, $img) {
+    	if(!is_dir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/")) mkdir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/", 0744, true);
+		$img->save($_SERVER["DOCUMENT_ROOT"].$url, $this->output_type);
+	}
+
+	// Para descargar el archivo.
+	public function download($disposition = "attachment")
+	{
+		header("Content-Type: $this->tipo");
+		header("Content-Disposition: $disposition; filename=\"$this->nombre\"");
+		header("Content-Transfer-Encoding: binary");
+		//set file length so browser can calculate download time
+		header("Content-length: " . $this->size());
+		//read file
+		echo file_get_contents($this->phisical());
+	}
+
+}
+?>

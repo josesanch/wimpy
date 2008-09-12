@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svnroot/wimpy/!svn/ver/1/html
+END
+template.php
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svnroot/wimpy/!svn/ver/2/html/template.php
+END
+input.php
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svnroot/wimpy/!svn/ver/1/html/input.php
+END
+grid.php
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svnroot/wimpy/!svn/ver/1/html/grid.php
+END
+object.php
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svnroot/wimpy/!svn/ver/1/html/object.php
+END

@@ -1,0 +1,48 @@
+<?
+class html_form_htmleditor extends html_form_input {
+
+	protected $attrs = array
+	(
+		'type'    => 'textarea',
+		'class'   => 'textbox',
+		'value'   => ''
+	);
+
+	public function toHtml() {
+		if($this->attrs['label']) {
+			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."'>".$this->attrs['label']."</label>";
+		}
+		include_once($_SERVER["DOCUMENT_ROOT"]."/resources/fckeditor/fckeditor.php");
+
+		$oFCKeditor = new FCKeditor($this->attrs['name']);
+		$oFCKeditor->BasePath = '/resources/fckeditor/';
+		$oFCKeditor->EditorPath = '/resources/fckeditor/';
+		$oFCKeditor->Config["UserFilesAbsolutePath"] = $_SERVER["DOCUMENT_ROOT"]."/assets/";
+
+/*		if(array_key_exists("basic", $this->__atributos)  || array_key_exists("simple", $this->__atributos)) {
+			$oFCKeditor->ToolbarSet = "Basic";
+			$oFCKeditor->Config["ToolbarStartExpanded"] = "true";
+		}
+		*/
+//		$style = $this->__atributos["style"];
+
+		$oFCKeditor->ToolbarSet = "Basic";
+
+		if($this->attrs['width']) $oFCKeditor->Width = $this->attrs['width']
+		if($this->attrs['height']) $oFCKeditor->Height = $this->attrs['height']  + 50;
+/*
+		if(array_key_exists("css", $this->__atributos))
+		{
+			if($oFCKeditor->ToolbarSet != "Basic") $oFCKeditor->ToolbarSet = "Styles";
+			$oFCKeditor->Config["EditorAreaCSS"] = $this->__atributos["css"];
+			$oFCKeditor->Config["StylesXmlPath"] = "/resources/fckeditor/stylesxml.php?file=".$this->__atributos["css"];
+		}
+*/
+		$oFCKeditor->Config["CustomConfigurationsPath"] = '/resources/fckeditor/default_config.js';
+		$oFCKeditor->Value = $this->attrs['value'];
+
+		$txt = $oFCKeditor->CreateHtml() ;
+		return $txt;
+	}
+}
+?>

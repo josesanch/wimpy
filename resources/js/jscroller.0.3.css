@@ -1,0 +1,22 @@
+/* Scroller Box */
+#scroller_container {
+ position: relative;
+ width: 300px;
+ height: 60px;
+ overflow: hidden;
+}
+
+#scroller {
+// Additional Styles
+}
+
+/* Scoller Box */
+
+/* At the end of the CSS File */
+
+/* CSS Hack Safari */
+#dummy {;# }
+
+#scroller_container {
+ overflow: auto;
+}

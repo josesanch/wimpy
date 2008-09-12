@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/adapter
+END
+ext-base-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/adapter/ext-base-min.js
+END
+jquery-bridge-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/adapter/jquery-bridge-min.js
+END
+prototype-bridge-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/adapter/prototype-bridge-min.js
+END
+yui-bridge-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/adapter/yui-bridge-min.js
+END

@@ -1,0 +1,235 @@
+
+body {
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 11px;  background-color: #E5E5E5;
+  margin: 0px 0px 0px 0px;
+}
+
+	#header_div { margin: 0px 10px auto 0px;  background-color: white;}
+	#logo { margin: auto auto 20px auto; float: left;}
+	#boton_salir { margin: auto 10px auto auto; float: right; border: 1px dotted lightgray; width: 60px; text-align: center; background-color: #DFDFDF; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
+	#menu_div { background-color: white; border: 1px solid white;}
+	#content_div { background-color: #E5E5E5; }
+
+
+
+h1 {
+  padding-bottom: 5px;
+  font-size: 200%;
+  margin: 25px auto 10px 90px;
+  color: #404040;
+  font-weight: normal;
+}
+
+
+#tabsWrapper {
+  margin: 5px auto 0 auto;
+  text-align: left;
+
+
+}
+
+#headerWrapper {
+	background-color:white;
+}
+
+#tabs {
+  float: left;
+}
+
+#tabs ul {
+  margin: 0;
+  padding: 0 100px;
+  list-style: none;
+}
+
+#tabs ul li {
+  margin: 0 ;
+  float: left;
+  background: url('/resources/admin/images/tab_right.gif') no-repeat top right;
+}
+
+#tabs ul li a {
+  border: 0;
+  display: block;
+  padding: 0 15px;
+  background: url('/resources/admin/images/tab_left.gif') no-repeat top left;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  line-height: 28px;
+  text-decoration: none;
+}
+
+#tabs ul li a:hover {
+ border: 0;
+  display: block;
+  padding: 0 15px;
+  text-align: center;
+  color: #000;
+  font-size: 12px;
+  line-height: 28px;
+  text-decoration: none;
+}
+
+#tabs ul li.active {
+  background: url('/resources/admin/images/tab_active_right.gif') no-repeat top right;
+}
+
+#tabs ul li.active a {
+  	padding: 0 15px;
+  	background: url('/resources/admin/images/tab_active_left.gif') no-repeat top left;
+  	color: white;
+	line-height:29px;
+	font-weight:bold;
+}
+
+#tabs ul li.active a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+/** Crumbs **/
+
+#crumbsWrapper {
+  clear: both;
+  background: #515151;
+  margin: 0 auto;
+  float: left;
+  width: 100%;
+
+}
+
+#crumbsBlock {
+  margin: 0 auto;
+  padding: 0 10px;
+
+  line-height: 28px;
+  text-align: left;
+}
+
+#crumbs {
+  float: left;
+  padding-left: 100px;
+}
+
+#crumbs ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#crumbs ul li {
+  display: inline;
+  line-height: 22px;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+#crumbs ul li span {
+  font-weight: normal;
+}
+
+#crumbs ul li a {
+  margin: 0 3px;
+  border: 0;
+  color: white;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+#crumbs ul li.active a {
+  font-weight: bold;
+}
+
+#crumbs ul li a:hover {
+  text-decoration: underline;
+  background: transparent;
+}
+.separador_submenu { color: white; }
+
+
+/* ========================================= clearfix == */
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.clearfix {display: inline-block;}
+
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+
+/* === FORMS ======================================== */
+
+fieldset.admin_form {
+	background-color: #f0f0f0;
+	border: 1px solid #C9DCA6;
+	padding: 25px;
+}
+
+label.autoform {
+	display: block;
+	padding-top: 10px;
+	font-weight: bold; color: gray;
+}
+
+textarea, input[type=text] { border: 1px solid gray; }
+textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
+input.error { border: 1px dotted red; }
+
+
+fieldset legend { margin-top: 1px; font-weight: bold; color: gray; font-size: 14pt;}
+
+/* === GRID ======================================== */
+.grid {
+	font-size: 9pt;
+}
+.grid_header {
+	padding: 3px;
+
+	background-color: #C9DCA6;
+	font-weight: bold;
+}
+
+tr.row_even {
+	background-color: #f0f0f0;
+}
+
+tr.row_odd {
+	background-color: #fafafa;
+}
+
+
+tr.grid_row_hover {
+	background-color: #a4a7db;
+	color: white;
+	cursor: pointer;
+}
+
+td.grid_cell {
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+
+}
+a.header {
+	color: #64676b;
+	text-decoration: none;
+
+}
+a.header:hover {
+	color: blue;
+	text-decoration: underline;
+}
+a.query_page {
+	color: #a4a7ab;
+	text-decoration: none;
+}
+
+.submit { margin: 1px;}

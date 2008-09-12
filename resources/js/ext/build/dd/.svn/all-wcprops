@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd
+END
+StatusProxy-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/StatusProxy-min.js
+END
+Registry-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/Registry-min.js
+END
+DragTracker-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DragTracker-min.js
+END
+DragZone-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DragZone-min.js
+END
+ScrollManager-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/ScrollManager-min.js
+END
+DropTarget-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DropTarget-min.js
+END
+DragSource-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DragSource-min.js
+END
+DDCore-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DDCore-min.js
+END
+DropZone-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/dd/DropZone-min.js
+END

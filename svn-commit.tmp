@@ -1,0 +1,24 @@
+* Complete l10n
+
+--Esta línea y las que están debajo serán ignoradas--
+
+M    administrationcontroller.php
+M    model.php
+M    ChangeLog
+M    database.php
+M    views/layouts/admin.html
+M    applicationcontroller.php
+M    functions.php
+M    skel/htdocs/.htaccess
+M    activerecord.php
+M    helpers/files.php
+M    helpers/paginate.php
+M    web.php
+M    html/template.php
+M    html/base/form.php
+M    html/object.php
+M    html/extjs/form.php
+M    html/extjs/grid.php
+M    resources/admin/css/admin.css
+M    resources/css/thickbox.css
+M    resources/js/thickbox.js

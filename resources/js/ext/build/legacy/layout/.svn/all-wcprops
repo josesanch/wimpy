@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout
+END
+BasicLayoutRegion-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/BasicLayoutRegion-min.js
+END
+LayoutManager-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/LayoutManager-min.js
+END
+LayoutStateManager-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/LayoutStateManager-min.js
+END
+BorderLayout-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/BorderLayout-min.js
+END
+ContentPanels-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/ContentPanels-min.js
+END
+SplitLayoutRegion-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/SplitLayoutRegion-min.js
+END
+ReaderLayout-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/ReaderLayout-min.js
+END
+LayoutRegion-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/LayoutRegion-min.js
+END
+BorderLayoutRegions-min.js
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svnroot/wimpy/!svn/ver/1/resources/js/ext/build/legacy/layout/BorderLayoutRegions-min.js
+END

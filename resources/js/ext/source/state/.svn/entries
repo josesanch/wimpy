@@ -1,0 +1,52 @@
+8
+
+dir
+1
+https://josesanch@wimpy.svn.sourceforge.net/svnroot/wimpy/resources/js/ext/source/state
+https://josesanch@wimpy.svn.sourceforge.net/svnroot/wimpy
+
+
+
+2008-02-20T09:24:41.206758Z
+1
+josesanch
+
+
+svn:special svn:externals svn:needs-lock
+
+CookieProvider.js
+file
+
+
+
+
+2008-01-23T09:17:40.000000Z
+499d7b9b66a68fb866b847607c02501c
+2008-02-20T09:24:41.206758Z
+1
+josesanch
+
+Provider.js
+file
+
+
+
+
+2008-01-23T09:17:42.000000Z
+317b7b46d9b63158856674e0240dd760
+2008-02-20T09:24:41.206758Z
+1
+josesanch
+
+StateManager.js
+file
+
+
+
+
+2008-01-23T09:17:42.000000Z
+c079b5b553adbf1831d6ad2129d48319
+2008-02-20T09:24:41.206758Z
+1
+josesanch
+
