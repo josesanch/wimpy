@@ -1,7 +1,12 @@
 2008-09-09 José Sánchez Moreno <jose@o2w.es>
 
-	* l10n returns default languaje string if the string is blank in the current languaje
+<<<<<<< HEAD:ChangeLog
+	* l10n returns default languaje string if the string is blank in the current languaje..
 	* A new field type "files" contains several files and images similar to $has_images
+=======
+	* l10n returns default languaje string if the string is blank in the current languaje.
+	* A new field type "files" contains several files and images similar to $has_images.
+>>>>>>> a3ffe7a3c9f4aaf8572fd92f76ed1498a914cfc4:ChangeLog
 
 2008-08-20 José Sánchez Moreno <jose@o2w.es>
 

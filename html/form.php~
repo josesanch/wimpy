@@ -53,19 +53,19 @@ class html_form extends html_object {
 		}
 	}
 
-	public function auto($field, $lang = null) {
+	public function auto($field, $lang = null, $tmp_upload = null) {
 
 		$attrs = $this->model->getFields($field);
+
+/*
+		echo "<pre>";
+		var_dump($attrs);
+		echo "</pre>";
+		*/
 		if(isset($attrs["belongs_to"])) {
 				$model_name = $attrs["belongs_to"];
 				$model_item = new $model_name;
-				$fields = array("name", 'nombre', 'title', 'titulo');
-
-				foreach($fields as $field) {
-					$name = $model_item->getFields($field);
-					if($name) break;
-				}
-///				$name = $model_item->getFields("nombre") ? 'nombre' : 'name';
+				$name =$model_item->getTitleField();
 
 				$input = new html_form_select($field);
 				$input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
@@ -100,6 +100,10 @@ class html_form extends html_object {
 					$input->add($values);
 					$input->select($this->model->$field);
 				break;
+
+				case 'files':
+					$input = new html_form_files($lang ? $field."|".$lang : $field, $this->model);
+					break;
 
 				case 'int':
 					$size = $attrs['size'] ? $attrs['size'] : 11;
