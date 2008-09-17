@@ -146,7 +146,7 @@ class Web {
 			$this->action = $this->action ? $this->action : 'index';
 		}
 
-		$controller_class = ucfirst($this->controller)."Controller";
+		$controller_class = ucfirst(web::canonize($this->controller))."Controller";
 		$action = $this->action;
 
 		if(!$this->loadController($controller_class) || (!method_exists ($controller_class, $this->action."Action") && !$admin)) {
@@ -268,6 +268,11 @@ class Web {
 
 	public function autoSelectLanguage() {
 		if(!$this->initialized)	$this->l10n->autoSelectLanguage();
+	}
+
+	private static function canonize($str) {
+		$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_');
+		return str_replace(' ', '-', strtr(strtolower($str), $arr));
 	}
 
 }
