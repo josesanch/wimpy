@@ -88,7 +88,7 @@ class ActiveRecord {
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
-					$fields_to_update[] = $name."='".$this->row_data[$name]."'";
+					$fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
 				}
 			}
 
@@ -99,11 +99,12 @@ class ActiveRecord {
 			foreach($this->getFields() as $name => $attrs) {
 				if(isset($this->row_data[$name])) {
 					$fields[] = $name;
-					$values[] = $this->row_data[$name];
+					$values[] = mysql_escape_string($this->row_data[$name]);
 				}
 			}
 			$fields = join(", ", $fields);
-			$values = "'".join("', '", $values)."'";
+
+			$values = "'".join("', '", mysql_escape_string($values))."'";
 			$sql = "INSERT into $this->database_table ($fields) values ($values)";
 		}
 
@@ -307,7 +308,6 @@ class ActiveRecord {
 
 
 			if($field['l10n'] && web::instance()->l10n->isNotDefault($selected_lang)) {
-				echo "id: $property";
 				if(!$selected_lang) $selected_lang = web::instance()->l10n->getSelectedLang();
 				if($this->row_data_l10n[$selected_lang][$property]) return $this->row_data_l10n[$selected_lang][$property];
 

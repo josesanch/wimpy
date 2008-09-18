@@ -288,6 +288,8 @@ class html_template extends html_object
 				return $t->toHtml();
 
 
+			case "tnobr:"
+				$nobr = true;
 			case "t:":
 			case "trans:":
 				if(isset($_REQUEST["inplace"]) &&  $_REQUEST["inplace"] == "edit" && $function == "t:") {
@@ -295,13 +297,12 @@ class html_template extends html_object
 					$size = strlen($translated) > 50 ? 50 :  strlen($translated);
 					$t = new html_template_text(js_once("prototype").js_once("scriptaculous/scriptaculous")."<span id=\"$expresion\">$translated</span><script>new Ajax.InPlaceEditor('$expresion', '/admin/index.php?mode=ajax&function=inplaceeditor&class=modules_translate&id=$expresion', {'savingText' : 'Guardando', 'clickToEditText' : 'Pulse para editar', 'cancelText' : 'Cancelar', 'cols' : '$size'});</script>", null, null, null, $this->__root);
 				} else {
-					echo "Expresion a traducida: $expresion => ".l10n::instance()->get($expresion)."<hr>";
 					$t = new html_template_text(l10n::instance()->get($expresion), null, null, null, $this->__root);
 				}
 
 				$t->__vars = &$vars;
 				$t->__blocks =  $this->__blocks;
-				return nl2br($t->toHtml());
+				return $nobr ? $t->toHtml() : nl2br($t->toHtml());
 
 
 			case "eval:":

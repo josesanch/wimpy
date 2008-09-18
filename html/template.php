@@ -17,7 +17,7 @@ class html_template extends html_object
 	protected $__blocks = array();
 	protected static $__blocks_elements = array("if", "block", "while", "foreach", "switch");
 	protected static $__blocks_close_elements = array("/if", "/block", "/while", "/foreach", "/switch");
-	protected static $__functions = array("\$", "inc:", "trans:", "sql:", "global:", "eval:", "filter:", "if:", "block:", "while:", "foreach:", "pages:", "switch:", "t:", 'render:', 'form:');
+	protected static $__functions = array("\$", "inc:", "trans:", "sql:", "global:", "eval:", "filter:", "if:", "block:", "while:", "foreach:", "pages:", "switch:", "t:", 'render:', 'form:', 'tnobr:');
 	protected $data, $dataLoaded = false, $dataPrepared;
 	protected $inputFilter, $outputFilter;
 	protected $__regFuncs;
@@ -288,6 +288,8 @@ class html_template extends html_object
 				return $t->toHtml();
 
 
+			case "tnobr:"
+				$nobr = true;
 			case "t:":
 			case "trans:":
 				if(isset($_REQUEST["inplace"]) &&  $_REQUEST["inplace"] == "edit" && $function == "t:") {
@@ -300,7 +302,7 @@ class html_template extends html_object
 
 				$t->__vars = &$vars;
 				$t->__blocks =  $this->__blocks;
-				return nl2br($t->toHtml());
+				return $nobr ? $t->toHtml() : nl2br($t->toHtml());
 
 
 			case "eval:":

@@ -88,7 +88,7 @@ class ActiveRecord {
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
-					$fields_to_update[] = $name."='".$this->row_data[$name]."'";
+					$fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
 				}
 			}
 
@@ -99,10 +99,11 @@ class ActiveRecord {
 			foreach($this->getFields() as $name => $attrs) {
 				if(isset($this->row_data[$name])) {
 					$fields[] = $name;
-					$values[] = $this->row_data[$name];
+					$values[] = mysql_escape_string($this->row_data[$name]);
 				}
 			}
 			$fields = join(", ", $fields);
+
 			$values = "'".join("', '", $values)."'";
 			$sql = "INSERT into $this->database_table ($fields) values ($values)";
 		}
