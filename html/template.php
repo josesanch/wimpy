@@ -288,7 +288,7 @@ class html_template extends html_object
 				return $t->toHtml();
 
 
-			case "tnobr:"
+			case "tnobr:":
 				$nobr = true;
 			case "t:":
 			case "trans:":

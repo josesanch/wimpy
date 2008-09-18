@@ -17,7 +17,7 @@ class html_template extends html_object
 	protected $__blocks = array();
 	protected static $__blocks_elements = array("if", "block", "while", "foreach", "switch");
 	protected static $__blocks_close_elements = array("/if", "/block", "/while", "/foreach", "/switch");
-	protected static $__functions = array("\$", "inc:", "trans:", "sql:", "global:", "eval:", "filter:", "if:", "block:", "while:", "foreach:", "pages:", "switch:", "t:", 'render:', 'form:');
+	protected static $__functions = array("\$", "inc:", "trans:", "sql:", "global:", "eval:", "filter:", "if:", "block:", "while:", "foreach:", "pages:", "switch:", "t:", 'render:', 'form:', 'tnobr:');
 	protected $data, $dataLoaded = false, $dataPrepared;
 	protected $inputFilter, $outputFilter;
 	protected $__regFuncs;
