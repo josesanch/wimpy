@@ -130,8 +130,18 @@ class html_form extends html_object {
 		return $input;
 	}
 
+	public function remove($field) {
+		$this->inputs = array_filter($this->inputs, create_function('$input', 'return !(is_a($input, "html_object") && $input->name() == '.$field.');'));
+/*		foreach($this->inputs as $id => $input) {
+
+			if(is_a($input, 'html_object') && $input->name() == $field) {
+				unset($this->inputs[]);
+			}
+		}
+		*/
+	}
 	public function get($field) {
-		foreach($this->inputs as &$input) {
+		foreach($this->inputs as $input) {
 			if(is_a($input, 'html_object') && $input->name() == $field) return $input;
 		}
 	}

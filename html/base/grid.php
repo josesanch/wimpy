@@ -9,6 +9,7 @@ class html_base_grid extends html_object {
 	public function toHtml($model, $sql = null, $columns = null) {
 		$form = new html_base_form(get_class($model));
 		$form->onsubmit('return do_search(this);');
+
 		$model->setPageSize(25);
 		if(web::request("page")) $model->setCurrentPage(web::request("page"));
 
