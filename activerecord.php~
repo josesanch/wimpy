@@ -88,7 +88,7 @@ class ActiveRecord {
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
-					$fields_to_update[] = $name."='".mysql_real_escape_string($this->row_data[$name])."'";
+					$fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
 				}
 			}
 
@@ -309,7 +309,7 @@ class ActiveRecord {
 
 			if($field['l10n'] && web::instance()->l10n->isNotDefault($selected_lang)) {
 				if(!$selected_lang) $selected_lang = web::instance()->l10n->getSelectedLang();
-				if($this->row_data_l10n[$selected_lang][$property]) return $this->row_data_l10n[$selected_lang][$property];
+				if($this->row_data_l10n[$selected_lang][$property]) return stripslashes($this->row_data_l10n[$selected_lang][$property]);
 
 				$sta = $this->database->query("select data, field from l10n where lang='$selected_lang'
 																			and model='".get_class($this)."'
@@ -318,7 +318,7 @@ class ActiveRecord {
 
 				// If not exists the value
 				if(!$sta || $sta->rowCount() == 0) {
-					return $return_default_lang_is_not_exists ? $this->row_data[$property] : null;
+					return $return_default_lang_is_not_exists ? stripslashes($this->row_data[$property]) : null;
 				}
 
 				if($rows = $sta->fetchAll()) {
