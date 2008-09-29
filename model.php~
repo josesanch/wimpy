@@ -12,6 +12,7 @@ class Model extends ActiveRecord {
 	public $has_images = true;
 
 */
+	protected $image_label;
 	protected $has_files = False;
 	protected $has_images = False;
 
@@ -19,6 +20,7 @@ class Model extends ActiveRecord {
 	{
 		parent::__construct();
 		$this->createTableIfNecessary();
+		if(!$this->image_label) $this->image_label = get_class($this);
 		if(is_numeric($createdFromSql)) {
 			$this->select($createdFromSql);
 		} else {
@@ -38,11 +40,11 @@ class Model extends ActiveRecord {
 		if($this->has_files && $item == "files") {
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$files = new helpers_files();
-			return $files->select("module='".get_class($this)."' and iditem='".$this->$primary_key."'", "order:orden");
+			return $files->select("module='".$this->image_label."' and iditem='".$this->$primary_key."'", "order:orden");
 		} elseif ($this->has_images && $item == "images") {
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$images = new helpers_images();
-			return $images->select("module='".get_class($this)."' and iditem='".$this->$primary_key."' and field=''", "order:orden");
+			return $images->select("module='".$this->image_label."' and iditem='".$this->$primary_key."' and field=''", "order:orden");
 		}
 		return parent::__get($item);
 	}
@@ -69,7 +71,7 @@ class Model extends ActiveRecord {
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$images = new helpers_images();
 
-			$module = web::request("tmp_upload") ? web::request("tmp_upload") : get_class($this);
+			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 			$field = web::request("field");
 			$field_condition = " and field='$field' ";
 
@@ -128,7 +130,7 @@ class Model extends ActiveRecord {
 //		log::to_file("vardump ".var_export($_FILES, true));
 		if(is_uploaded_file($file['tmp_name'])) {
 			log::to_file("El fichero existe ".$file['tmp_name']);
-			$module = web::request("tmp_upload") ? web::request("tmp_upload") : get_class($this);
+			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$p = pathinfo($file["name"]); $extension = strtolower($p["extension"]);
 			$items = $type == 'image' ? new helpers_images() : new helpers_files();
@@ -182,7 +184,7 @@ class Model extends ActiveRecord {
 		$imagen->select($idimagen);
 		$iditem = $imagen->iditem;
 		$images = new helpers_images();
-		$images = $images->select("module='".get_class($this)."' and iditem='$iditem'", "order:orden");
+		$images = $images->select("module='".$this->image_label."' and iditem='$iditem'", "order:orden");
 		$pos = 1;
 		$previous_image = null;
 		foreach($images as $image) {
@@ -215,7 +217,7 @@ class Model extends ActiveRecord {
 
 		if(web::request("tmp_upload")) {
 			$module = get_class($this);
-			$this->database->exec("UPDATE images set iditem='$item->id',module='$module' where module='".web::request("tmp_upload")."'");
+			$this->database->exec("UPDATE images set iditem='$item->id',module='".$this->image_label."' where module='".web::request("tmp_upload")."'");
 		}
 	}
 
