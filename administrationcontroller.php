@@ -111,6 +111,7 @@ class AdministrationController extends ApplicationController {
 	}
 
 	public function __call($method, $params) {
+
 		foreach(array("List", "Edit", "Save", 'Delete') as $action) {
 			if($pos = strrpos($method, $action)) break;
 		}

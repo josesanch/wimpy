@@ -91,23 +91,28 @@ class Web {
 		$uri = '';
 		$previous_params = web::instance()->params;
 		$arr = web::processParams($previous_params, $arr, $uri);
-
 		$arr = web::processParams($params, $arr, $uri);
 
-		foreach($arr as $item => $value) {	$uri .= "/$item=$value"; }
+		foreach($arr as $item => $value) {
+			if(is_numeric($item)) 	$uri .= "/$value";
+			else 					$uri .= "/$item=$value";
+		}
+
+		if($_SERVER["QUERY_STRING"]) $uri .= "?".$_SERVER["QUERY_STRING"];
 		return $uri;
 	}
 
 	private function processParams($params, $arr, &$uri) {
+
 		if(!is_array($params)) {
 			$params = explode("/", $params);
 			array_shift($params);
 		}
-
+		$count = 0;
 		foreach($params as $p) {
 			$a = explode('=', $p, 2);
 			if(isset($a[1])) $arr[$a[0]] = $a[1];
-			else  $uri .= "/".$p;
+			else $arr[$count++] = $p; // $uri .= "/".$p;
 		}
 		return $arr;
 	}

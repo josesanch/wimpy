@@ -63,7 +63,7 @@ class html_form_input extends html_object {
 		if($this->attrs['label']) {
 			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>";
 		}
-		return "$str<INPUT ".$this->getAttributes().">\n";
+		return "$str\n<INPUT ".$this->getAttributes()."/>\n";
 	}
 
 }

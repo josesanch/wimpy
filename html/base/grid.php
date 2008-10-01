@@ -82,7 +82,7 @@ class html_base_grid extends html_object {
 
 
 		foreach($results as $row) {
-			$form->add("<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit/".$row->get("id")."".web::params()."\"'>");
+			$form->add("<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."\"'>");
 			foreach($columns as $column) {
 				$form->add("<td class=grid_cell>".$row->get($column)."</td>");
 			}
