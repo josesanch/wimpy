@@ -68,7 +68,7 @@ class html_form_htmleditor extends html_form_input {
 			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>";
 		}
 
-		include_once($_SERVER["DOCUMENT_ROOT"]."/resources/fckeditor/fckeditor.php");
+		include_once(dirname(__FILE__)."/../../resources/fckeditor/fckeditor.php");
 		//return "$str<textarea ".$this->getAttributes('value, type').">".$this->attrs['value']."</textarea>";
 
 		$oFCKeditor = new FCKeditor($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name']);

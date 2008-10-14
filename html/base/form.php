@@ -62,12 +62,14 @@ class html_base_form extends html_form_input {
 		$template->loadData($data);
 		$template->assign("model", $this->model);
 		$str =  $template->toHtml();
+/*
 		$str .= "<script>Ext.QuickTips.init();";
 
 		foreach($template->getFormItems() as $item) {
 			$str .= html_extjs_field::toHtml($this->model, $item, $item);
 		}
 		$str .= "</script>";
+		*/
 		return $str;
 
 	}

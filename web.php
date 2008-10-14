@@ -28,7 +28,7 @@ class Web {
 		if(!web::$default_instance)  {
 			web::$default_instance = $this;
 			$this->l10n = new l10n();
-			make_link_resources();
+
 		}
 //		if($languages) $this->setLanguages($languages);
 		if($database) $this->setDatabase($database);
@@ -93,10 +93,8 @@ class Web {
 		$arr = web::processParams($previous_params, $arr, $uri);
 		$arr = web::processParams($params, $arr, $uri);
 
-		foreach($arr as $item => $value) {
-			if(is_numeric($item)) 	$uri .= "/$value";
-			else 					$uri .= "/$item=$value";
-		}
+		foreach($arr as $item => $value) { if(is_numeric($item)) 	$uri .= "/$value";	}
+		foreach($arr as $item => $value) { if(!is_numeric($item))  	$uri .= "/$item=$value"; }
 
 		if($_SERVER["QUERY_STRING"]) $uri .= "?".$_SERVER["QUERY_STRING"];
 		return $uri;
@@ -118,6 +116,7 @@ class Web {
 	}
 
 	public function run($uri = null, $view = null, $render = false) {
+		if($this->in_production) make_link_resources();
 		$this->initialized = true;
 		$_SESSION['initialized'] = true;
 
@@ -125,8 +124,10 @@ class Web {
 			$render = true;
 			$uri = $_SERVER["REQUEST_URI"];
 		}
+
 		$this->uri = $uri;
 		$this->parseInfo($uri);
+
 		switch ($this->controller) {
 			case 'admin':
 				return $this->callAdminDispatcher($render);
@@ -134,6 +135,11 @@ class Web {
 
 			case 'ajax':
 				$this->callAjaxDispatcher();
+			break;
+
+			case 'resources':
+				$controller = new resourcesController();
+				$controller->getAction($this->action, $this->params);
 			break;
 
 			default:
