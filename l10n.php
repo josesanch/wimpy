@@ -41,7 +41,7 @@ class l10n {
 		} else {
 			if(!$returnDefaultLanguage) return '';
 			// If the web is not in production we insert the new strings in l10n table in the database
-			if($lang == $this->default_language && !web::instance()->isInProduction()) {
+			if($lang == $this->default_language ) {// && !web::instance()->isInProduction()) {
 				$this->set($id, $id, $this->default_language);
 				$this->cached_data[$lang][$id] = $id;
 				return $this->cached_data[$lang][$id];

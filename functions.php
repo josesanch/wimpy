@@ -28,7 +28,7 @@ function js($module) {
 	$file = str_replace("::", "/", $module).".js";
 	$directories = array("/js/", "/resources/js/");
 	foreach($directories as $dir)
-		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file))
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file) )
 			return  "<script src=\"$dir$file\" type=\"text/javascript\"></script>";
 }
 
@@ -43,7 +43,7 @@ function css($module) {
 	$file = str_replace("::", "/", $module).".css";
 	$directories = array("/css/", "/resources/css/", "/resources/js/", "/resources/");
 	foreach($directories as $dir)
-		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file))
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file) )
 			return "<link href=\"$dir$file\" rel=\"stylesheet\" type=\"text/css\" />";
 //			return "<style type=\"text/css\" media=\"screen\">@import \"$dir$file\"; </style>";
 }

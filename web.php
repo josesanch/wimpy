@@ -138,8 +138,12 @@ class Web {
 			break;
 
 			case 'resources':
-				$controller = new resourcesController();
-				$controller->getAction($this->action, $this->params);
+				if(file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
+					return $this->callDefaultDispatcher($render, $view);
+				} else {
+					$controller = new resourcesController();
+					$controller->getAction($this->action, $this->params);
+				}
 			break;
 
 			default:
@@ -157,7 +161,7 @@ class Web {
 			$this->action = $this->action ? $this->action : 'index';
 		}
 
-		$controller_class = ucfirst(web::canonize($this->controller))."Controller";
+		$controller_class = ucfirst(str_replace('-', '_', web::canonize($this->controller)))."Controller";
 		$action = $this->action;
 
 		if(!$this->loadController($controller_class) || (!method_exists ($controller_class, $this->action."Action") && !$admin)) {
