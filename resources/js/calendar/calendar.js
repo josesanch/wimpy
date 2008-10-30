@@ -10,15 +10,15 @@ var weekday_names = new Array("Dom","Lun","Mar","Mie","Jue","Vie","Sab","Dom");
 
 var month_no_days = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
 Calendar._TT = {}
-Calendar._TT["next_year"] = "Prox. año";
-Calendar._TT["prev_year"] = "Prev. año";
+Calendar._TT["next_year"] = "Prox. aÃ±o";
+Calendar._TT["prev_year"] = "Prev. aÃ±o";
 Calendar._TT["next_month"] = "Prox. mes";
 Calendar._TT["prev_month"] = "Prev. mes";
 Calendar._TT["close_cal"] = "Cerrar calendario";
 Calendar._TT["close"] = "Cerrar";
-Calendar._TT["Display Sunday first"] = "Domingo primer día";
-Calendar._TT["Display Monday first"] = "Lúnes primer día";
-Calendar._TT["day name"] = "Nombre día";
+Calendar._TT["Display Sunday first"] = "Domingo primer dÃ­a";
+Calendar._TT["Display Monday first"] = "LÃºnes primer dÃ­a";
+Calendar._TT["day name"] = "Nombre dÃ­a";
 
 
 var agt = navigator.userAgent.toLowerCase();
@@ -284,11 +284,11 @@ function Calendar(mondayFirst, yourHandler, yourCloseHandler, yourHolder) {
   	if(date == "")
   	{
   		date = new Date();
-	} else {		
-  		var d = date.split("/");  		
+	} else {
+  		var d = date.split("/");
   		var ano = parseInt(d[2]);
   		ano = ano < 100 ? ano + 1900 : ano;
-  		ano = ano < 1950  ? ano + 100 : ano;  		
+  		ano = ano < 1950  ? ano + 100 : ano;
   		date = new Date(ano, Number(d[1]) - 1, Number(d[0]));
 	}
   }  else {
