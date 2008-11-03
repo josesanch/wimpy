@@ -117,6 +117,7 @@ class ActiveRecord {
 
 		if(!$insert) $id = $this->row_data['id'];
 		$this->savel10n($id);
+		$this->id = $id;
 		return $id;
 
 	}
