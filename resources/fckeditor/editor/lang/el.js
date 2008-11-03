@@ -1,21 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: el.js
- * 	Greek language file.
- * 
- * File Authors:
- * 		Vangelis Bibakis (bibakisv[-a-t-]yahoo.com)
- * 		Spyros Barbatos (sbarbatos{at}users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Greek language file.
  */
 
 var FCKLang =
@@ -41,7 +44,9 @@ RemoveFormat		: "Αφαίρεση Μορφοποίησης",
 InsertLinkLbl		: "Σύνδεσμος (Link)",
 InsertLink			: "Εισαγωγή/Μεταβολή Συνδέσμου (Link)",
 RemoveLink			: "Αφαίρεση Συνδέσμου (Link)",
+VisitLink			: "Open Link",	//MISSING
 Anchor				: "Εισαγωγή/επεξεργασία Anchor",
+AnchorDelete		: "Remove Anchor",	//MISSING
 InsertImageLbl		: "Εικόνα",
 InsertImage			: "Εισαγωγή/Μεταβολή Εικόνας",
 InsertFlashLbl		: "Εισαγωγή Flash",
@@ -67,6 +72,10 @@ RightJustify		: "Στοίχιση Δεξιά",
 BlockJustify		: "Πλήρης Στοίχιση (Block)",
 DecreaseIndent		: "Μείωση Εσοχής",
 IncreaseIndent		: "Αύξηση Εσοχής",
+Blockquote			: "Blockquote",	//MISSING
+CreateDiv			: "Create Div Container",	//MISSING
+EditDiv				: "Edit Div Container",	//MISSING
+DeleteDiv			: "Remove Div Container",	//MISSING
 Undo				: "Αναίρεση",
 Redo				: "Επαναφορά",
 NumberedListLbl		: "Λίστα με Αριθμούς",
@@ -100,20 +109,27 @@ SelectionField	: "Πεδίο επιλογής",
 ImageButton		: "Κουμπί εικόνας",
 
 FitWindow		: "Μεγιστοποίηση προγράμματος",
+ShowBlocks		: "Show Blocks",	//MISSING
 
 // Context Menu
 EditLink			: "Μεταβολή Συνδέσμου (Link)",
 CellCM				: "Κελί",
 RowCM				: "Σειρά",
 ColumnCM			: "Στήλη",
-InsertRow			: "Εισαγωγή Γραμμής",
+InsertRowAfter		: "Insert Row After",	//MISSING
+InsertRowBefore		: "Insert Row Before",	//MISSING
 DeleteRows			: "Διαγραφή Γραμμών",
-InsertColumn		: "Εισαγωγή Κολώνας",
+InsertColumnAfter	: "Insert Column After",	//MISSING
+InsertColumnBefore	: "Insert Column Before",	//MISSING
 DeleteColumns		: "Διαγραφή Κολωνών",
-InsertCell			: "Εισαγωγή Κελιού",
+InsertCellAfter		: "Insert Cell After",	//MISSING
+InsertCellBefore	: "Insert Cell Before",	//MISSING
 DeleteCells			: "Διαγραφή Κελιών",
 MergeCells			: "Ενοποίηση Κελιών",
-SplitCell			: "Διαχωρισμός Κελιού",
+MergeRight			: "Merge Right",	//MISSING
+MergeDown			: "Merge Down",	//MISSING
+HorizontalSplitCell	: "Split Cell Horizontally",	//MISSING
+VerticalSplitCell	: "Split Cell Vertically",	//MISSING
 TableDelete			: "Διαγραφή πίνακα",
 CellProperties		: "Ιδιότητες Κελιού",
 TableProperties		: "Ιδιότητες Πίνακα",
@@ -145,6 +161,7 @@ UnknownToolbarSet	: "Η μπάρα εργαλείων \"%1\" δεν υπάρχε
 NoActiveX			: "Οι ρυθμίσεις ασφαλείας του browser σας μπορεί να περιορίσουν κάποιες ρυθμίσεις του προγράμματος. Χρειάζεται να ενεργοποιήσετε την επιλογή \"Run ActiveX controls and plug-ins\". Ίσως παρουσιαστούν λάθη και παρατηρήσετε ελειπείς λειτουργίες.",
 BrowseServerBlocked : "Οι πόροι του browser σας δεν είναι προσπελάσιμοι. Σιγουρευτείτε ότι δεν υπάρχουν ενεργοί popup blockers.",
 DialogBlocked		: "Δεν ήταν δυνατό να ανοίξει το παράθυρο διαλόγου. Σιγουρευτείτε ότι δεν υπάρχουν ενεργοί popup blockers.",
+VisitLinkBlocked	: "It was not possible to open a new window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -226,7 +243,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Επιλέξτε μια άγκυρα",
 DlgLnkAnchorByName	: "Βάσει του Ονόματος (Name) της άγκυρας",
 DlgLnkAnchorById	: "Βάσει του Element Id",
-DlgLnkNoAnchors		: "<Δεν υπάρχουν άγκυρες στο κείμενο>",
+DlgLnkNoAnchors		: "(Δεν υπάρχουν άγκυρες στο κείμενο)",
 DlgLnkEMail			: "Διεύθυνση Ηλεκτρονικού Ταχυδρομείου",
 DlgLnkEMailSubject	: "Θέμα Μηνύματος",
 DlgLnkEMailBody		: "Κείμενο Μηνύματος",
@@ -319,6 +336,9 @@ DlgCellBackColor	: "Χρώμα Υποβάθρου",
 DlgCellBorderColor	: "Χρώμα Περιθωρίου",
 DlgCellBtnSelect	: "Επιλογή...",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "Find and Replace",	//MISSING
+
 // Find Dialog
 DlgFindTitle		: "Αναζήτηση",
 DlgFindFindBtn		: "Αναζήτηση",
@@ -334,7 +354,6 @@ DlgReplaceReplAllBtn	: "Αντικατάσταση Όλων",
 DlgReplaceWordChk		: "Εύρεση πλήρους λέξης",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία επικόλλησης. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+V).",
 PasteErrorCut	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία αποκοπής. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+X).",
 PasteErrorCopy	: "Οι ρυθμίσεις ασφαλείας του φυλλομετρητή σας δεν επιτρέπουν την επιλεγμένη εργασία αντιγραφής. Χρησιμοποιείστε το πληκτρολόγιο (Ctrl+C).",
 
@@ -342,9 +361,9 @@ PasteAsText		: "Επικόλληση ως Απλό Κείμενο",
 PasteFromWord	: "Επικόλληση από το Word",
 
 DlgPasteMsg2	: "Παρακαλώ επικολήστε στο ακόλουθο κουτί χρησιμοποιόντας το πληκτρολόγιο (<STRONG>Ctrl+V</STRONG>) και πατήστε <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Αγνόηση προδιαγραφών γραμματοσειράς",
 DlgPasteRemoveStyles	: "Αφαίρεση προδιαγραφών στύλ",
-DlgPasteCleanBox		: "Κουτί εκαθάρισης",
 
 // Color Picker
 ColorAutomatic	: "Αυτόματο",
@@ -497,6 +516,11 @@ DlgAboutAboutTab	: "Σχετικά",
 DlgAboutBrowserInfoTab	: "Πληροφορίες Browser",
 DlgAboutLicenseTab	: "Άδεια",
 DlgAboutVersion		: "έκδοση",
-DlgAboutLicense		: "Άδεια χρήσης υπό τους όρους της GNU Lesser General Public License",
-DlgAboutInfo		: "Για περισσότερες πληροφορίες"
-}
+DlgAboutInfo		: "Για περισσότερες πληροφορίες",
+
+// Div Dialog
+DlgDivGeneralTab	: "General",	//MISSING
+DlgDivAdvancedTab	: "Advanced",	//MISSING
+DlgDivStyle		: "Style",	//MISSING
+DlgDivInlineStyle	: "Inline Style"	//MISSING
+};

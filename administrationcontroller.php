@@ -21,6 +21,7 @@ class AdministrationController extends ApplicationController {
 	public $section;
 	public $menu_width = 190;
 	public $logo = "/images/logo.gif";
+	public $css = array();
 	private $selected_menu;
 
 	public $components = array("auth");
@@ -147,7 +148,7 @@ class AdministrationController extends ApplicationController {
 							$model = new $model();
 							if(isset($params[0])) $model->select($params[0]);
 //							$edit = new html_extjs_form($model);
-							$edit = new html_autoform($model);
+							$edit = new html_autoform($model, $this->css);
 							$this->view->content = "<br>".$edit->toHtml();
 							break;
 

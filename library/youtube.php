@@ -24,6 +24,12 @@ class youtube
 			return $arr[1];
 		}
 
+		public function getAuthor() {
+			$this->loadInfo();
+			preg_match('/<author><name[^>]*>([^<]+)<\/name>/', $this->info, $arr);
+			return $arr[1];
+		}
+
 		public function getPlayer($size = "425x350") {
 			$size = explode("x", $size);
 			return '<object type="application/x-shockwave-flash" style="width:'.$size[0].'px; height:'.$size[1].'px;" data="http://www.youtube.com/v/'.$this->id.'">

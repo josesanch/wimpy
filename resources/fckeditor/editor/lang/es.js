@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: es.js
- * 	Spanish language file.
- * 
- * File Authors:
- * 		Gabriel Schillaci (internetbug@users.sourceforge.net)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Spanish language file.
  */
 
 var FCKLang =
@@ -40,7 +44,9 @@ RemoveFormat		: "Eliminar Formato",
 InsertLinkLbl		: "Vínculo",
 InsertLink			: "Insertar/Editar Vínculo",
 RemoveLink			: "Eliminar Vínculo",
+VisitLink			: "Abrir enlace",
 Anchor				: "Referencia",
+AnchorDelete		: "Eliminar Referencia",
 InsertImageLbl		: "Imagen",
 InsertImage			: "Insertar/Editar Imagen",
 InsertFlashLbl		: "Flash",
@@ -66,6 +72,10 @@ RightJustify		: "Alinear a Derecha",
 BlockJustify		: "Justificado",
 DecreaseIndent		: "Disminuir Sangría",
 IncreaseIndent		: "Aumentar Sangría",
+Blockquote			: "Cita",
+CreateDiv			: "Crear contenedor (div)",
+EditDiv				: "Editar contenedor (div)",
+DeleteDiv			: "Eliminar contenedor (div)",
 Undo				: "Deshacer",
 Redo				: "Rehacer",
 NumberedListLbl		: "Numeración",
@@ -80,7 +90,7 @@ Font				: "Fuente",
 FontSize			: "Tamaño",
 TextColor			: "Color de Texto",
 BGColor				: "Color de Fondo",
-Source				: "ver HTML",
+Source				: "Fuente HTML",
 Find				: "Buscar",
 Replace				: "Reemplazar",
 SpellCheck			: "Ortografía",
@@ -99,20 +109,27 @@ SelectionField	: "Campo de Selección",
 ImageButton		: "Botón Imagen",
 
 FitWindow		: "Maximizar el tamaño del editor",
+ShowBlocks		: "Mostrar bloques",
 
 // Context Menu
 EditLink			: "Editar Vínculo",
 CellCM				: "Celda",
 RowCM				: "Fila",
 ColumnCM			: "Columna",
-InsertRow			: "Insertar Fila",
+InsertRowAfter		: "Insertar fila en la parte inferior",
+InsertRowBefore		: "Insertar fila en la parte superior",
 DeleteRows			: "Eliminar Filas",
-InsertColumn		: "Insertar Columna",
+InsertColumnAfter	: "Insertar columna a la derecha",
+InsertColumnBefore	: "Insertar columna a la izquierda",
 DeleteColumns		: "Eliminar Columnas",
-InsertCell			: "Insertar Celda",
+InsertCellAfter		: "Insertar celda a la derecha",
+InsertCellBefore	: "Insertar celda a la izquierda",
 DeleteCells			: "Eliminar Celdas",
 MergeCells			: "Combinar Celdas",
-SplitCell			: "Dividir Celda",
+MergeRight			: "Combinar a la derecha",
+MergeDown			: "Combinar hacia abajo",
+HorizontalSplitCell	: "Dividir la celda horizontalmente",
+VerticalSplitCell	: "Dividir la celda verticalmente",
 TableDelete			: "Eliminar Tabla",
 CellProperties		: "Propiedades de Celda",
 TableProperties		: "Propiedades de Tabla",
@@ -144,6 +161,7 @@ UnknownToolbarSet	: "Nombre de barra \"%1\" no definido",
 NoActiveX			: "La configuración de las opciones de seguridad de su navegador puede estar limitando algunas características del editor. Por favor active la opción \"Ejecutar controles y complementos de ActiveX \", de lo contrario puede experimentar errores o ausencia de funcionalidades.",
 BrowseServerBlocked : "La ventana de visualización del servidor no pudo ser abierta. Verifique que su navegador no esté bloqueando las ventanas emergentes (pop up).",
 DialogBlocked		: "No se ha podido abrir la ventana de diálogo. Verifique que su navegador no esté bloqueando las ventanas emergentes (pop up).",
+VisitLinkBlocked	: "Nose ha podido abrir la ventana. Asegurese de que todos los bloqueadores de popups están deshabilitados.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -158,10 +176,10 @@ DlgAlertUrl			: "Inserte el URL",
 // General Dialogs Labels
 DlgGenNotSet		: "<No definido>",
 DlgGenId			: "Id",
-DlgGenLangDir		: "Orientación de idioma",
+DlgGenLangDir		: "Orientación",
 DlgGenLangDirLtr	: "Izquierda a Derecha (LTR)",
 DlgGenLangDirRtl	: "Derecha a Izquierda (RTL)",
-DlgGenLangCode		: "Código de idioma",
+DlgGenLangCode		: "Cód. de idioma",
 DlgGenAccessKey		: "Clave de Acceso",
 DlgGenName			: "Nombre",
 DlgGenTabIndex		: "Indice de tabulación",
@@ -197,7 +215,7 @@ DlgImgAlignRight	: "Derecha",
 DlgImgAlignTextTop	: "Tope del texto",
 DlgImgAlignTop		: "Tope",
 DlgImgPreview		: "Vista Previa",
-DlgImgAlertUrl		: "Por favor tipee el URL de la imagen",
+DlgImgAlertUrl		: "Por favor escriba la URL de la imagen",
 DlgImgLinkTab		: "Vínculo",
 
 // Flash Dialog
@@ -225,7 +243,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Seleccionar una referencia",
 DlgLnkAnchorByName	: "Por Nombre de Referencia",
 DlgLnkAnchorById	: "Por ID de elemento",
-DlgLnkNoAnchors		: "<No hay referencias disponibles en el documento>",
+DlgLnkNoAnchors		: "(No hay referencias disponibles en el documento)",
 DlgLnkEMail			: "Dirección de E-Mail",
 DlgLnkEMailSubject	: "Título del Mensaje",
 DlgLnkEMailBody		: "Cuerpo del Mensaje",
@@ -258,7 +276,7 @@ DlgLnkPopTop		: "Posición Derecha",
 DlnLnkMsgNoUrl		: "Por favor tipee el vínculo URL",
 DlnLnkMsgNoEMail	: "Por favor tipee la dirección de e-mail",
 DlnLnkMsgNoAnchor	: "Por favor seleccione una referencia",
-DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
+DlnLnkMsgInvPopName	: "El nombre debe empezar con un caracter alfanumérico y no debe contener espacios",
 
 // Color Dialog
 DlgColorTitle		: "Seleccionar Color",
@@ -318,6 +336,9 @@ DlgCellBackColor	: "Color de Fondo",
 DlgCellBorderColor	: "Color de Borde",
 DlgCellBtnSelect	: "Seleccione...",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "Buscar y Reemplazar",
+
 // Find Dialog
 DlgFindTitle		: "Buscar",
 DlgFindFindBtn		: "Buscar",
@@ -333,7 +354,6 @@ DlgReplaceReplAllBtn	: "Reemplazar Todo",
 DlgReplaceWordChk		: "Coincidir toda la palabra",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de pegado. Por favor use el teclado (Ctrl+V).",
 PasteErrorCut	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de cortado. Por favor use el teclado (Ctrl+X).",
 PasteErrorCopy	: "La configuración de seguridad de este navegador no permite la ejecución automática de operaciones de copiado. Por favor use el teclado (Ctrl+C).",
 
@@ -341,9 +361,9 @@ PasteAsText		: "Pegar como Texto Plano",
 PasteFromWord	: "Pegar desde Word",
 
 DlgPasteMsg2	: "Por favor pegue dentro del cuadro utilizando el teclado (<STRONG>Ctrl+V</STRONG>); luego presione <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Debido a la configuración de seguridad de su navegador, el editor no tiene acceso al portapapeles. Es necesario que lo pegue de nuevo en esta ventana.",
 DlgPasteIgnoreFont		: "Ignorar definiciones de fuentes",
 DlgPasteRemoveStyles	: "Remover definiciones de estilo",
-DlgPasteCleanBox		: "Borrar el contenido del cuadro",
 
 // Color Picker
 ColorAutomatic	: "Automático",
@@ -377,9 +397,9 @@ IeSpellDownload			: "Módulo de Control de Ortografía no instalado. ¿Desea des
 // Button Dialog
 DlgButtonText		: "Texto (Valor)",
 DlgButtonType		: "Tipo",
-DlgButtonTypeBtn	: "Button",	//MISSING
-DlgButtonTypeSbm	: "Submit",	//MISSING
-DlgButtonTypeRst	: "Reset",	//MISSING
+DlgButtonTypeBtn	: "Boton",
+DlgButtonTypeSbm	: "Enviar",
+DlgButtonTypeRst	: "Reestablecer",
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nombre",
@@ -428,7 +448,7 @@ DlgHiddenValue	: "Valor",
 // Bulleted List Dialog
 BulletedListProp	: "Propiedades de Viñetas",
 NumberedListProp	: "Propiedades de Numeraciones",
-DlgLstStart			: "Start",	//MISSING
+DlgLstStart			: "Inicio",
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Círculo",
 DlgLstTypeDisc		: "Disco",
@@ -451,15 +471,15 @@ DlgDocLangDirLTR	: "Izq. a Derecha (LTR)",
 DlgDocLangDirRTL	: "Der. a Izquierda (RTL)",
 DlgDocLangCode		: "Código de Idioma",
 DlgDocCharSet		: "Codif. de Conjunto de Caracteres",
-DlgDocCharSetCE		: "Central European",	//MISSING
-DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
-DlgDocCharSetCR		: "Cyrillic",	//MISSING
-DlgDocCharSetGR		: "Greek",	//MISSING
-DlgDocCharSetJP		: "Japanese",	//MISSING
-DlgDocCharSetKR		: "Korean",	//MISSING
-DlgDocCharSetTR		: "Turkish",	//MISSING
-DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
-DlgDocCharSetWE		: "Western European",	//MISSING
+DlgDocCharSetCE		: "Centro Europeo",
+DlgDocCharSetCT		: "Chino Tradicional (Big5)",
+DlgDocCharSetCR		: "Cirílico",
+DlgDocCharSetGR		: "Griego",
+DlgDocCharSetJP		: "Japonés",
+DlgDocCharSetKR		: "Coreano",
+DlgDocCharSetTR		: "Turco",
+DlgDocCharSetUN		: "Unicode (UTF-8)",
+DlgDocCharSetWE		: "Europeo occidental",
 DlgDocCharSetOther	: "Otra Codificación",
 
 DlgDocDocType		: "Encabezado de Tipo de Documento",
@@ -489,13 +509,18 @@ DlgTemplatesTitle	: "Contenido de Plantillas",
 DlgTemplatesSelMsg	: "Por favor selecciona la plantilla a abrir en el editor<br>(el contenido actual se perderá):",
 DlgTemplatesLoading	: "Cargando lista de Plantillas. Por favor, aguarde...",
 DlgTemplatesNoTpl	: "(No hay plantillas definidas)",
-DlgTemplatesReplace	: "Replace actual contents",	//MISSING
+DlgTemplatesReplace	: "Reemplazar el contenido actual",
 
 // About Dialog
 DlgAboutAboutTab	: "Acerca de",
 DlgAboutBrowserInfoTab	: "Información de Navegador",
 DlgAboutLicenseTab	: "Licencia",
 DlgAboutVersion		: "versión",
-DlgAboutLicense		: "Licenciado bajo los términos de GNU Lesser General Public License",
-DlgAboutInfo		: "Para mayor información por favor dirigirse a"
-}
+DlgAboutInfo		: "Para mayor información por favor dirigirse a",
+
+// Div Dialog
+DlgDivGeneralTab	: "General",
+DlgDivAdvancedTab	: "Avanzado",
+DlgDivStyle		: "Estilo",
+DlgDivInlineStyle	: "Estilos CSS"
+};

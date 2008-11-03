@@ -1,7 +1,8 @@
 <?
 class html_autoform extends html_form {
 
-	public function __construct($model = null) {
+	public function __construct($model = null, $css = null) {
+		$this->css = $css;
 
 		if(is_object($model)) {
 			$this->setModel($model);
@@ -29,7 +30,7 @@ class html_autoform extends html_form {
 				$id =$this->model->$field;
 				$this->hidden($field)->value($this->model->$field);
 			} else {
-				$this->auto($field, null, $tmp_upload);
+				$this->auto($field, null, $tmp_upload)->css($this->css);
 			}
 			$this->add("\n");
 		}

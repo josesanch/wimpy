@@ -11,6 +11,7 @@ class html_form_htmleditor extends html_form_input {
 
 
 	public function toHtml() {
+
 		switch(web::instance()->defaultHtmlEditor) {
 			case "fckeditor":
 				return $this->toHtmlFCKeditor();
@@ -83,19 +84,18 @@ class html_form_htmleditor extends html_form_input {
 		*/
 //		$style = $this->__atributos["style"];
 
-
 		$oFCKeditor->ToolbarSet = $this->attrs['style'];
 
 		if($this->attrs['width']) $oFCKeditor->Width = $this->attrs['width'];
 		if($this->attrs['height']) $oFCKeditor->Height = $this->attrs['height']  + 50;
-/*
-		if(array_key_exists("css", $this->__atributos))
+
+		if(array_key_exists("css", $this->attrs) && $this->attrs['css'])
 		{
 			if($oFCKeditor->ToolbarSet != "Basic") $oFCKeditor->ToolbarSet = "Styles";
-			$oFCKeditor->Config["EditorAreaCSS"] = $this->__atributos["css"];
-			$oFCKeditor->Config["StylesXmlPath"] = "/resources/fckeditor/stylesxml.php?file=".$this->__atributos["css"];
+			$oFCKeditor->Config["EditorAreaCSS"] = $this->attrs["css"];
+			$oFCKeditor->Config["StylesXmlPath"] = "/resources/fckeditor/stylesxml.php?file=".$this->attrs["css"];
 		}
-*/
+
 		$oFCKeditor->Config["CustomConfigurationsPath"] = '/resources/fckeditor/default_config.js';
 		$oFCKeditor->Value = $this->attrs['value'];
 

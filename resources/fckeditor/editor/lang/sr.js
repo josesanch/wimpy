@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: sr.js
- * 	Serbian (Cyrillic) language file.
- * 
- * File Authors:
- * 		Zoran Subić (zoran@tf.zr.ac.yu)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Serbian (Cyrillic) language file.
  */
 
 var FCKLang =
@@ -40,7 +44,9 @@ RemoveFormat		: "Уклони форматирање",
 InsertLinkLbl		: "Линк",
 InsertLink			: "Унеси/измени линк",
 RemoveLink			: "Уклони линк",
+VisitLink			: "Open Link",	//MISSING
 Anchor				: "Унеси/измени сидро",
+AnchorDelete		: "Remove Anchor",	//MISSING
 InsertImageLbl		: "Слика",
 InsertImage			: "Унеси/измени слику",
 InsertFlashLbl		: "Флеш елемент",
@@ -66,6 +72,10 @@ RightJustify		: "Десно равнање",
 BlockJustify		: "Обострано равнање",
 DecreaseIndent		: "Смањи леву маргину",
 IncreaseIndent		: "Увећај леву маргину",
+Blockquote			: "Blockquote",	//MISSING
+CreateDiv			: "Create Div Container",	//MISSING
+EditDiv				: "Edit Div Container",	//MISSING
+DeleteDiv			: "Remove Div Container",	//MISSING
 Undo				: "Поништи акцију",
 Redo				: "Понови акцију",
 NumberedListLbl		: "Набројиву листу",
@@ -99,20 +109,27 @@ SelectionField	: "Изборно поље",
 ImageButton		: "Дугме са сликом",
 
 FitWindow		: "Maximize the editor size",	//MISSING
+ShowBlocks		: "Show Blocks",	//MISSING
 
 // Context Menu
 EditLink			: "Промени линк",
 CellCM				: "Cell",	//MISSING
 RowCM				: "Row",	//MISSING
 ColumnCM			: "Column",	//MISSING
-InsertRow			: "Унеси ред",
+InsertRowAfter		: "Insert Row After",	//MISSING
+InsertRowBefore		: "Insert Row Before",	//MISSING
 DeleteRows			: "Обриши редове",
-InsertColumn		: "Унеси колону",
+InsertColumnAfter	: "Insert Column After",	//MISSING
+InsertColumnBefore	: "Insert Column Before",	//MISSING
 DeleteColumns		: "Обриши колоне",
-InsertCell			: "Унеси ћелије",
+InsertCellAfter		: "Insert Cell After",	//MISSING
+InsertCellBefore	: "Insert Cell Before",	//MISSING
 DeleteCells			: "Обриши ћелије",
 MergeCells			: "Спој ћелије",
-SplitCell			: "Раздвоји ћелије",
+MergeRight			: "Merge Right",	//MISSING
+MergeDown			: "Merge Down",	//MISSING
+HorizontalSplitCell	: "Split Cell Horizontally",	//MISSING
+VerticalSplitCell	: "Split Cell Vertically",	//MISSING
 TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Особине ћелије",
 TableProperties		: "Особине табеле",
@@ -144,6 +161,7 @@ UnknownToolbarSet	: "Toolbar \"%1\" не постоји",
 NoActiveX			: "Your browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
 BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
 DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
+VisitLinkBlocked	: "It was not possible to open a new window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -225,7 +243,7 @@ DlgLnkURL			: "УРЛ",
 DlgLnkAnchorSel		: "Одабери сидро",
 DlgLnkAnchorByName	: "По називу сидра",
 DlgLnkAnchorById	: "Пo Ид-jу елемента",
-DlgLnkNoAnchors		: "<Нема доступних сидра>",
+DlgLnkNoAnchors		: "(Нема доступних сидра)",
 DlgLnkEMail			: "Адреса електронске поште",
 DlgLnkEMailSubject	: "Наслов",
 DlgLnkEMailBody		: "Садржај поруке",
@@ -318,6 +336,9 @@ DlgCellBackColor	: "Боја позадине",
 DlgCellBorderColor	: "Боја оквира",
 DlgCellBtnSelect	: "Oдабери...",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "Find and Replace",	//MISSING
+
 // Find Dialog
 DlgFindTitle		: "Пронађи",
 DlgFindFindBtn		: "Пронађи",
@@ -333,7 +354,6 @@ DlgReplaceReplAllBtn	: "Замени све",
 DlgReplaceWordChk		: "Упореди целе речи",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Сигурносна подешавања Вашег претраживача не дозвољавају операције аутоматског лепљења текста. Молимо Вас да користите пречицу са тастатуре (Ctrl+V).",
 PasteErrorCut	: "Сигурносна подешавања Вашег претраживача не дозвољавају операције аутоматског исецања текста. Молимо Вас да користите пречицу са тастатуре (Ctrl+X).",
 PasteErrorCopy	: "Сигурносна подешавања Вашег претраживача не дозвољавају операције аутоматског копирања текста. Молимо Вас да користите пречицу са тастатуре (Ctrl+C).",
 
@@ -341,9 +361,9 @@ PasteAsText		: "Залепи као чист текст",
 PasteFromWord	: "Залепи из Worda",
 
 DlgPasteMsg2	: "Молимо Вас да залепите унутар доње површине користећи тастатурну пречицу (<STRONG>Ctrl+V</STRONG>) и да притиснете <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Игнориши Font Face дефиниције",
 DlgPasteRemoveStyles	: "Уклони дефиниције стилова",
-DlgPasteCleanBox		: "Обриши све",
 
 // Color Picker
 ColorAutomatic	: "Аутоматски",
@@ -496,6 +516,11 @@ DlgAboutAboutTab	: "О едитору",
 DlgAboutBrowserInfoTab	: "Информације о претраживачу",
 DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "верзија",
-DlgAboutLicense		: "Лиценцирано под условима GNU Lesser General Public License",
-DlgAboutInfo		: "За више информација посетите"
-}
+DlgAboutInfo		: "За више информација посетите",
+
+// Div Dialog
+DlgDivGeneralTab	: "General",	//MISSING
+DlgDivAdvancedTab	: "Advanced",	//MISSING
+DlgDivStyle		: "Style",	//MISSING
+DlgDivInlineStyle	: "Inline Style"	//MISSING
+};

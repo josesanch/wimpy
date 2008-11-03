@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2006 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: hr.js
- * 	Croatian language file.
- * 
- * File Authors:
- * 		Alex Varga (avarga@globaldizajn.hr)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Croatian language file.
  */
 
 var FCKLang =
@@ -40,7 +44,9 @@ RemoveFormat		: "Ukloni formatiranje",
 InsertLinkLbl		: "Link",
 InsertLink			: "Ubaci/promijeni link",
 RemoveLink			: "Ukloni link",
+VisitLink			: "Otvori link",
 Anchor				: "Ubaci/promijeni sidro",
+AnchorDelete		: "Ukloni sidro",
 InsertImageLbl		: "Slika",
 InsertImage			: "Ubaci/promijeni sliku",
 InsertFlashLbl		: "Flash",
@@ -66,6 +72,10 @@ RightJustify		: "Desno poravnanje",
 BlockJustify		: "Blok poravnanje",
 DecreaseIndent		: "Pomakni ulijevo",
 IncreaseIndent		: "Pomakni udesno",
+Blockquote			: "Blockquote",
+CreateDiv			: "Napravi Div kontejner",
+EditDiv				: "Uredi Div kontejner",
+DeleteDiv			: "Ukloni Div kontejner",
 Undo				: "Poništi",
 Redo				: "Ponovi",
 NumberedListLbl		: "Brojčana lista",
@@ -99,20 +109,27 @@ SelectionField	: "Selection Field",
 ImageButton		: "Image Button",
 
 FitWindow		: "Povećaj veličinu editora",
+ShowBlocks		: "Prikaži blokove",
 
 // Context Menu
 EditLink			: "Promijeni link",
 CellCM				: "Ćelija",
 RowCM				: "Red",
 ColumnCM			: "Kolona",
-InsertRow			: "Ubaci red",
+InsertRowAfter		: "Ubaci red poslije",
+InsertRowBefore		: "Ubaci red prije",
 DeleteRows			: "Izbriši redove",
-InsertColumn		: "Ubaci kolonu",
+InsertColumnAfter	: "Ubaci kolonu poslije",
+InsertColumnBefore	: "Ubaci kolonu prije",
 DeleteColumns		: "Izbriši kolone",
-InsertCell			: "Ubaci ćelije",
+InsertCellAfter		: "Ubaci ćeliju poslije",
+InsertCellBefore	: "Ubaci ćeliju prije",
 DeleteCells			: "Izbriši ćelije",
 MergeCells			: "Spoji ćelije",
-SplitCell			: "Razdvoji ćelije",
+MergeRight			: "Spoji desno",
+MergeDown			: "Spoji dolje",
+HorizontalSplitCell	: "Podijeli ćeliju vodoravno",
+VerticalSplitCell	: "Podijeli ćeliju okomito",
 TableDelete			: "Izbriši tablicu",
 CellProperties		: "Svojstva ćelije",
 TableProperties		: "Svojstva tablice",
@@ -144,6 +161,7 @@ UnknownToolbarSet	: "Traka s alatima \"%1\" ne postoji",
 NoActiveX			: "Vaše postavke pretraživača mogle bi ograničiti neke od mogućnosti editora. Morate uključiti opciju \"Run ActiveX controls and plug-ins\" u postavkama. Ukoliko to ne učinite, moguće su razliite greške tijekom rada.",
 BrowseServerBlocked : "Pretraivač nije moguće otvoriti. Provjerite da li je uključeno blokiranje pop-up prozora.",
 DialogBlocked		: "Nije moguće otvoriti novi prozor. Provjerite da li je uključeno blokiranje pop-up prozora.",
+VisitLinkBlocked	: "Nije moguće otvoriti novi prozor. Provjerite da li je uključeno blokiranje pop-up prozora.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -225,7 +243,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Odaberi sidro",
 DlgLnkAnchorByName	: "Po nazivu sidra",
 DlgLnkAnchorById	: "Po Id elementa",
-DlgLnkNoAnchors		: "<Nema dostupnih sidra>",
+DlgLnkNoAnchors		: "(Nema dostupnih sidra)",
 DlgLnkEMail			: "E-Mail adresa",
 DlgLnkEMailSubject	: "Naslov",
 DlgLnkEMailBody		: "Sadržaj poruke",
@@ -318,6 +336,9 @@ DlgCellBackColor	: "Boja pozadine",
 DlgCellBorderColor	: "Boja okvira",
 DlgCellBtnSelect	: "Odaberi...",
 
+// Find and Replace Dialog
+DlgFindAndReplaceTitle	: "Pronađi i zamijeni",
+
 // Find Dialog
 DlgFindTitle		: "Pronađi",
 DlgFindFindBtn		: "Pronađi",
@@ -333,7 +354,6 @@ DlgReplaceReplAllBtn	: "Zamijeni sve",
 DlgReplaceWordChk		: "Usporedi cijele riječi",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog ljepljenja. Molimo koristite kraticu na tipkovnici (Ctrl+V).",
 PasteErrorCut	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog izrezivanja. Molimo koristite kraticu na tipkovnici (Ctrl+X).",
 PasteErrorCopy	: "Sigurnosne postavke Vašeg pretraživača ne dozvoljavaju operacije automatskog kopiranja. Molimo koristite kraticu na tipkovnici (Ctrl+C).",
 
@@ -341,9 +361,9 @@ PasteAsText		: "Zalijepi kao čisti tekst",
 PasteFromWord	: "Zalijepi iz Worda",
 
 DlgPasteMsg2	: "Molimo zaljepite unutar doljnjeg okvira koristeći tipkovnicu (<STRONG>Ctrl+V</STRONG>) i kliknite <STRONG>OK</STRONG>.",
+DlgPasteSec		: "Zbog sigurnosnih postavki Vašeg pretraživača, editor nema direktan pristup Vašem međuspremniku. Potrebno je ponovno zalijepiti tekst u ovaj prozor.",
 DlgPasteIgnoreFont		: "Zanemari definiciju vrste fonta",
 DlgPasteRemoveStyles	: "Ukloni definicije stilova",
-DlgPasteCleanBox		: "Očisti okvir",
 
 // Color Picker
 ColorAutomatic	: "Automatski",
@@ -496,6 +516,11 @@ DlgAboutAboutTab	: "O FCKEditoru",
 DlgAboutBrowserInfoTab	: "Podaci o pretraživaču",
 DlgAboutLicenseTab	: "Licenca",
 DlgAboutVersion		: "inačica",
-DlgAboutLicense		: "Licencirano pod uvjetima GNU Lesser General Public License",
-DlgAboutInfo		: "Za više informacija posjetite"
-}
+DlgAboutInfo		: "Za više informacija posjetite",
+
+// Div Dialog
+DlgDivGeneralTab	: "Općenito",
+DlgDivAdvancedTab	: "Napredno",
+DlgDivStyle		: "Stil",
+DlgDivInlineStyle	: "Stil u redu"
+};

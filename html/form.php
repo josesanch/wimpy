@@ -1,6 +1,8 @@
 <?
 class html_form extends html_object {
 
+	public $css = null;
+
 	protected $attrs = array(
 		'method' => 'POST'
 	);
@@ -56,16 +58,14 @@ class html_form extends html_object {
 	public function auto($field, $lang = null, $tmp_upload = null) {
 
 		$attrs = $this->model->getFields($field);
-
-/*
-		echo "<pre>";
+/*		echo "<pre>";
 		var_dump($attrs);
 		echo "</pre>";
-		*/
+*/
 		if(isset($attrs["belongs_to"])) {
 				$model_name = $attrs["belongs_to"];
 				$model_item = new $model_name;
-				$name =$model_item->getTitleField();
+				$name = $model_item->getTitleField();
 
 				$input = new html_form_select($field);
 				$input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
@@ -74,7 +74,7 @@ class html_form extends html_object {
 				case 'text':
 					if($attrs['html']) {
 						$input = new html_form_htmleditor($lang ? $field."|".$lang : $field);
-						$input->width('100%')->height(300);
+						$input->width('100%')->height(300)->css($this->css);
 					} else {
 						$input = new html_form_textarea($lang ? $field."|".$lang : $field);
 						$input->rows(10)->cols(60);
