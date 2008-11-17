@@ -15,7 +15,7 @@ class html_form_select extends html_form_input {
 		if($this->attrs['label']) {
 			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>\n";
 		}
-		return "$str<select ".$this->getAttributes('options', 'selectedOptions').">".$this->getOptions()."</select>\n";
+		return "$str<select ".$this->getAttributes(array('value', 'type', 'options', 'selectedOptions')).">".$this->getOptions()."</select>\n";
 	}
 
 	public function add($values, $selectedValues = null, $at_top = false ) {

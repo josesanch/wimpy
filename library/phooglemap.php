@@ -332,7 +332,7 @@ function centerMap($lat,$long){
 	}
 
 	function showMap() {
-		return $this->createMap()."<script>initialize_GoogleMAPS();</script>";
+		return $this->createMap()."<script type=\"text/javascript\">initialize_GoogleMAPS();</script>";
 	}
 //				window.onload = showmap;
 
