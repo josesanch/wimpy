@@ -74,7 +74,7 @@ FCKConfig.AdditionalNumericEntities = ''  ;		// Single Quote: "'"
 
 FCKConfig.FillEmptyBlocks	= false ;
 
-FCKConfig.FormatSource		= false ;
+FCKConfig.FormatSource		= true ;
 FCKConfig.FormatOutput		= true;
 FCKConfig.HtmlEncodeOutput 	= false ;
 FCKConfig.FormatIndentator	= '    ' ;
@@ -85,7 +85,7 @@ FCKConfig.EMailProtectionFunction = 'mt(NAME,DOMAIN,SUBJECT,BODY)' ;
 
 FCKConfig.StartupFocus	= false ;
 
-FCKConfig.ForcePasteAsPlainText	= false ;
+FCKConfig.ForcePasteAsPlainText	= true ;
 FCKConfig.AutoDetectPasteFromWord = true ;	// IE only.
 FCKConfig.ShowDropDialog = true ;
 FCKConfig.ForceSimpleAmpersand	= false ;
