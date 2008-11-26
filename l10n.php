@@ -89,7 +89,7 @@ class l10n {
 	}
 
 	public function isNotDefault($lang = null) {
-		if(!lang) $lang = $this->selected_language;
+		if(!$lang) $lang = $this->selected_language;
 		return $this->default_language != $lang;
 	}
 	public function setLanguages($langs) {
