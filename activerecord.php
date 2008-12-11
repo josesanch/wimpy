@@ -88,7 +88,7 @@ class ActiveRecord {
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
-					$fields_to_update[] = $name."='".addslashes($this->row_data[$name])."'";
+					$fields_to_update[] = $name."='".mysql_real_escape_string($this->row_data[$name])."'";
 				}
 			}
 
@@ -99,7 +99,7 @@ class ActiveRecord {
 			foreach($this->getFields() as $name => $attrs) {
 				if(isset($this->row_data[$name])) {
 					$fields[] = $name;
-					$values[] = addslashes($this->row_data[$name]);
+					$values[] = mysql_real_escape_string($this->row_data[$name]);
 				}
 			}
 			$fields = join(", ", $fields);
@@ -128,7 +128,7 @@ class ActiveRecord {
 		$values = array();
 		foreach($this->row_data_l10n as $lang => $rows) {
 			foreach($rows as $field => $data) {
-				$values[]= "('$lang', '".get_class($this)."', '$field', '$data', '$id')";
+				$values[]= "('$lang', '".get_class($this)."', '$field', '".mysql_real_escape_string($data)."$data', '$id')";
 			}
 		}
 		$sql .= implode(",", $values);
