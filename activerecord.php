@@ -88,7 +88,7 @@ class ActiveRecord {
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
-					$fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
+					$fields_to_update[] = $name."='".mysql_real_escape_string($this->row_data[$name])."'";
 				}
 			}
 
@@ -99,7 +99,7 @@ class ActiveRecord {
 			foreach($this->getFields() as $name => $attrs) {
 				if(isset($this->row_data[$name])) {
 					$fields[] = $name;
-					$values[] = mysql_escape_string($this->row_data[$name]);
+					$values[] = mysql_real_escape_string($this->row_data[$name]);
 				}
 			}
 			$fields = join(", ", $fields);
@@ -187,7 +187,7 @@ class ActiveRecord {
 			}
 			$sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
 		}
-//var_dump($sql);
+//		var_dump($sql);
 //		$statement =  $this->database->query($sql, PDO::FETCH_CLASS, get_class($this), array(True));
 		$statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -512,6 +512,10 @@ class ActiveRecord {
 
 	public function getSelectedColumns() {
 		return $this->select_columns ? split(" ?, ?", $this->select_columns) : array_keys($this->getFields());
+	}
+
+	public function getDatabaseTable() {
+		return $this->database_table;
 	}
 }
 ?>

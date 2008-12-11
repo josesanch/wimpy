@@ -30,10 +30,11 @@ class html_base_grid extends html_object {
 		foreach($columns as $column) {
 			$attrs = $model->getFields($column);
 			if($attrs['belongs_to']) {
-				$belongs_model_name =$attrs['belongs_to'];
+
+				$belongs_model_name = $attrs['belongs_to'];
 				$table = substr($column, 0, -3);
 				$belongs_model = new $belongs_model_name;
-				$sqlcolumns[]= "(select ".$belongs_model->getTitleField()." from $table where id=$column) as $column";
+				$sqlcolumns[]= "(select ".$belongs_model->getTitleField()." from $table secondary_table_$table where secondary_table_$table.id=".$model->getDatabaseTable().".$column) as $column";
 			} else {
 				$sqlcolumns[] = $column;
 			}

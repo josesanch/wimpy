@@ -1,6 +1,11 @@
 <?
 include_once(dirname(__FILE__)."/functions.php");
 require dirname(__FILE__)."/applicationcontroller.php";
+require dirname(__FILE__)."/database.php";
+require dirname(__FILE__)."/l10n.php";
+require dirname(__FILE__)."/html/object.php";
+require dirname(__FILE__)."/html/template.php";
+
 
 class Web {
 
@@ -76,24 +81,23 @@ class Web {
 		$this->params = $uri;
 	}
 
-	public static function uri($params) {
-		$uri = web::params($params);
-		return "http://".$_SERVER['SERVER_NAME']."/".
-								web::instance()->controller."/".
+	public static function uri($params, $all_params = true) {
+		$uri = web::params($params, $all_params);
+		return "/".web::instance()->controller."/".
 								(web::instance()->model ? web::instance()->model."/" : "").
 								web::instance()->action.
 								$uri;
 	}
 
 
-	public static function params($params) {
+	public static function params($params = null, $all_params = true) {
 		$arr = array();
 		$uri = '';
 		$previous_params = web::instance()->params;
 		$arr = web::processParams($previous_params, $arr, $uri);
 		$arr = web::processParams($params, $arr, $uri);
 
-		foreach($arr as $item => $value) { if(is_numeric($item)) 	$uri .= "/$value";	}
+		foreach($arr as $item => $value) { if(is_numeric($item) && $all_params)	$uri .= "/$value";	}
 		foreach($arr as $item => $value) { if(!is_numeric($item))  	$uri .= "/$item=$value"; }
 
 		if($_SERVER["QUERY_STRING"]) $uri .= "?".$_SERVER["QUERY_STRING"];
@@ -211,10 +215,11 @@ class Web {
 			call_user_method_array($model.ucfirst($action), $controller, $this->params);
 		}
 
-		if($render)
+		if($render) {
 			$controller->render($this->action);
-		else
+		} else {
 			return $controller->renderHtml($this->action);
+		}
 	}
 
 	private function callAjaxDispatcher() {
@@ -237,6 +242,14 @@ class Web {
 		}
 		return false;
 	}
+
+	public function loadModel($name) {
+		if(file_exists($this->application_path."models/$name.php")) {
+			return class_exists($name, False);
+		}
+		return false;
+	}
+
 
 	public function setLanguage($lang) { $this->l10n->setLanguage($lang); }
 	public function getLanguage($lang) { return $this->l10n->getLanguage(); }
@@ -288,6 +301,10 @@ class Web {
 	private static function canonize($str) {
 		$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_');
 		return str_replace(' ', '-', strtr(strtolower($str), $arr));
+	}
+
+	public static function database() {
+		return web::instance()->database;
 	}
 
 }

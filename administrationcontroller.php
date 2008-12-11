@@ -43,7 +43,7 @@ class AdministrationController extends ApplicationController {
 
 	public function getMenu() {
 		$str = "";
-
+//var_dump($this->menu);
 		$this->selected_menu = $this->getSelectedMenu(web::instance()->model);
 		foreach($this->menu as $menu => $submenu) {
 			if(!$this->selected_menu) $this->selected_menu = $menu;
@@ -77,15 +77,15 @@ class AdministrationController extends ApplicationController {
 
 			if(is_numeric($name)) $name = $data;
 
-			if(is_array($data) && in_array("items", array_keys($data), true))   // Si está bien definido
-			{
+			if(is_array($data) && in_array("items", array_keys($data), true))  { // Si está bien definido
+
 				$menu[$name]["link"] = $data["link"];
 				$menu[$name]["target"] = $data["target"];
 				$menu[$name]["params"] = $data["params"];
 				$menu[$name]["items"] = $this->preprocessMenu($data["items"], false);
-			}
-			elseif(is_array($data)) // Si no está bien definido
-			{
+
+			} elseif(is_array($data)) {// Si no está bien definido
+
 				$menu[$name]["link"] = "";
 				$menu[$name]["items"] = $this->preprocessMenu($data, false);
 			} else {	// Si es el final
@@ -102,11 +102,16 @@ class AdministrationController extends ApplicationController {
 			}
 
 			foreach($menu as $name => $data) {
-				if($data['link']  == $action) {
+
+				if($data['link'] && ($data['link']  == $action || "/admin/".$data['link'] == substr(
+																				"/".web::instance()->controller."/".
+																				(web::instance()->model ? web::instance()->model."/" : "").
+																				"list".web::params(null, false), 0, strlen("/admin/".$data['link'])))) {
 					if($root) return $name;
 					return True;
 				}
-				if(array_key_exists('items', $data) && $this->getSelectedMenu($action, $data['items'])) return $name;
+				if(array_key_exists('items', $data) && count($data['items']))
+					if(array_key_exists('items', $data) && $this->getSelectedMenu($action, $data['items'])) return $name;
 			}
 			return False;
 	}
@@ -122,6 +127,7 @@ class AdministrationController extends ApplicationController {
 			$controller_name = ucfirst($model."Controller");
 			$admin_action = "admin$action";
 
+			web::instance()->loadModel($model);
 			if(method_exists($model, $admin_action)) {
 				$model = new $model();
 				$this->view->content = $model->$admin_action($params[0]);
@@ -141,7 +147,7 @@ class AdministrationController extends ApplicationController {
 //							$this->view->content = $list->toHtml();
 							$instance = new $model();
 //							$grid = new html_grid($instance);
-							$this->view->content = "<br>".html_base_grid::toHtml($instance, null, $instance->grid_columns);
+							$this->view->content = "<br/>".html_base_grid::toHtml($instance, null, $instance->grid_columns);
 							break;
 
 						case "Edit":
@@ -159,14 +165,14 @@ class AdministrationController extends ApplicationController {
 								 $model->delete();
 							}
 //							web::instance()->redirect('/admin/'.get_class($model));
-							web::instance()->location('/admin/'.get_class($model)."/list".web::params());
+							web::instance()->location('/admin/'.get_class($model)."/list".web::params(null, false));
 							exit;
 
 						case "Save":
 							$model = new $model();
 							$model->saveFromRequest();
 //							web::instance()->redirect('/admin/'.get_class($model));
-							web::instance()->location('/admin/'.get_class($model)."/list".web::params());
+							web::instance()->location('/admin/'.get_class($model)."/list".web::params(null, false));
 //							echo "{ success : true}";
 							exit;
 					}

@@ -47,6 +47,24 @@ class ApplicationController {
 
 	public function render($view) {
 		echo $this->renderHtml($view);
+/*
+		$config = array('indent' => TRUE,
+                'output-xhtml' => TRUE,
+                'wrap' => 300,
+                'indent-spaces' => 8,
+                'output-encoding' => 'raw',
+              'input-encoding' => 'utf-8',
+               'char-encoding' => 'raw',
+               'markup' => true,
+               'output-xhtml' => true,
+//				'accessibility-check' => 2,
+
+                );
+
+		$tidy = tidy_parse_string($html, $config);
+		tidy_clean_repair($tidy);
+		echo $tidy;
+*/
 
 	}
 
