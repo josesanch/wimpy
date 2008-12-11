@@ -128,7 +128,7 @@ class ActiveRecord {
 		$values = array();
 		foreach($this->row_data_l10n as $lang => $rows) {
 			foreach($rows as $field => $data) {
-				$values[]= "('$lang', '".get_class($this)."', '$field', '".mysql_real_escape_string($data)."', '".mysql_escape_string($id)."')";
+				$values[]= "('$lang', '".get_class($this)."', '$field', '".mysql_escape_string($data)."', '".mysql_escape_string($id)."')";
 			}
 		}
 		$sql .= implode(",", $values);
