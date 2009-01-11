@@ -192,4 +192,9 @@ function tripoli() {
 <link href="/resources/css/tripoli.simple.css" type="text/css" rel="stylesheet">
 <!--[if IE]><link rel="stylesheet" type="text/css" href="/resources/css/tripoli.simple.ie.css"><![endif]-->';
 }
+
+function sanitize($input) {
+	return htmlentities(strip_tags( $input ));
+}
+
 ?>

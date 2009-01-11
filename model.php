@@ -15,6 +15,7 @@ class Model extends ActiveRecord {
 	protected $image_label;
 	protected $has_files = False;
 	protected $has_images = False;
+	protected static $table_created = false;
 
 	public function __construct($createdFromSql = False)
 	{
@@ -29,10 +30,9 @@ class Model extends ActiveRecord {
 	}
 
 	private function createTableIfNecessary() {
-		static $table_created = False;
-		if(!$table_created) {
-			web::instance()->database->createTable($this->database_table, ActiveRecord::$metadata[$this->database_table]["fields"]);
-			$table_created = True;
+		if(!ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()]) {
+			web::instance()->database->createTable($this->getDatabaseTable(), ActiveRecord::$metadata	[$this->getDatabaseTable()]["fields"]);
+			ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] = true;
 		}
 	}
 

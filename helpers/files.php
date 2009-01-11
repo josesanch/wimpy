@@ -175,10 +175,12 @@ class helpers_files extends ActiveRecord {
 				    $image->setImageFormat("png");
 					$image->thumbnailImage($size[0], $size[1], true);
 			    	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[0], $xcenter, $ycenter, $operation);
+	    	    	if(!is_dir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/")) mkdir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/", 0744, true);
 					$image->writeImage($_SERVER["DOCUMENT_ROOT"].$this->cached_image_url.".png");
 					$image->clear();
 					return $this->cached_image_url.".png";
 				} catch(Exception $e) {
+//					var_dump($e);
 					return '/resources/admin/images/pdf.gif';
 				}
 

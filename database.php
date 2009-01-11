@@ -1,6 +1,6 @@
 <?
 
-class Database extends PDO 
+class Database extends PDO
 {
 
 	public function __construct($database) {
@@ -9,6 +9,7 @@ class Database extends PDO
 
 
 	public function tableExists($table) {
+//		echo "Table exists: $table<br/>";
 		$rs = $this->query("show tables like '$table'");
 		if(!$rs) return False;
 		$value = $rs->fetch();
@@ -25,6 +26,7 @@ class Database extends PDO
 		if($this->tableExists($table)) return;
 		$primary_keys = array();
 		$sql_lines = array();
+//		echo "sadfasf";
 		if($this->getAttribute(PDO::ATTR_DRIVER_NAME) == 'mysql') {
 			$sql = "CREATE TABLE `$table` (";
 			foreach($fields as $name => $attrs) {
@@ -41,6 +43,8 @@ class Database extends PDO
 			$sql .= "PRIMARY KEY(".join(", ", $primary_keys)."))  DEFAULT CHARSET=utf8;";
 
 		}
+	//	echo $sql;
+
 		$exec = $this->exec($sql);
 		return $exec;
 	}

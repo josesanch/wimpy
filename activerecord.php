@@ -16,7 +16,7 @@ class ActiveRecord {
 	public $page_size = null;
 	public $total_results;
 	private $results;
-	static $metadata = array();
+	protected static $metadata = array();
 	protected $row_data;
 	protected $row_data_l10n;
 
@@ -185,6 +185,7 @@ class ActiveRecord {
 				}
 				$this->total_results = $total_result[0];
 			}
+			$statement->fetchAll();	// Para soportar unbuferred queryes
 			$sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
 		}
 //		var_dump($sql);
