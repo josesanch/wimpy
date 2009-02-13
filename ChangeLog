@@ -1,3 +1,7 @@
+2009-02-12 José Sánchez Moreno <jose@o2w.es>
+
+	* Implement a controller that manage the languages, for instance /en/controller/action
+
 2008-09-09 José Sánchez Moreno <jose@o2w.es>
 
 	* l10n returns default languaje string if the string is blank in the current languaje.

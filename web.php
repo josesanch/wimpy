@@ -74,6 +74,11 @@ class Web {
 	private function parseInfo($uri) {
 		$url = parse_url($uri);
 		$uri = explode("/", substr($url["path"], 1));
+		if(in_array($uri[0],  $this->l10n->getLanguages())) {
+			$lang = array_shift($uri);
+			$this->l10n->setLanguage($lang);
+		}
+
 		$uri[0] = $uri[0] ? strtolower($uri[0]) : "index";	// Controlador por defecto indexController.
 		$uri[1] = isset($uri[1]) && $uri[1] != "" ? strtolower($uri[1]) : "index";  // Método por defecto index.
 		$this->controller = strtolower(array_shift($uri));
@@ -158,7 +163,6 @@ class Web {
 
 
 	private function getController($view = null, $admin = false) {
-
 		// Si estamos en administración.
 		if($this->controller == 'admin' && $this->action  == 'index') {
 			$this->action = array_shift($this->params);

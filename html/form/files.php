@@ -54,6 +54,8 @@ class html_form_files extends html_form_input {
 					fields: [
 						'id', 'nombre', 'extension', 'url'
 					]
+
+
 			});
 
 			function files_getDialog_$field() {
@@ -127,7 +129,62 @@ class html_form_files extends html_form_input {
 				plugins		: [
 				//	            new Ext.DataView.DragSelector({dragSafe:true}),
 								new Ext.DataView.Reorder(),
-								new Ext.DataView.LabelEditor({dataIndex: 'nombre'})
+								new Ext.DataView.LabelEditor({
+																dataIndex: 'nombre',
+/*
+																listeners: {
+																				'onSave':
+																						function(editor, value, oldvalue) {
+																							console.log('beforecomplete');
+																							console.log(editor, value, oldvalue);
+																							// Always cancel edit event to make database changes first
+																							// and then at callback success make the record changes
+																							editor.cancelEdit();
+																							// !!!!! cancelEdit() do not work,
+																							// make a infinite beforecomplete loop !!!!!!
+
+																							var newValue = value + this.originalFile.extension;
+																							if (oldvalue != newValue) { // Make database changes
+																								alert('/ajax/$model_name/files/rename/' + this.galleryLabel)
+																								indicatorOn();
+
+																								Ext.Ajax.request({
+																									method: 'post',
+																									url: '/ajax/$model_name/files/rename/' + this.galleryLabel + '&s=images',
+
+																									params: {
+																										oldname: oldvalue,
+																										newname: newValue,
+																									},
+
+																									success: function(result, b) {
+																										indicatorOff();
+																										var response = Ext.util.JSON.decode(result.responseText);
+																										if (response.success) {
+																											// All OK Set record change
+																											this.setValue(newValue); // do not work
+																											this.activeRecord.set('name', newValue); // do not work
+																											// Other posibility is to reload the store
+																											// but make another database request
+																											// this.reset();
+																											// this.view.store.reload();
+																										} else
+																											Ext.MessageBox.alert('Error', response.message);
+																									},
+
+																									failure: function() {
+																										indicatorOff();
+																										Ext.MessageBox.alert('Error', 'Lost server connection.');
+																									},
+																								 	scope: this
+																								});
+																							}
+																						}
+
+																			}
+*/
+																	}),
+
 							]
 				});
 
