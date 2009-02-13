@@ -180,8 +180,8 @@ class helpers_files extends ActiveRecord {
 					$image->clear();
 					return $this->cached_image_url.".png";
 				} catch(Exception $e) {
-//					var_dump($e);
-					return '/resources/admin/images/pdf.gif';
+					var_dump($e);
+//					return '/resources/admin/images/pdf.gif';
 				}
 
 			} else {
