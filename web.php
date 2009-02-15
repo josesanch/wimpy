@@ -135,6 +135,8 @@ class Web {
 		}
 
 		$this->uri = $uri;
+
+		$this->DealSpecialCases();
 		$this->parseInfo($uri);
 
 		switch ($this->controller) {
@@ -311,5 +313,13 @@ class Web {
 		return web::instance()->database;
 	}
 
+	private function DealSpecialCases() {
+		switch ($this->uri) {
+			case '/robots.txt':
+				header("Content-type: text/plain");
+				echo "User-Agent: *\nAllow: /";
+			exit;
+		}
+	}
 }
 ?>
