@@ -317,7 +317,7 @@ class Web {
 		switch ($this->uri) {
 			case '/robots.txt':
 				header("Content-type: text/plain");
-				echo "User-Agent: *\nAllow: /";
+				echo "User-Agent: *\nAllow: /\n";
 			exit;
 		}
 	}
