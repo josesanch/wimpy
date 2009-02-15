@@ -4,7 +4,13 @@ class Database extends PDO
 {
 
 	public function __construct($database) {
+		try {
 		parent::__construct($database[0], isset($database[1]) ? $database[1] : null, isset($database[2]) ? $database[2] : null, isset($database[3]) ? $database[3] : null);
+		} catch(Exception $e) {
+			echo $e->getMessage();
+			exit;
+		}
+
 	}
 
 

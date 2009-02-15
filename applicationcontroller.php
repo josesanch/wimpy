@@ -1,4 +1,4 @@
-<?
+<?php
 
 class ApplicationController {
 	public $view;
@@ -72,5 +72,14 @@ class ApplicationController {
 	protected function getLayoutFile() 		{ return $this->application_path."views/layouts/".$this->layout.".html"; }
 	protected function getViewFile($view) 	{ return $this->application_path."views/".$this->getControllerName()."/$view.html"; }
 	public function getControllerName() 	{ return strtolower(substr(get_class($this), 0, -10)); }
+
+	public function afterFilter($controller, $action) {
+		if(get_class($this) == 'ErrorController') {
+			web::instance()->error404();
+		}
+
+	}
+
+
 }
 ?>

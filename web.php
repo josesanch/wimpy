@@ -189,7 +189,6 @@ class Web {
 		if(method_exists($controller, "beforeFilter")) {
 			call_user_method_array("beforeFilter", $controller, $this->params);
 		}
-
 		return array($controller, $action);
 	}
 
@@ -204,8 +203,13 @@ class Web {
 		if($render) {
 			$controller->render($this->action);
 		} else {
-			return $controller->renderHtml($this->action);
+			$value = $controller->renderHtml($this->action);
 		}
+		if(method_exists($controller, "afterFilter")) {
+			call_user_method_array("afterFilter", $controller, $this->params);
+		}
+		return $value;
+
 	}
 
 	private	function callAdminDispatcher($render = true) {
@@ -320,6 +324,24 @@ class Web {
 				echo "User-Agent: *\nAllow: /\n";
 			exit;
 		}
+	}
+
+	public function error404() {
+		header("HTTP/1.0 404 Not Found");
+		header("Status: 404 Not Found");
+
+		if(method_exists ("ErrorController", "notfoundAction")) {
+			$controller = new ErrorController();
+			$controller->setApplicationPath($this->application_path);
+			$controller->view->controller = $this->controller;
+			$controller->view->action = $this->action;
+			call_user_method_array("notfoundAction", $controller, $this->params);
+			echo $controller->renderHtml("notfound");
+		} else {
+			echo "<h1>Error 404</h1>";
+		}
+
+		exit;
 	}
 }
 ?>
