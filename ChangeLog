@@ -1,3 +1,8 @@
+2009-02-15 José Sánchez Moreno <jose@o2w.es>
+
+	* Implements robots.txt
+	* And capture errors 404
+
 2009-02-12 José Sánchez Moreno <jose@o2w.es>
 
 	* Implement a controller that manage the languages, for instance /en/controller/action
