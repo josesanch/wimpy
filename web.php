@@ -338,7 +338,8 @@ class Web {
 			call_user_method_array("notfoundAction", $controller, $this->params);
 			echo $controller->renderHtml("notfound");
 		} else {
-			echo "<h1>Error 404</h1>";
+//			echo "<h1>Error 404</h1>";
+			$this->redirect("/");
 		}
 
 		exit;

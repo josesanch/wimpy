@@ -2,8 +2,8 @@
 
 class ErrorController extends ApplicationController
 {
-    public function errorAction()
-    {
+	public function errorAction($controller, $action, $params) {
+
     	echo "Error";
     	exit;
     }

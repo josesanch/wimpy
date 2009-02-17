@@ -129,8 +129,39 @@ class html_form_files extends html_form_input {
 				plugins		: [
 				//	            new Ext.DataView.DragSelector({dragSafe:true}),
 								new Ext.DataView.Reorder(),
-								new Ext.DataView.LabelEditor({
-																dataIndex: 'nombre',
+								new Ext.DataView.LabelEditor({ dataIndex: 'nombre' })
+							  ]
+				});
+
+			var files_images_panel_$field = new Ext.Panel({
+				id:'images-view-$field',
+				cls: 'files_images_panel',
+				frame: true,
+				width: '100%',
+				autoHeight:true,
+				collapsible:true,
+				layout:'fit',
+				title:'Imágenes asociadas a la ficha',
+				items : [ files_view_$field ]
+			});
+
+			files_images_panel_$field.addButton(reorderUp_$field, { tooltip : 'Reordenar la imagen seleccionada'});
+			files_images_panel_$field.addButton(reorderDown_$field, { tooltip : 'Reordenar la imagen seleccionada'});
+
+			files_images_panel_$field.addButton(upload_button_$field);
+			files_images_panel_$field.addButton(delete_image_button_$field);
+			files_images_panel_$field.render('div_files_panel_$field');
+//		    form.add(files_images_panel_$field);
+		</script>
+";
+
+
+		return $this->prepend."$str";
+	}
+}
+
+
+
 /*
 																listeners: {
 																				'onSave':
@@ -183,35 +214,4 @@ class html_form_files extends html_form_input {
 
 																			}
 */
-																	}),
-
-							]
-				});
-
-			var files_images_panel_$field = new Ext.Panel({
-				id:'images-view-$field',
-				cls: 'files_images_panel',
-				frame: true,
-				width: '100%',
-				autoHeight:true,
-				collapsible:true,
-				layout:'fit',
-				title:'Imágenes asociadas a la ficha',
-				items : [ files_view_$field ]
-			});
-
-			files_images_panel_$field.addButton(reorderUp_$field, { tooltip : 'Reordenar la imagen seleccionada'});
-			files_images_panel_$field.addButton(reorderDown_$field, { tooltip : 'Reordenar la imagen seleccionada'});
-
-			files_images_panel_$field.addButton(upload_button_$field);
-			files_images_panel_$field.addButton(delete_image_button_$field);
-			files_images_panel_$field.render('div_files_panel_$field');
-//		    form.add(files_images_panel_$field);
-		</script>
-";
-
-
-		return $this->prepend."$str";
-	}
-}
 ?>
