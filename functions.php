@@ -18,7 +18,8 @@ function __autoload($class)
 		echo $file."<br>";
 		if(file_exists($file))	{
 			include_once($file);
-#			log::debug("Autoloading: $file");
+			echo("Autoloading: $file");
+
 			break;
 		}
 	}
