@@ -15,10 +15,10 @@ function __autoload($class)
 	);
 
 	foreach($dirs as $file)	{
-#		echo $file."<br>";
+		echo $file."<br>".file_exists($file);
 		if(file_exists($file))	{
 			include_once($file);
-			echo("Autoloading: $file");
+#			echo("Autoloading: $file");
 
 			break;
 		}
