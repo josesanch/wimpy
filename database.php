@@ -23,11 +23,11 @@ class Database extends PDO
 		return False;
 
 	}
-
+/*
 	public function sql($sql) {
 
 	}
-
+*/
 	public function createTable($table, $fields) {
 		if($this->tableExists($table)) return;
 		$primary_keys = array();

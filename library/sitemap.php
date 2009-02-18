@@ -10,13 +10,28 @@ class sitemap {
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">';
 
+
+	private $multilang = false;
 	public function __construct() {
 		$this->urls = array();
 		$this->add("/");
 	}
 
+	public function setMultilang($state) {
+		$this->multilang = $state;
+
+	}
 	public function add($url, $priority = 1.0, $frequency = "daily") {
-		$this->urls[]= array($url, $priority, $frequency);
+		if($this->multilang) {
+			foreach(web::instance()->getLanguages() as $lang) {
+				if($lang == web::instance()->l10n->getDefaultLanguage()) $lang = "";
+				else $lang = "/$lang";
+				$this->urls[]= array($lang.$url, $priority, $frequency);
+			}
+		} else {
+			$this->urls[]= array($url, $priority, $frequency);
+		}
+
 		return $this;
 	}
 
