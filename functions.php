@@ -15,7 +15,7 @@ function __autoload($class)
 	);
 
 	foreach($dirs as $file)	{
-#		echo $file."<br>";
+		echo $file."<br>";
 		if(file_exists($file))	{
 			include_once($file);
 #			log::debug("Autoloading: $file");
