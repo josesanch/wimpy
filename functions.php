@@ -6,7 +6,8 @@ function __autoload($class)
 	$file = str_replace("_", "/", strtolower($class)).".php";
 //	$file = strtolower($class).".php";
 	$dirs = array(
-		web::instance()->getApplicationPath()."models/$class.php",
+		web::instance()->getApplicationPath()."models/$class.php", 
+		web::instance()->getApplicationPath()."controllers/$class.php",
 //		$_SERVER["DOCUMENT_ROOT"]."/inc/$class.php",
 		dirname(__FILE__)."/".$file,
 		dirname(__FILE__)."/components/".$file,
