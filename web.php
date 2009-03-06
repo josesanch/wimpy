@@ -1,5 +1,5 @@
 <?
-include_once(dirname(__FILE__)."/functions.php");
+require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
 require dirname(__FILE__)."/database.php";
 require dirname(__FILE__)."/l10n.php";
@@ -37,7 +37,6 @@ class Web {
 		}
 //		if($languages) $this->setLanguages($languages);
 		if($database) $this->setDatabase($database);
-
 		$this->application_path =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
 	}
 

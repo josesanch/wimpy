@@ -5,9 +5,13 @@ function __autoload($class)
 
 	$file = str_replace("_", "/", strtolower($class)).".php";
 //	$file = strtolower($class).".php";
+//
+
+//	$application_path = web::instance()->getApplicationPath();
+	$application_path = $_SERVER["DOCUMENT_ROOT"]."/../application/";
 	$dirs = array(
-		web::instance()->getApplicationPath()."models/$class.php", 
-		web::instance()->getApplicationPath()."controllers/$class.php",
+		$application_path."models/$class.php",
+		$application_path."controllers/$class.php",
 //		$_SERVER["DOCUMENT_ROOT"]."/inc/$class.php",
 		dirname(__FILE__)."/".$file,
 		dirname(__FILE__)."/components/".$file,
@@ -138,13 +142,19 @@ function create_images_and_files_tables($database) {
 }
 
 function convert_to_url($url) {
-	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_');
+	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
 	return str_replace(' ', '-', strtr(strtolower($url), $arr));
 }
 
 function convert_from_url($url) {
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u');
 	return str_replace('_', ' ', str_replace('-', ' ', strtr(strtolower($url), $arr)));
+}
+
+function url_to_sql($url) {
+	$arr = array('_' => ' ', '-' => ' ', 'n' => '[nñ]');
+
+	return str_replace(array_keys($arr), array_values($arr), strtolower($url));
 }
 
 function notildes($txt) {
@@ -196,6 +206,11 @@ function tripoli() {
 
 function sanitize($input) {
 	return htmlentities(strip_tags( $input ));
+}
+
+function date_to_sql($date) {
+	list($day, $month, $year) = split('[/.-]', $date);
+	return "$year-$month-$day";
 }
 
 ?>

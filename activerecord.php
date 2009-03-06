@@ -22,7 +22,7 @@ class ActiveRecord {
 
 	public function __construct() {
 		if(!$this->database_table) $this->database_table = strtolower(get_class($this));
-		$this->database = web::instance()->database;
+		$this->database = web::database();
 		$this->readMetadata();
 		$this->setWherePK();
 	}
@@ -190,6 +190,7 @@ class ActiveRecord {
 		}
 //		var_dump($sql);
 //		$statement =  $this->database->query($sql, PDO::FETCH_CLASS, get_class($this), array(True));
+
 		$statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
 		if(!$statement) {
