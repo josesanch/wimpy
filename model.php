@@ -128,7 +128,8 @@ class Model extends ActiveRecord {
 
 //		log::to_file("Upload $field, tipo: $type");
 //		log::to_file("vardump ".var_export($_FILES, true));
-		if(is_uploaded_file($file['tmp_name'])) {
+		if(is_uploaded_file($file['tmp_name']) && $this->checkFileSafety($file)) {
+
 //			log::to_file("El fichero existe ".$file['tmp_name']);
 			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 			$primary_key = array_shift($this->getPrimaryKeys());
@@ -154,6 +155,35 @@ class Model extends ActiveRecord {
 		}
 //		log::to_file("no existe fichero ".$file['tmp_name']);
 		return false;
+	}
+
+	private function checkFileSafety($file) {
+		$safeExtensions = array(
+		  'html',
+		  'htm',
+		  'gif',
+		  'jpg',
+		  'jpeg',
+		  'png',
+		  'txt',
+		  'avi',
+		  'mp3',
+		  'wav',
+		  'pdf',
+		  'doc',
+		  'exe',
+		  'zip',
+		  'rar'
+		);
+
+		$path_parts = pathinfo($file['name']);
+		$extension = $path_parts['extension'];
+
+		if(!in_array($extension, $safeExtensions)) {
+			unlink($file['tmp_name']);
+			return false;
+		}
+		return true;
 	}
 
 	public function uploadFile($field = '') {

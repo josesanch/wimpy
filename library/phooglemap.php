@@ -268,8 +268,7 @@ function centerMap($lat,$long){
 			    var map;
 			    function initialize_GoogleMAPS() {
 			    map = new GMap2(document.getElementById(\"map\"));
-	    		if (GBrowserIsCompatible()) {\n
-//    		  		map = new GMap2(document.getElementById(\"map\"));\n";
+	    		if (GBrowserIsCompatible()) {\n";
       	if (empty($this->centerMap)){
              $str.= "map.setCenter(new GPoint(".$this->validPoints[0]['long'].",".$this->validPoints[0]['lat']."), ".$this->zoomLevel.");\n";
 		}else{
