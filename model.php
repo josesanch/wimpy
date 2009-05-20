@@ -179,7 +179,7 @@ class Model extends ActiveRecord {
 		$path_parts = pathinfo($file['name']);
 		$extension = $path_parts['extension'];
 
-		if(!in_array($extension, $safeExtensions)) {
+		if(!in_array(strtolower($extension), $safeExtensions)) {
 			unlink($file['tmp_name']);
 			return false;
 		}
