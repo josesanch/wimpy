@@ -1,7 +1,7 @@
 <?
 class AdministrationController extends ApplicationController {
 	public $layout = "admin";
-	public $auth;
+
 	public $name, $menu;
 	public $color = "#4275bb";
 	public $background_color = "#FFFFFF";
@@ -24,26 +24,18 @@ class AdministrationController extends ApplicationController {
 	public $css = array();
 	private $selected_menu;
 
-	public $components = array("auth");
+	protected $auth;
+	protected $components = array("auth");
 
 	public function beforeFilter() {
-
 		if(web::instance()->isInProduction() && !$this->auth->isLogged())	{
 			$this->auth->requestAuth();
 			if(!$this->auth->isLogged()) exit;
 		}
 	}
 
-	public function __construct() {
-		parent::__construct();
-		$this->view->data = $this;
-		$this->menu = $this->preprocessMenu($this->menu);
-		$this->view->menu = $this->getMenu();
-	}
-
 	public function getMenu() {
 		$str = "";
-//var_dump($this->menu);
 		$this->selected_menu = $this->getSelectedMenu(web::instance()->model);
 		foreach($this->menu as $menu => $submenu) {
 			if(!$this->selected_menu) $this->selected_menu = $menu;
@@ -117,6 +109,9 @@ class AdministrationController extends ApplicationController {
 	}
 
 	public function __call($method, $params) {
+		$this->view->data = $this;
+		$this->menu = $this->preprocessMenu($this->menu);
+		$this->view->menu = $this->getMenu();
 
 		foreach(array("List", "Edit", "Save", 'Delete') as $action) {
 			if($pos = strrpos($method, $action)) break;
@@ -143,17 +138,13 @@ class AdministrationController extends ApplicationController {
 
 					switch($action) {
 						case "List":
-//							$list = new html_extjs_grid(new $model());
-//							$this->view->content = $list->toHtml();
 							$instance = new $model();
-//							$grid = new html_grid($instance);
 							$this->view->content = "<br/>".html_base_grid::toHtml($instance, null, $instance->grid_columns);
 							break;
 
 						case "Edit":
 							$model = new $model();
 							if(isset($params[0])) $model->select($params[0]);
-//							$edit = new html_extjs_form($model);
 							$edit = new html_autoform($model, $this->css);
 							$this->view->content = "<br>".$edit->toHtml();
 							break;
@@ -164,16 +155,13 @@ class AdministrationController extends ApplicationController {
 								 $model->select($params[0]);
 								 $model->delete();
 							}
-//							web::instance()->redirect('/admin/'.get_class($model));
 							web::instance()->location('/admin/'.get_class($model)."/list".web::params(null, false));
 							exit;
 
 						case "Save":
 							$model = new $model();
 							$model->saveFromRequest();
-//							web::instance()->redirect('/admin/'.get_class($model));
 							web::instance()->location('/admin/'.get_class($model)."/list".web::params(null, false));
-//							echo "{ success : true}";
 							exit;
 					}
 				}

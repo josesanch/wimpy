@@ -12,6 +12,7 @@ function __autoload($class)
 	$dirs = array(
 		$application_path."models/$class.php",
 		$application_path."controllers/$class.php",
+		$application_path."components/$class.php",
 //		$_SERVER["DOCUMENT_ROOT"]."/inc/$class.php",
 		dirname(__FILE__)."/".$file,
 		dirname(__FILE__)."/components/".$file,

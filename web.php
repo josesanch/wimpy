@@ -261,7 +261,7 @@ class Web {
 
 
 	public function setLanguage($lang) { $this->l10n->setLanguage($lang); }
-	public function getLanguage($lang) { return $this->l10n->getLanguage(); }
+	public function getLanguage() { return $this->l10n->getLanguage(); }
 
 	public function setDefaultLanguage($lang) {
 		$this->l10n->setDefaultLanguage($lang);

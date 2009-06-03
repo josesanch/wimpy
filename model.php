@@ -173,7 +173,12 @@ class Model extends ActiveRecord {
 		  'doc',
 		  'exe',
 		  'zip',
-		  'rar'
+		  'rar',
+		  'ppt',
+		  'pps',
+		  'docx',
+		  'xlsx',
+		  'pptx'
 		);
 
 		$path_parts = pathinfo($file['name']);

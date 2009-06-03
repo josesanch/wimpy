@@ -6,7 +6,7 @@ class html_base_grid extends html_object {
 
 //	}
 
-	public function toHtml($model, $sql = null, $columns = null) {
+	public function toHtml($model, $sql = null, $columns = null, $order = null) {
 		$form = new html_base_form(get_class($model));
 		$form->onsubmit('return do_search(this);');
 
@@ -40,14 +40,16 @@ class html_base_grid extends html_object {
 			}
 
 		}
+		if($order) $order = "order: $order";
 		if(web::request("order")) {
 			$order = "order: ".web::request("order");
 			$desc = web::request("desc") == 'true' ? "false" : "true";
 			if(web::request("desc") == 'true') $order .= " desc";
 		} else {
 			$desc = "false";
-			$order = "order: id";
 		}
+
+		if(!$order)	$order = "order: id";
 		$results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
 
 		$form->add(js_once('jquery')."
