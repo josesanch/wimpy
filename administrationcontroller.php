@@ -28,15 +28,16 @@ class AdministrationController extends ApplicationController {
 	protected $components = array("auth");
 
 	public function beforeFilter() {
+
 		if(web::instance()->isInProduction() && !$this->auth->isLogged())	{
 			$this->auth->requestAuth();
 			if(!$this->auth->isLogged()) exit;
 		}
+	}
+
+	public function __construct() {
+		parent::__construct();
 		$this->view->data = $this;
-		$this->menu = $this->preprocessMenu($this->menu);
-		$this->view->menu = $this->getMenu();
-
-
 	}
 
 	public function getMenu() {
@@ -48,7 +49,9 @@ class AdministrationController extends ApplicationController {
 			$item = array_shift(array_values($submenu['items']));
 			$href = "href='/admin/".$item['link']."'";
 			$active = $this->selected_menu == $menu ? "class='active'" : "";
-			$str .= "<li $active><a $href>$menu</a></li>\n";
+			$str .= "<li $active>
+						<a $href>$menu</a>
+					</li>\n";
 		}
 		return $str;
 	}
@@ -56,12 +59,14 @@ class AdministrationController extends ApplicationController {
 	public function getSubMenu() {
 		$subitems = array();
 		$action = web::instance()->model;
-
 		foreach($this->menu[$this->selected_menu]['items'] as $name => $submenu) {
 			$active = $action == $submenu['link'] ? "class='active'" : "";
 
 			$href = "href='/admin/".$submenu['link']."'";
-			$subitems[]= "<li $active><a $href>".ucfirst($name)."</a></li>";
+			$subitems[]= "
+						<li $active>
+								<a $href>".ucfirst($name)."</a>
+						</li>";
 		}
 		return implode("<span class='separador_submenu'> | </span>", $subitems);
 
@@ -114,7 +119,6 @@ class AdministrationController extends ApplicationController {
 	}
 
 	public function __call($method, $params) {
-		$this->view->data = $this;
 		$this->menu = $this->preprocessMenu($this->menu);
 		$this->view->menu = $this->getMenu();
 

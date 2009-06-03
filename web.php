@@ -155,10 +155,8 @@ class Web {
 					$controller->getAction($this->action, $this->params);
 				}
 			break;
-
 			default:
 				return $this->callDefaultDispatcher($render, $view);
-
 		}
 	}
 
