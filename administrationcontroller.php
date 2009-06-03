@@ -32,6 +32,11 @@ class AdministrationController extends ApplicationController {
 			$this->auth->requestAuth();
 			if(!$this->auth->isLogged()) exit;
 		}
+		$this->view->data = $this;
+		$this->menu = $this->preprocessMenu($this->menu);
+		$this->view->menu = $this->getMenu();
+
+
 	}
 
 	public function getMenu() {
