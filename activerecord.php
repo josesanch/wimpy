@@ -139,6 +139,7 @@ class ActiveRecord {
 		$this->select_columns = $this->select_order = $this->select_limit = $this->select_conditions = '';
 		$args = func_get_args();
 
+		// Toma el primer elemento como where
 		if(count($args) > 0 && !in_array(array_shift(explode(":", $args[0])), array("order", "limit", "columns"))) {
 			$what = array_shift($args);
 		}
@@ -167,6 +168,10 @@ class ActiveRecord {
 					case 'columns':
 						$this->select_columns = $arguments;
 					break;
+					case 'where':
+						$this->select_conditions = $arguments;
+					break;
+				}
 				}
 			}
 		}

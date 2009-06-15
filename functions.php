@@ -144,7 +144,8 @@ function create_images_and_files_tables($database) {
 
 function convert_to_url($url) {
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
-	return str_replace(' ', '-', strtr(strtolower($url), $arr));
+	$str=   str_replace(' ', '-', strtr(strtolower($url), $arr));
+	return implode("/", array_map("urlencode", explode("/", $str)));
 }
 
 function convert_from_url($url) {
