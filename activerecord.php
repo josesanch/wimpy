@@ -172,7 +172,6 @@ class ActiveRecord {
 						$this->select_conditions = $arguments;
 					break;
 				}
-				}
 			}
 		}
 
