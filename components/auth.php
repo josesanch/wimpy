@@ -34,6 +34,7 @@ class auth {
 	}
 
 	public function logout() {
+		$_SESSION['logout'] = true;
 	 	unset($_SESSION["auth_session_".$this->table]);
 	}
 
@@ -42,16 +43,16 @@ class auth {
 	}
 
 	public function requestAuth() {
-   		if(isset($_SERVER['PHP_AUTH_USER']) && $force == false && !$_SESSION["auth_module"]["logout"]) {
-    			$usuario = mysql_escape_string($_SERVER['PHP_AUTH_USER']);
-    			$clave = mysql_escape_string($_SERVER['PHP_AUTH_PW']);
-    			if($this->login($usuario, $clave) == true)  { return true; }
-    		}
-//    		$_SESSION["auth_module"]["logout"]  = false;
-    		$content = ob_get_clean();
-			header('WWW-Authenticate: Basic realm="Autentificacin"');
-    		header('HTTP/1.0 401 Unauthorized');
 
+   		if(isset($_SERVER['PHP_AUTH_USER']) && $force == false && !$_SESSION["auth_module"]["logout"] && !$_SESSION['logout']) {
+			$usuario = mysql_escape_string($_SERVER['PHP_AUTH_USER']);
+			$clave = mysql_escape_string($_SERVER['PHP_AUTH_PW']);
+			if($this->login($usuario, $clave) == true)  { return true; unset($_SESSION['logout']);}
+   		}
+
+   		$content = ob_get_clean();
+		header('WWW-Authenticate: Basic realm="Zona de acceso restringido"');
+   		header('HTTP/1.0 401 Unauthorized');
 	}
 
 
