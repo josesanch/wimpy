@@ -273,6 +273,7 @@ class ActiveRecord {
 					if(in_array("l10n", $attrs)) $field["l10n"] =  true;
 					if(in_array("html", $attrs)) $field["html"] =  true;
 					if(in_array("auto_increment", $attrs) || in_array("autoincrement", $attrs)) $field["autoincrement"] = true;
+					if(in_array("autocomplete", $attrs) || in_array("autocomplete", $attrs)) $field["autocomplete"] = true;
 					if($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
 						ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;
 
@@ -433,7 +434,17 @@ class ActiveRecord {
 						break;
 
 					default:
-						$this->set($field, $_REQUEST[$field]);
+						if($attrs['autocomplete'] && !$_REQUEST[$field]) {	// We've to insert the new value in the related table.
+							$model_name = $attrs["belongs_to"];
+							$model = new $model_name;
+							$name = $model->getTitleField();
+							$primary_key = array_shift($model->getPrimaryKeys());
+							$model->$name = $_REQUEST[$field."_autocomplete"];
+							$model->save();
+							$this->set($field, $model->$primary_key);
+						} else {
+							$this->set($field, $_REQUEST[$field]);
+						}
 						foreach(l10n::instance()->getNotDefaultLanguages() as $lang) {
 //							echo $field."|$lang";
 							if($_REQUEST[$field."|$lang"]) $this->set($field, $_REQUEST[$field."|$lang"], $lang);

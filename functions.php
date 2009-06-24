@@ -48,10 +48,11 @@ function js_once($module) {
 function css($module) {
 	$file = str_replace("::", "/", $module).".css";
 	$directories = array("/css/", "/resources/css/", "/resources/js/", "/resources/");
-	foreach($directories as $dir)
-		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file) )
+	foreach($directories as $dir) {
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file)) {
 			return "<link href=\"$dir$file\" rel=\"stylesheet\" type=\"text/css\" />";
-//			return "<style type=\"text/css\" media=\"screen\">@import \"$dir$file\"; </style>";
+		}
+	}
 }
 
 function css_once($module) {

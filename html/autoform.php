@@ -14,9 +14,16 @@ class html_autoform extends html_form {
 	}
 
 	private function construct_head() {
-
+		$this->add("\n".
+					js_once("jquery/autocomplete/jquery.bgiframe.min")."\n".
+					js_once("jquery/autocomplete/jquery.ajaxQueue")."\n".
+					js_once("jquery/autocomplete/thickbox-compressed")."\n".
+					js_once("jquery/autocomplete")."\n".
+					css_once("jquery/autocomplete/autocomplete")."\n".
+					css_once("jquery/autocomplete/thickbox")."\n"
+					);
 		$this->add("
-			<fieldset style='width: 70%; margin: auto; ' class='admin_form'>
+				<fieldset style='width: 70%; margin: auto; ' class='admin_form'>
 				<legend>".get_class($this->model)."</legend>
 			");
 

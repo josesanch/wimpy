@@ -108,6 +108,16 @@ class Model extends ActiveRecord {
 		exit;
 	}
 
+	public function autocompleteAjax($valor) {
+		$q = strtolower($_GET["q"]);
+		$primary_key = array_shift($this->getPrimaryKeys());
+		$name = $this->getTitleField();
+		$results = $this->select("columns: $primary_key, $name", "where: $name like '%$q%'", "order: $name");
+		foreach($results as $row) {
+			echo $row->$name."|".$row->$primary_key."\n";
+		}
+		exit;
+	}
 
 	public function saveImagesAjax($id) {
 		$this->select($id);

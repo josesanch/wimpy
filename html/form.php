@@ -2,6 +2,7 @@
 class html_form extends html_object {
 
 	public $css = null;
+	private $js = "";
 
 	protected $attrs = array(
 		'method' => 'POST'
@@ -47,28 +48,55 @@ class html_form extends html_object {
 	public function add($object) {
 		$this->inputs[]= $object;
 	}
+
 	protected function process() {
 		foreach($this->inputs as $input) {
 			if(is_a($input, 'html_form_file')) $this->attrs['enctype'] = 'multipart/form-data';
 			$this->data .= $input;
-
 		}
+		$this->data .= "<script>
+	$(window).load(function() {
+		$this->js
+	});
+</script>";
 	}
 
 	public function auto($field, $lang = null, $tmp_upload = null) {
 
 		$attrs = $this->model->getFields($field);
-/*		echo "<pre>";
-		var_dump($attrs);
-		echo "</pre>";
-*/
+
 		if(isset($attrs["belongs_to"])) {
 				$model_name = $attrs["belongs_to"];
 				$model_item = new $model_name;
 				$name = $model_item->getTitleField();
+				if(!$attrs['autocomplete']) {
+					$input = new html_form_select($field);
+					$input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
+				} else {
+					// Autocomplete
+					$input = new html_form_input($field."_autocomplete");
+					$input_hidden = new html_form_hidden($field);
+					if($this->model->$field) {
+						$input_hidden->value($this->model->$field);
+						$model_item->select($this->model->$field);
+						$input->value($model_item->$name);
+					}
 
-				$input = new html_form_select($field);
-				$input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
+					$this->addJS("
+								$('#{$field}_autocomplete').autocomplete('/ajax/$model_name/autocomplete')
+											.result(function(event, data, formatted) {
+												if (data)
+													$('#$field').val(data[1]);
+												else
+													$('#$field').val('');
+											}).blur(function(){
+											    $(this).search();
+											});
+					");
+					$this->add($input_hidden);
+
+				}
+
 		} else {
 			switch($attrs['type']) {
 				case 'text':
@@ -83,7 +111,9 @@ class html_form extends html_object {
 				break;
 
 				case 'date':
-					$input = new html_form_date($field);
+					$input = new html_form_input($field);
+					$this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n");
+					$input->size(10);
 					if($this->model->$field != '0000-00-00' and $this->model->$field != '') $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
 
 				break;
@@ -148,6 +178,10 @@ class html_form extends html_object {
 
 	public function setModel($model) {
 		$this->model = $model;
+	}
+
+	public function addJS($str) {
+		$this->js .= $str;
 	}
 }
 ?>

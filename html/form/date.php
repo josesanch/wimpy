@@ -15,8 +15,7 @@ class html_form_date extends html_form_input {
 		$str = "<input type=button class='boton botones' value='...' onclick='testCal($numCalendar, ".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] ).")' name=botoncito>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n";
 		//$str = "<a href=javascript:testCal($numCalendar,$input);><img src=/resources/icons/calendar.png hspace=0 vspace=0 border=0></a>&nbsp;";
 		$str .= "<div id=holder_cal_$numCalendar></div>";
-		if($numCalendar == 0)
-		{
+		if($numCalendar == 0) {
 		$str .= "
 			<script type='text/javascript'>
 			var current_cal = null;
