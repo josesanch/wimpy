@@ -35,12 +35,12 @@ class html_form_files extends html_form_input {
 		$tmp_upload = $this->tmp_upload;
 
 		if($this->attrs['label']) {
-			$str .= "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>";
+			$str .= "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform' style='clear: both;'>".$this->attrs['label']."</label>";
 		}
 
 		/* CÓDIGO JAVASCRIPT */
 		$str .= "
-		<div id='div_files_panel_$field' style='margin-top: 10px; margin-bottom: 10px;'></div>
+		<div id='div_files_panel_$field' style='margin-top: 10px; margin-bottom: 10px; clear: both;'></div>
 		<script>
 		    Ext.QuickTips.init();
 			var dialog_$field = null;
