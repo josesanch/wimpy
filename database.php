@@ -1,14 +1,13 @@
 <?
 
-class Database extends PDO
-{
+class Database extends PDO {
 
+	public $error;
 	public function __construct($database) {
 		try {
 		parent::__construct($database[0], isset($database[1]) ? $database[1] : null, isset($database[2]) ? $database[2] : null, isset($database[3]) ? $database[3] : null);
 		} catch(Exception $e) {
-			echo $e->getMessage();
-			exit;
+			web::debug($e->getMessage());
 		}
 
 	}
@@ -53,6 +52,26 @@ class Database extends PDO
 
 		$exec = $this->exec($sql);
 		return $exec;
+	}
+
+	public function exec($sql) {
+		if(extension_loaded('XCache'))
+			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
+		else
+			web::debug($sql, __METHOD__, __LINE__);
+		$args =  func_get_args();
+       	return call_user_func_array(array('pdo', 'exec'), $args);
+	}
+
+
+	public function query($sql) {
+		if(extension_loaded('XCache'))
+			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
+		else
+			web::debug($sql, __METHOD__, __LINE__);
+
+		$args =  func_get_args();
+       	return call_user_func_array(array('pdo', 'query'), $args);
 	}
 }
 

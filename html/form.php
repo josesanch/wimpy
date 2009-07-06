@@ -24,7 +24,7 @@ class html_form extends html_object {
 
 
 		$this->process();
-		return "<FORM ".$this->getAttributes().">".$this->data."</FORM>";
+		return "<form ".$this->getAttributes().">\n".$this->data."</form>\n";
 	}
 
 
@@ -54,9 +54,10 @@ class html_form extends html_object {
 			if(is_a($input, 'html_form_file')) $this->attrs['enctype'] = 'multipart/form-data';
 			$this->data .= $input;
 		}
-		$this->data .= "<script>
-	$(window).load(function() {
-		$this->js
+		$this->data .= "
+<script>
+	$(document).ready(function() {
+			$this->js
 	});
 </script>";
 	}
@@ -141,7 +142,7 @@ class html_form extends html_object {
 				case 'varchar':
 				default:
 					$input = new html_form_input($lang ? $field."|".$lang : $field);
-					if(!$size) $size = $attrs['size'] ? ($attrs['size'] < 80 ? $attrs['size'] : 80)  : 50;
+					if(!$size) $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45)  : 45;
 					$input->size($size);
 					if($attrs['size']) $input->maxsize($attrs['size']);
 					$input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()) , false));

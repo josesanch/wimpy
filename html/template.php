@@ -515,18 +515,17 @@ class html_template extends html_object
 	private function __getVar($var, $vars)
 	{
 		$vars_var = preg_replace("/^\\\$([^_]\w*)/", "\\\$vars['\\1']", "\$".$var);
+		$obj = explode("->", $vars_var, 2);
+		if($obj[0] == '$vars[\'this\']') {
+			$method = $obj[1];
+			return $this->$method;
+		}
 
-		$obj = split("->", $vars_var, 2);
-		if(!is_object(eval("return $obj[0];")) && count($obj) > 1)
-		{
-//			$this->debug("GETVARS (obj): \$$var");
+		if(!is_object(eval("return $obj[0];")) && count($obj) > 1) {
 			return eval("return \$$var;");
 		}
 
-//		$this->debug("GETVARS: $vars_var");
-
 		$vars_var  = eval("return $vars_var;");
-
 		// Si no devolvemos el valor de la variable y si es un objeto con la propiedad toHtml .. la llamamos.
 
 		return is_object($vars_var) && method_exists($vars_var, "toHtml") ? $vars_var->toHtml() : $vars_var;
@@ -588,6 +587,11 @@ class html_template extends html_object
 			return $this->$item;
 		else
 			return $this->__vars[$item];
+	}
+
+	public function addJs($file) {
+		$this->__vars["js_files"] .= js($file);
+		return $this;
 	}
 
 }

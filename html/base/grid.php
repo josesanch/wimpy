@@ -69,8 +69,8 @@ class html_base_grid extends html_object {
 
 		");
 
-		$form->add("<table border=0 class=grid cellpadding=3 cellspacing=1 align=center width='90%'>
-						<tr >");
+		$form->add("\n<table border=0 class='grid' cellpadding=3 cellspacing=1 align=center width='90%'>
+						<tr >\n");
 
 		foreach($columns as $column) {
 			if(web::request('order') == $column) {
@@ -78,20 +78,20 @@ class html_base_grid extends html_object {
 			} else {
 				$arrow = '';
 			}
-			$form->add("<th class=grid_header><a href='".web::uri("/order=$column/desc=$desc")."' class='header'>$column</a> $arrow</th>");
+			$form->add("	<th class=grid_header><a href='".web::uri("/order=$column/desc=$desc")."' class='header'>$column</a> $arrow</th>\n");
 		}
 
 		$i = 0;
 
 
 		foreach($results as $row) {
-			$form->add("<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."\"'>");
+			$form->add("<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."\"'>\n");
 			foreach($columns as $column) {
-				$form->add("<td class=grid_cell>".$row->get($column)."</td>");
+				$form->add("	<td class=grid_cell>".$row->get($column)."</td>\n");
 			}
-			$form->add("</tr>");
+			$form->add("</tr>\n");
 		}
-		$form->add("</table>");
+		$form->add("</table>\n");
 
 		$form->add("<div style='width: 90%; background-color: gray; margin: auto; text-align: right;'><div style='padding: 5px;margin-right: 10px; color: white;'>".helpers_paginate::toHtml($results)."</div></div><br><br>
 		<script>

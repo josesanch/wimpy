@@ -14,16 +14,8 @@ class html_autoform extends html_form {
 	}
 
 	private function construct_head() {
-		$this->add("\n".
-					js_once("jquery/autocomplete/jquery.bgiframe.min")."\n".
-					js_once("jquery/autocomplete/jquery.ajaxQueue")."\n".
-					js_once("jquery/autocomplete/thickbox-compressed")."\n".
-					js_once("jquery/autocomplete")."\n".
-					css_once("jquery/autocomplete/autocomplete")."\n".
-					css_once("jquery/autocomplete/thickbox")."\n"
-					);
 		$this->add("
-				<fieldset style='width: 70%; margin: auto; ' class='admin_form'>
+				<fieldset class='admin_form ".get_class($this->model)."'>
 				<legend>".get_class($this->model)."</legend>
 			");
 
@@ -37,7 +29,8 @@ class html_autoform extends html_form {
 				$id =$this->model->$field;
 				$this->hidden($field)->value($this->model->$field);
 			} else {
-				$this->auto($field, null, $tmp_upload)->css($this->css);
+				$this->auto($field, null, $tmp_upload);
+				if($this->css) $this->css($this->css);
 			}
 			$this->add("\n");
 		}
@@ -66,11 +59,12 @@ class html_autoform extends html_form {
 					}
 				}
 			</script>
-		<div style='margin: auto; width: 250px; padding-top:10px;'>
+			<div class='form-buttons'>
 				<input class='submit' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
 				<input class='submit' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">
 				<input class='submit' type='submit' value=enviar>
-			</div>");
+			</div>
+			");
 		$this->add("</fieldset>");
 
 	}

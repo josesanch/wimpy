@@ -7,7 +7,7 @@ body {
 
 	#header_div { margin: 0px 10px auto 0px;  background-color: white;}
 	#logo { margin: auto auto 20px auto; float: left;}
-	#boton_salir { margin: auto 10px auto auto; float: right; border: 1px dotted lightgray; width: 60px; text-align: center; background-color: #DFDFDF; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
+	#boton_salir { margin: auto 10px auto auto; float: right; border: 1px dotted lightgray; width: 4em; text-align: center; background-color: #DFDFDF; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
 	#menu_div { background-color: white; border: 1px solid white;}
 	#content_div { background-color: #E5E5E5; }
 
@@ -56,7 +56,7 @@ h1 {
   background: url('/resources/admin/images/tab_left.gif') no-repeat top left;
   text-align: center;
   color: #666;
-  font-size: 12px;
+  font-size: 1.3em;
   line-height: 28px;
   text-decoration: none;
 }
@@ -67,8 +67,8 @@ h1 {
   padding: 0 15px;
   text-align: center;
   color: #000;
-  font-size: 12px;
-  line-height: 28px;
+  font-size: 1.3em;
+  line-height: 2em;
   text-decoration: none;
 }
 
@@ -78,9 +78,10 @@ h1 {
 
 #tabs ul li.active a {
   	padding: 0 15px;
+
   	background: url('/resources/admin/images/tab_active_left.gif') no-repeat top left;
   	color: white;
-	line-height:29px;
+	line-height:2em;
 	font-weight:bold;
 }
 
@@ -104,7 +105,7 @@ h1 {
   margin: 0 auto;
   padding: 0 10px;
 
-  line-height: 28px;
+  line-height: 2em;
   text-align: left;
 }
 
@@ -164,30 +165,44 @@ h1 {
 * html .clearfix {height: 1%;}
 .clearfix {display: block;}
 
-/* === FORMS ======================================== */
+/*****************************************************************************************************************
+*	FORMS
+*****************************************************************************************************************/
 
-fieldset.admin_form {
-	background-color: #f0f0f0;
-	border: 1px solid #C9DCA6;
-	padding: 25px;
-}
+fieldset.admin_form {	background-color: #f0f0f0; border: 1px solid #C9DCA6; padding: 2em 2.5em;width: 85%; margin: auto; }
 
 label.autoform {
 	display: block;
-	padding-top: 10px;
+	padding-bottom: 2em;
 	font-weight: bold; color: gray;
+	float: left;
+	margin-right: 2em;
+	text-transform: capitalize;
+
 }
+
+label.autoform span {  display: block; }
+label.autoform input  { margin-top: 0.1em; }
+
+label.autoform.textarea { clear: both; }
+label.autoform.textarea textarea { float: left; margin-top: 0.1em; }
+
+label.autoform.htmleditor { width: 100%;}
+div.form-buttons  { clear: both; padding-top: 1em; display: block; margin: auto; width: 18em;}
+
+
 
 textarea, input[type=text] { border: 1px solid gray; }
 textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
 input.error { border: 1px dotted red; }
 
 
-fieldset legend { margin-top: 1px; font-weight: bold; color: gray; font-size: 14pt;}
+fieldset legend { margin-top: 1px; font-weight: bold; color: gray; font-size: 2em;}
 
 /* === GRID ======================================== */
-.grid {
-	font-size: 9pt;
+table.grid {
+	font-size: 1em;
+	margin: auto;
 }
 .grid_header {
 	padding: 3px;

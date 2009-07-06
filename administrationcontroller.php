@@ -133,6 +133,7 @@ class AdministrationController extends ApplicationController {
 
 			web::instance()->loadModel($model);
 			if(method_exists($model, $admin_action)) {
+				// If the model has "AdminList" method we call the method of the model.
 				$model = new $model();
 				$this->view->content = $model->$admin_action($params[0]);
 			} else {
@@ -141,10 +142,11 @@ class AdministrationController extends ApplicationController {
 				}
 
 				if($controller && method_exists ($controller, "admin".$action)) {
+					// If exists a controler named like the model and it has a method named "AdminList", we call that method.
 					$action = "admin".$action;
 					$this->view->content = $controller->$action($params[0]);
 				} else {
-
+					// Default actions.
 					switch($action) {
 						case "List":
 							$instance = new $model();

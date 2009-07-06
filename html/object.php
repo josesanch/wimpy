@@ -52,7 +52,6 @@ class html_object
 
 
 	protected function getAttributes($except = array()) {
-
 		if (!is_array($this->attrs)) return "";
 		if(!$this->attrs['id']) $this->attrs['id'] =  $this->attrs['name'];
 		if(!is_array($except)) $except = split(" ?, ?", $except);
@@ -60,9 +59,7 @@ class html_object
 			if(!in_array($item, $except))
 				$strAttr .= isset($value) ? strtoupper($item)."=\"$value\" " : "$item ";
 		}
-
 		return $strAttr;
-
 	}
 
 

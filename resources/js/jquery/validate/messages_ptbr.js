@@ -17,15 +17,12 @@ jQuery.extend(jQuery.validator.messages, {
 	creditcard: "Por favor, forne&ccedil;a um cart&atilde;o de cr&eacute;dito v&aacute;lido.",
 	equalTo: "Por favor, forne&ccedil;a o mesmo valor novamente.",
 	accept: "Por favor, forne&ccedil;a um valor com uma extens&atilde;o v&aacute;lida.",
-	maxlength: jQuery.format("Por favor, forne&ccedil;a n&atilde;o mais que {0} caracteres."),
-	minlength: jQuery.format("Por favor, forne&ccedil;a ao menos {0} caracteres."),
-	rangelength: jQuery.format("Por favor, forne&ccedil;a um valor entre {0} e {1} caracteres de comprimento."),
-	rangeValue: jQuery.format("Por favor, forne&ccedil;a um valor entre {0} e {1}."),
-	range: jQuery.format("Por favor, forne&ccedil;a um valor entre {0} e {1}."),
-	maxValue: jQuery.format("Por favor, forne&ccedil;a um valor menor que ou igual a {0}."),
-	max: jQuery.format("Por favor, forne&ccedil;a um valor menor ou igual a {0}."),
-	minValue: jQuery.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}."),
-	min: jQuery.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
+	maxlength: jQuery.validator.format("Por favor, forne&ccedil;a n&atilde;o mais que {0} caracteres."),
+	minlength: jQuery.validator.format("Por favor, forne&ccedil;a ao menos {0} caracteres."),
+	rangelength: jQuery.validator.format("Por favor, forne&ccedil;a um valor entre {0} e {1} caracteres de comprimento."),
+	range: jQuery.validator.format("Por favor, forne&ccedil;a um valor entre {0} e {1}."),
+	max: jQuery.validator.format("Por favor, forne&ccedil;a um valor menor ou igual a {0}."),
+	min: jQuery.validator.format("Por favor, forne&ccedil;a um valor maior ou igual a {0}.")
 });
 
 jQuery.validator.addMethod("datePTBR", function(value) { 

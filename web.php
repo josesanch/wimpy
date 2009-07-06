@@ -28,6 +28,7 @@ class Web {
 		session_start();
 		if(isset($_SESSION['initialized'])) $this->initialized = true;
 
+
 		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING );
 
 		if(!web::$default_instance)  {
@@ -38,6 +39,7 @@ class Web {
 //		if($languages) $this->setLanguages($languages);
 		if($database) $this->setDatabase($database);
 		$this->application_path =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
+		if(web::request("debug")) $_SESSION['debug'] = web::request("debug");
 	}
 
 
@@ -53,7 +55,10 @@ class Web {
 	}
 
 	public function setDatabase($database) {
-		$this->database = new Database($database);
+		if(!$this->database = new Database($database)) {
+			web::error("Error conectando con la base de datos $database[0]");
+			exit;
+		}
 		if(!$this->database->tableExists('images')) {
 			create_images_and_files_tables($this->database);
 		}
@@ -340,6 +345,18 @@ class Web {
 		}
 
 		exit;
+	}
+
+	public static function debug($texto, $file, $linea) {
+		if(web::request("debug") == "true" || $_SESSION['debug'] == "true") {
+			echo "<pre style='padding: 1em; border: 1px dashed #666;'><span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
+			var_dump($texto);
+			echo "</pre>";
+		}
+	}
+
+	public function error($mensaje) {
+		echo "<h3 style='color: red; border: 1px solid red; padding: 1em;'>$mensaje</h3>";
 	}
 }
 ?>

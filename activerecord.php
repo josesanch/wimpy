@@ -108,7 +108,7 @@ class ActiveRecord {
 			$sql = "INSERT into $this->database_table ($fields) values ($values)";
 		}
 
-//		var_dump($sql);
+//		web::debug(__FILE__, __LINE__, $sql);
 
 		if(!$this->database->exec($sql) && $this->database->errorCode() > 0 )
 			var_dump($sql, $this->database->errorInfo());
@@ -131,8 +131,10 @@ class ActiveRecord {
 				$values[]= "('$lang', '".get_class($this)."', '$field', '".mysql_escape_string($data)."', '".mysql_escape_string($id)."')";
 			}
 		}
-		$sql .= implode(",", $values);
-		$this->database->exec($sql);
+		if($values) {
+			$sql .= implode(",", $values);
+			$this->database->exec($sql);
+		}
 	}
 
 	public function selectSql($args = '') {
@@ -192,8 +194,7 @@ class ActiveRecord {
 			$statement->fetchAll();	// Para soportar unbuferred queryes
 			$sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
 		}
-//		var_dump($sql);
-//		$statement =  $this->database->query($sql, PDO::FETCH_CLASS, get_class($this), array(True));
+//		web::debug(__FILE__, __LINE__, $sql);
 
 		$statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -394,8 +395,9 @@ class ActiveRecord {
 
 //		$sql = "delete from $this->database_table where ".join(" and ", $conditions);
 		$sql = "delete from $this->database_table where ".$this->where_primary_keys;
-//		var_dump($this);
-//		var_dump($sql);
+
+//		web::debug(__FILE__, __LINE__, $sql);
+
 		$this->database->exec($sql);
 	}
 

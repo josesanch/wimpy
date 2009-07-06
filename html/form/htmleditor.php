@@ -25,7 +25,7 @@ class html_form_htmleditor extends html_form_input {
 	private function toHtmlTinymce() {
 		static $initialized = false;
 		if($this->attrs['label']) {
-			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>\n";
+			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform htmleditor'><span>".$this->attrs['label']."</span>\n";
 		}
 		$str .= js_once('tiny_mce/tiny_mce');
 //			mode: "textareas",
@@ -59,6 +59,7 @@ class html_form_htmleditor extends html_form_input {
 		}
 
 //				content_css : "/telefono.css"
+		if($this->attrs['label']) $str .= "</label>";
 		return $str;
 
 	}
@@ -66,7 +67,7 @@ class html_form_htmleditor extends html_form_input {
 	private function toHtmlFCKeditor() {
 
 		if($this->attrs['label']) {
-			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>";
+			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform htmleditor'><span>".$this->attrs['label']."</span>\n";
 		}
 
 		include_once(dirname(__FILE__)."/../../resources/fckeditor/fckeditor.php");
@@ -100,7 +101,9 @@ class html_form_htmleditor extends html_form_input {
 		$oFCKeditor->Value = $this->attrs['value'];
 
 		$txt = $oFCKeditor->CreateHtml() ;
-		return $str.$txt;
+		$str .= $txt;
+		if($this->attrs['label']) $str .= "</label>";
+		return $str;
 	}
 }
 ?>

@@ -13,9 +13,12 @@ class html_form_select extends html_form_input {
 
 	public function toHtml() {
 		if($this->attrs['label']) {
-			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>\n";
+			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'><span>".$this->attrs['label']."</span>\n";
 		}
-		return "$str<select ".$this->getAttributes(array('value', 'type', 'options', 'selectedOptions')).">".$this->getOptions()."</select>\n";
+
+		$str .= "	<select ".$this->getAttributes(array('value', 'type', 'options', 'selectedOptions')).">".$this->getOptions()."</select>\n";
+		if($this->attrs['label']) $str .= "</label>\n";
+		return $str;
 	}
 
 	public function add($values, $selectedValues = null, $at_top = false ) {
@@ -54,7 +57,7 @@ class html_form_select extends html_form_input {
 			if(isset($this->selectedValues)) {
 				$selected = in_array($value, is_array($this->selectedValues) ? $this->selectedValues : array($this->selectedValues)) ? " selected" : "";
 				}
-			$html .= "<option value=\"$value\"$selected>$text</option>\n";
+			$html .= "		<option value=\"$value\"$selected>$text</option>\n";
 		}
 		return $html;
 

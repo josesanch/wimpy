@@ -60,10 +60,12 @@ class html_form_input extends html_object {
 	}
 
 	public function toHtml() {
-		if($this->attrs['label']) {
-			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>".$this->attrs['label']."</label>";
-		}
-		return "$str\n<INPUT ".$this->getAttributes()."/>\n";
+		$str = "";
+		if($this->attrs['label']) $str .= "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'><span>".$this->attrs['label']."</span>\n";
+
+		$str .= "\n	<input ".$this->getAttributes()."/>\n";
+		if($this->attrs['label']) $str.= "</label>";
+		return $str;
 	}
 
 }
