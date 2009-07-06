@@ -55,7 +55,7 @@ class Database extends PDO {
 	}
 
 	public function exec($sql) {
-		if(extension_loaded('XCache'))
+		if(extension_loaded('xdebug'))
 			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
 		else
 			web::debug($sql, __METHOD__, __LINE__);
@@ -65,7 +65,7 @@ class Database extends PDO {
 
 
 	public function query($sql) {
-		if(extension_loaded('XCache'))
+		if(extension_loaded('xdebug'))
 			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
 		else
 			web::debug($sql, __METHOD__, __LINE__);
