@@ -28,6 +28,9 @@ class html_form extends html_object {
 	}
 
 
+	public function css($url) {
+		$this->css = $url;
+	}
 	public function __call($method, $args) {
 
 		// Class name
