@@ -154,10 +154,11 @@ function convert_from_url($url) {
 	return str_replace('_', ' ', str_replace('-', ' ', strtr(strtolower($url), $arr)));
 }
 
-function url_to_sql($url) {
-	$arr = array('_' => ' ', '-' => ' ', 'n' => '[nñ]');
-
-	return str_replace(array_keys($arr), array_values($arr), strtolower($url));
+function url_to_sql($url) {	// for using with regexp
+	$arr = array("_", "-");
+	$url =  preg_replace("/(_|\-)/", '[ _\-]', strtolower($url));
+	$arr = array('n' => '[nñ]');
+	return str_replace(array_keys($arr), array_values($arr), $url);
 }
 
 function notildes($txt) {
