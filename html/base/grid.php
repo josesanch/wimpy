@@ -78,7 +78,9 @@ class html_base_grid extends html_object {
 			} else {
 				$arrow = '';
 			}
-			$form->add("	<th class=grid_header><a href='".web::uri("/order=$column/desc=$desc")."' class='header'>$column</a> $arrow</th>\n");
+			$attrs = $model->getFields($column);
+			$label = $attrs['label'] ? $attrs['label'] : $column;
+			$form->add("	<th class=grid_header><a href='".web::uri("/order=$column/desc=$desc")."' class='header'>$label</a> $arrow</th>\n");
 		}
 
 		$i = 0;

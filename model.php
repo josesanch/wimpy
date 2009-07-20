@@ -188,7 +188,9 @@ class Model extends ActiveRecord {
 		  'pps',
 		  'docx',
 		  'xlsx',
-		  'pptx'
+		  'pptx',
+		  'ogg',
+		  'flv'
 		);
 
 		$path_parts = pathinfo($file['name']);

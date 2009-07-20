@@ -3,9 +3,11 @@
 class Database extends PDO {
 
 	public $error;
+	private $xdebug = false;
 	public function __construct($database) {
+		$this->xdebug = extension_loaded("xdebug");
 		try {
-		parent::__construct($database[0], isset($database[1]) ? $database[1] : null, isset($database[2]) ? $database[2] : null, isset($database[3]) ? $database[3] : null);
+			parent::__construct($database[0], isset($database[1]) ? $database[1] : null, isset($database[2]) ? $database[2] : null, isset($database[3]) ? $database[3] : null);
 		} catch(Exception $e) {
 			web::debug($e->getMessage());
 		}
@@ -55,23 +57,41 @@ class Database extends PDO {
 	}
 
 	public function exec($sql) {
-		if(extension_loaded('xdebug'))
+		if($this->xdebug)
 			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
 		else
 			web::debug($sql, __METHOD__, __LINE__);
+
 		$args =  func_get_args();
-       	return call_user_func_array(array('pdo', 'exec'), $args);
+       	$return =  call_user_func_array(array('pdo', 'exec'), $args);
+
+       	if($this->errorCode() != 0) {
+			if($this->xdebug)
+				web::error($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")<br/>".implode(": ", $this->errorInfo()) , __LINE__);
+			else
+				web::error($sql, __METHOD__, __LINE__);
+       	}
+       	return $return;
+
 	}
 
 
 	public function query($sql) {
-		if(extension_loaded('xdebug'))
+		if($this->xdebug)
 			web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
 		else
 			web::debug($sql, __METHOD__, __LINE__);
 
 		$args =  func_get_args();
-       	return call_user_func_array(array('pdo', 'query'), $args);
+       	$return =  call_user_func_array(array('pdo', 'query'), $args);
+
+       	if($this->errorCode() != 0) {
+			if($this->xdebug)
+				web::error($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")<br/>".implode(": ", $this->errorInfo()), __LINE__);
+			else
+				web::error($sql, __METHOD__, __LINE__);
+       	}
+       	return $return;
 	}
 }
 

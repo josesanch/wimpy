@@ -1,4 +1,5 @@
 <?
+
 require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
 require dirname(__FILE__)."/database.php";
@@ -30,7 +31,7 @@ class Web {
 
 
 		error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING );
-
+		//error_reporting(E_STRICT);
 		if(!web::$default_instance)  {
 			web::$default_instance = $this;
 			$this->l10n = new l10n();
@@ -113,7 +114,7 @@ class Web {
 		return $uri;
 	}
 
-	private function processParams($params, $arr, &$uri) {
+	private static function processParams($params, $arr, &$uri) {
 
 		if(!is_array($params)) {
 			$params = explode("/", $params);
@@ -355,8 +356,20 @@ class Web {
 		}
 	}
 
-	public function error($mensaje) {
-		echo "<h3 style='color: red; border: 1px solid red; padding: 1em;'>$mensaje</h3>";
+	public static function error($texto, $file, $linea) {
+		echo "<pre style='padding: 1em; border: 1px dashed #666;'><h3 style='color: red;'><span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
+		var_dump($texto);
+		echo "</h3></pre>";
 	}
+
+	public static function warning($texto, $file, $linea) {
+		if(!web::instance()->isInProduction()) {
+			echo "<pre style='padding: 1em; border: 1px dashed #orange;'><h3 style='color: orange;'>
+					<span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
+			var_dump($texto);
+			echo "</h3></pre>";
+		}
+	}
+
 }
 ?>

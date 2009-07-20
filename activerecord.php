@@ -187,19 +187,33 @@ class ActiveRecord {
 			if($statement) {
 				$total_result = $statement->fetch();
 				if(!$total_result) {
+
 					echo "Error: ",get_class($this)." -> $sql";
 				}
 				$this->total_results = $total_result[0];
+				$statement->fetchAll();	// Para soportar unbuferred queryes
+				$sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
+			} else {
+				if($this->xdebug)
+					web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
+				else
+					web::debug($sql, __METHOD__, __LINE__);
+
 			}
-			$statement->fetchAll();	// Para soportar unbuferred queryes
-			$sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
+
+
 		}
 //		web::debug(__FILE__, __LINE__, $sql);
 
 		$statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
 		if(!$statement) {
-			echo "Error: ",get_class($this)." -> $sql";
+			/*
+			if($this->xdebug)
+				web::error($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
+			else
+				web::error($sql, __METHOD__, __LINE__);
+			*/
 		} else {
 			$rows = $statement->fetchAll();
 			$results = array();

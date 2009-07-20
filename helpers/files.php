@@ -6,6 +6,7 @@ class helpers_files extends ActiveRecord {
 	protected $output_type = "jpg";
 	protected $local_file = null;
 	protected $image = null;
+	protected $cache_images = true;
 	protected $fields = array(
 								"id" => "int not_null primary_key auto_increment",
 								"nombre" => "string(255) not_null default=''",
@@ -59,7 +60,7 @@ class helpers_files extends ActiveRecord {
 					, "compress" => array("zip", "rar", "ace" )
 					, "text" => array("doc", "txt", 'odt')
 					, "pdf" => array("ps", "pdf")
-					, "video" => array("avi", "mpg", "wmv")
+					, "video" => array("avi", "mpg", "wmv", 'flv')
 					, "spreadsheet" => array("xls")
 					, "presentation" => array("ppt", "pps", 'odp')
 					, "executable" => array("exe", "com")
@@ -112,7 +113,7 @@ class helpers_files extends ActiveRecord {
 
 	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $border = null, $img = null) {
 		if(isset($border)) $this->setBorder($border);
-    	$this->cached_image_url =  $this->generateCachedUrl($width, $height, $op, $xcenter, $ycenter);
+    	$this->cached_image_url =  $this->generateCachedUrl($width, $height, $ycenter, $xcenter, $op);
     	$cached = $this->isCached($this->cached_image_url);
     	if(!$cached) {
    			$this->init();
@@ -147,7 +148,7 @@ class helpers_files extends ActiveRecord {
 		if(!$size) return $this->url();
 		$size = explode("x", $size);
 
-    	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[0], $xcenter, $ycenter, $operation);
+    	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[1], $ycenter, $xcenter, $operation);
 
 		$cached = $this->isCached($this->cached_image_url);
     	if($cached)	return $cached;
@@ -158,8 +159,8 @@ class helpers_files extends ActiveRecord {
 		} elseif($this->isVideo()) {
 			if(class_exists('ffmpeg_movie')) {
 				$movie = new ffmpeg_movie($this->phisical());
-				$frame = $movie->getFrame(1);
-//				$frame = $movie->getFrame(round($movie->getFrameCount() / 3));
+//				$frame = $movie->getFrame(1);
+				$frame = $movie->getFrame(round($movie->getFrameCount() / 3));
 				$img = $this->getThumbnail($size[0], $size[1], $ycenter, $xcenter, $operation, null, new image($frame->toGDImage()));
 			} else {
 				return '/resources/admin/images/video_small.gif';
@@ -235,6 +236,15 @@ class helpers_files extends ActiveRecord {
 		$this->_borderY = $marginy;
 	}
 
+
+	public function getDuration() {
+		if ($this->isVideo()) {
+			if(class_exists('ffmpeg_movie')) {
+				$movie = new ffmpeg_movie($this->phisical());
+				return floor($movie->getDuration());
+			}
+		}
+	}
 
 
 	private function putBorder($img)

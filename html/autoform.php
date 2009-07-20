@@ -35,10 +35,6 @@ class html_autoform extends html_form {
 			$this->add("\n");
 		}
 
-
-	//	return $this->data.js_once("jquery").js_once("jquery.validate");
-
-
 		if($this->model->hasImages()) {
 			$this->add("<div id='images' style='margin-top: 10px; margin-bottom: 10px;'></div>");
 			$this->add(init_extjs().js_once("ext/UploadDialog/Ext.ux.UploadDialog").js_once("ext/UploadDialog/locale/es.utf-8").css_once("ext/UploadDialog/css/Ext.ux.UploadDialog"));
@@ -53,7 +49,6 @@ class html_autoform extends html_form {
 		$this->add("
 		<script>
 				function delete_item(id) {
-
 					if(confirm('Está seguro')) {
 						document.location='/admin/".get_class($this->model)."/delete/' + id + '".web::params()."';
 					}
@@ -61,7 +56,12 @@ class html_autoform extends html_form {
 			</script>
 			<div class='form-buttons'>
 				<input class='submit' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
-				<input class='submit' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">
+			");
+
+		if($this->model->id)
+			$this->add("<input class='submit' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">");
+
+		$this->add("
 				<input class='submit' type='submit' value=enviar>
 			</div>
 			");
