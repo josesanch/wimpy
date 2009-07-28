@@ -43,8 +43,15 @@ class Web {
 		if(web::request("debug")) $_SESSION['debug'] = web::request("debug");
 	}
 
+	/**
+	 * Set the available languages in the website.
+	 *
+	 * Pone los idiomas disponibles en la web.	 *
+ 	 * \param array $langs Array of languages.<br/>
+ 	 * example: $web->setLanguages(array('es', 'en', 'pt'));
+	 */
 
-	public function setLanguages($langs) {
+	public function setLanguages(array $langs) {
 		$this->l10n->setLanguages($langs);
 	}
 	public function getLanguages() {
