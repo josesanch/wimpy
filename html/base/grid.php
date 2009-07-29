@@ -18,7 +18,7 @@ class html_base_grid extends html_object {
 				else $c = array_keys($model->getFields());
 				$search = array();
 				foreach($c as $field) {
-					$search[]= "$field like '%".web::request('search')."%'";
+					$search[]= "$field like '%".urldecode(web::request('search'))."%'";
 				}
 				$search = " (".join(" or ", $search).")";
 				$sql = $sql ? $sql." and ".$search : $search;
@@ -58,7 +58,7 @@ class html_base_grid extends html_object {
 				<div style='padding: 10px; color: white; width: 98%; height: 20px;' >
 					<table border=0 width='100%' cellpadding=0 cellspacing='0'>
 						<td>
-							Buscar: <input type='text' name='search' value='".web::request('search')."' size=20>
+							Buscar: <input type='text' name='search' value='".urldecode(web::request('search'))."' size=20>
 							<input type=button value=buscar onclick=\"do_search(this.form)\";>
 							<input type=button value=' + nuevo' onclick='document.location=\"/admin/".get_class($model)."/edit/0".web::params()."\"'>
 						<td align='right'>".helpers_paginate::toHtml($results)."</td>
