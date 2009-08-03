@@ -194,8 +194,10 @@ div.form-buttons  { clear: both; padding-top: 1em; display: block; margin: auto;
 
 textarea, input[type=text] { border: 1px solid gray; }
 textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
-input.error { border: 1px dotted red; }
+input.error { border: 1px dotted red;  }
 
+
+label.error { background: url("/resources/icons/jquery.liveValidation-invalid.png") 0 50% no-repeat; padding-left: 20px; margin-top: 3px; color: red; display: block; font-weight: normal; text-transform: none;}
 
 fieldset legend { margin-top: 1px; font-weight: bold; color: gray; font-size: 2em;}
 

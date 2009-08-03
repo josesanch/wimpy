@@ -111,6 +111,7 @@ class html_form extends html_object {
 						$input = new html_form_textarea($lang ? $field."|".$lang : $field);
 						$input->rows(10)->cols(60);
 					}
+
 					$input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()), false));
 				break;
 
@@ -148,6 +149,8 @@ class html_form extends html_object {
 					if(!$size) $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45)  : 45;
 					$input->size($size);
 					if($attrs['size']) $input->maxsize($attrs['size']);
+					$input->class($input->class()." ".$attrs['validate']);
+					if($attrs['not null']) $input->class($input->class()." required");
 					$input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()) , false));
 			}
 		}

@@ -53,6 +53,7 @@ class html_autoform extends html_form {
 						document.location='/admin/".get_class($this->model)."/delete/' + id + '".web::params()."';
 					}
 				}
+				$('#".get_class($this->model)."').validate();
 			</script>
 			<div class='form-buttons'>
 				<input class='submit' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
@@ -66,6 +67,8 @@ class html_autoform extends html_form {
 			</div>
 			");
 		$this->add("</fieldset>");
+
+
 
 	}
 

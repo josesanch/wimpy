@@ -53,9 +53,12 @@ class html_form_input extends html_object {
 			// Do nothing. The name should stay static once it is set.
 			return $this->attrs['name'];
 		} else {
-			$this->attrs[$method] = $args[0];
-		}
+			if (empty($args))
+				return $this->attrs[$method];
+			else
+				$this->attrs[$method] = $args[0];
 
+		}
 		return $this;
 	}
 

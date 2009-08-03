@@ -550,5 +550,35 @@ class ActiveRecord {
 	public function getDatabaseTable() {
 		return $this->database_table;
 	}
+
+	public function &fields($field) {
+		return new fields(ActiveRecord::$metadata[$this->database_table]["AllFields"][$field]);
+	}
+}
+
+class fields {
+	protected $attrs;
+
+	public function __construct(&$attrs) {
+		$this->attrs = &$attrs;
+	}
+
+	public function __call($method, $args) {
+		switch($method) {
+			case 'required':
+				if (empty($args))
+					$this->attrs["not null"] = true;
+				else
+					$this->attrs[$method] = $args[0];
+				break;
+			default:
+				if (empty($args))
+					return $this->attrs[$method];
+				else
+					$this->attrs[$method] = $args[0];
+		}
+
+		return $this;
+	}
 }
 ?>
