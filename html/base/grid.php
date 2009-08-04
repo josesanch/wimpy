@@ -49,11 +49,18 @@ class html_base_grid extends html_object {
 			$desc = "false";
 		}
 
-		if(!$order)	$order = "order: id";
+
+		if(!$order) {
+			if($model->getFields($model->field_used_for_ordenation)) {
+				$order = "order: ".$model->field_used_for_ordenation;
+				$ordenation = true;
+			} else {
+				$order = "order: id";
+			}
+		}
 		$results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
 
-		$form->add(js_once('jquery')."
-
+		$form->add("
 				<div style='width: 90%; background-color: gray; margin: auto; '>
 				<div style='padding: 10px; color: white; width: 98%; height: 20px;' >
 					<table border=0 width='100%' cellpadding=0 cellspacing='0'>
@@ -85,15 +92,23 @@ class html_base_grid extends html_object {
 
 		$i = 0;
 
+		$form->add("<tbody id='table_body'>\n");
 
 		foreach($results as $row) {
-			$form->add("<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."\"'>\n");
+			$form->add(
+				"<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' onclick='document.location=\"/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."\"'>
+					<td class='value' style='display: none;'>".$row->get("id")."</td>
+				");
+
+
+
 			foreach($columns as $column) {
 				$form->add("	<td class=grid_cell>".$row->get($column)."</td>\n");
 			}
+
 			$form->add("</tr>\n");
 		}
-		$form->add("</table>\n");
+		$form->add("</tbody></table>\n");
 
 		$form->add("<div style='width: 90%; background-color: gray; margin: auto; text-align: right;'><div style='padding: 5px;margin-right: 10px; color: white;'>".helpers_paginate::toHtml($results)."</div></div><br><br>
 		<script>
@@ -110,10 +125,32 @@ class html_base_grid extends html_object {
 			function do_search(form) {
 				document.location='".web::uri("/page=/search=")."' + form.search.value;
 				return false;
-			}
-		</script>
-		");
+			}");
 
+		if($ordenation) {
+				$form->add("
+					$(document).ready(function () {
+						$('#table_body').sortable({
+							containment:    'parent',
+							axis:                   'y',
+							update:
+
+								function(e, ui) {
+
+									prev = ui.item.prev().children('.value').html();
+									id = ui.item.children('.value').html()
+									$('#mensajes').html('Realizando cambios').load('/ajax/".get_class($model)."/reorderList/' + id + '/' + prev);
+
+								}
+						});
+
+					});
+				");
+		}
+		$form->add("
+			</script>
+			<div id='mensajes' style='display: none; border: 1px solid gray; padding: 1em;'></div>
+		");
 		return $form->toHtml();
 
 	}

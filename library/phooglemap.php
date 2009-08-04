@@ -95,16 +95,19 @@ class PhoogleMap{
 * @description  Add's an address to be displayed on the Google Map using latitude/longitude
 *               early version of this function, considered experimental
 */
+	function addGeoPoint($lat, $long, $title, $infoHTML, $icon = null, $callback = null, $id = null) {
 
-	function addGeoPoint($lat, $long, $infoHTML, $icon = null, $callback = null) {
 		$pointer = count($this->validPoints);
-        $this->validPoints[$pointer]['lat'] = $lat;
-        $this->validPoints[$pointer]['long'] = $long;
-        $this->validPoints[$pointer]['htmlMessage'] = $infoHTML;
-		if($icon) $this->validPoints[$pointer]['icon'] = $icon;
+		$this->validPoints[$pointer]['lat'] = $lat;
+       		$this->validPoints[$pointer]['long'] = $long;
+       		$this->validPoints[$pointer]['title'] = $title;
+        	$this->validPoints[$pointer]['htmlMessage'] = $infoHTML;
+        	if($icon) $this->validPoints[$pointer]['icon'] = $icon;
+       		if($id)	$this->validPoints[$pointer]['id'] = $id;
 		if($callback) $this->validPoints[$pointer]['callback'] = $callback;
 		return $pointer;
     }
+
 
 /**
 * @function     centerMap

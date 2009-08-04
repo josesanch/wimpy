@@ -12,8 +12,7 @@ class html_grid extends html_object {
 	}
 
 	public function toHtml() {
-		$str = js_once('jquery');
-		$str .= '<div id=results style="margin: 10x auto 0px auto;">probando</div>';
+		$str = '<div id=results style="margin: 10x auto 0px auto;">probando</div>';
 		$str .= '';
 		return $str;
 	}

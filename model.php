@@ -12,6 +12,7 @@ class Model extends ActiveRecord {
 	public $has_images = true;
 
 */
+	public $field_used_for_ordenation = "orden";
 	protected $image_label;
 	protected $has_files = False;
 	protected $has_images = False;
@@ -106,6 +107,27 @@ class Model extends ActiveRecord {
 		echo '</data></response>';
 
 		exit;
+	}
+
+	public function reorderListAjax($id, $pre) {
+		$rows = web::database()->query("SELECT id FROM ".$this->getDatabaseTable()." ORDER BY ".$this->field_used_for_ordenation.", id")->fetchAll();
+		$count = 0;
+
+		if($pre == 'null')
+			web::database()->query("UPDATE ".$this->getDatabaseTable()." SET ".$this->field_used_for_ordenation."=".($count++)." WHERE id=$id");
+
+		foreach($rows as $row) {
+
+			if($row['id'] != $id)
+				web::database()->query("UPDATE ".$this->getDatabaseTable()." SET ".$this->field_used_for_ordenation."=".($count++)." WHERE id=".$row[id]);
+
+			if($row['id'] == $pre)
+				web::database()->query("UPDATE ".$this->getDatabaseTable()." SET ".$this->field_used_for_ordenation."=".($count++)." WHERE id=$id");
+
+		}
+
+		exit;
+
 	}
 
 	public function autocompleteAjax($valor) {

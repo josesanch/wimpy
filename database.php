@@ -14,7 +14,12 @@ class Database extends PDO {
 
 	}
 
-
+	/**
+	* 	Return true if the table passed by param exists otherwise returns false
+	*
+	*	@param $table Name of the table to check.
+	* 	@returns true if exists the table in the selected database.
+	*/
 	public function tableExists($table) {
 //		echo "Table exists: $table<br/>";
 		$rs = $this->query("show tables like '$table'");

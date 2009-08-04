@@ -46,13 +46,15 @@ class helpers_l10n extends Model {
 		exit;
 	}
 
-	public function getFields() {
-		return array("id" => array("type" => "int", 'label' => 'id', 'primary_key' => true),
+	public function getFields($field = null) {
+		$fields = array("id" => array("type" => "int", 'label' => 'id', 'primary_key' => true),
 					"lang" => array("type" => "varchar", 'size' => 6,  'label' => 'lang'),
 					"model" => array("type" => "varchar", 'size' => 125,  'label' => 'model'),
 					"field" => array("type" => "varchar", 'size' => 255,  'label' => 'field'),
 					"data" => array("type" => "text",  'label' => 'data'),
 					"row" => array("type" => "int", 'size' => 11,  'label' => 'row'));
+		if($field) return $fields[$field];
+		return $fields;
 	}
 
 
