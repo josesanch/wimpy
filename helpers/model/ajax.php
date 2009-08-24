@@ -136,33 +136,6 @@ class helpers_model_ajax  {
 		exit;
 	}
 
-	public function saveImages($id) {
-		$this->model->select($id);
-		$field = web::request("field");
-		if(!$this->model->uploadImage($field, true)) {
-			echo "{ success : false }";
-		} else {
-			echo "{ success : true }";
-		}
-		exit;
-	}
-
-
-	public function deleteFiles($idimagen) {
-		$image = new helpers_files();
-		$image->delete($idimagen);
-		echo "{ success: true }";
-		exit;
-	}
-
-	public function deleteImages($idimagen) {
-		$image = new helpers_images();
-		$image->delete($idimagen);
-		echo "{ success: true }";
-		exit;
-	}
-
-
 	public function reorderImages($idimagen, $mode = 'up') {
 		$imagen = new helpers_images();
 		$imagen->select($idimagen);
