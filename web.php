@@ -243,11 +243,12 @@ class Web {
 	}
 
 	private function callAjaxDispatcher() {
-		// Cuando el controlador es ajax llamamos a la funcion functionAjax del modelo /ajax/model/function
+		// Cuando el controlador es ajax llamamos a la funcion function usando helpers_model_ajax del modelo /ajax/model/function
 		$controller_name = $this->action;
 		$action = array_shift($this->params);
 		$model = new $controller_name();
-		call_user_method_array($action."Ajax", $model, $this->params);
+		$ajax = new helpers_model_ajax($model);
+		call_user_method_array($action, $ajax, $this->params);
 	}
 
 	public function getApplicationPath() {
@@ -356,6 +357,8 @@ class Web {
 	}
 
 	public static function debug($texto, $file, $linea) {
+//		log::to_file("EXEC $texto<hr>");
+
 		if(web::request("debug") == "true" || $_SESSION['debug'] == "true") {
 			echo "<pre style='padding: 1em; border: 1px dashed #666;'><span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
 			var_dump($texto);

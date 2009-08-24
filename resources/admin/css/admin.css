@@ -250,3 +250,18 @@ a.query_page {
 }
 
 .submit { margin: 1px;}
+
+
+/*****************************************************************************************************************
+*	IMAGES DATAVIEW
+*****************************************************************************************************************/
+.images-dataview {clear: both;  border: 1px solid gray; margin: 0; padding: 1em; outline: 0; list-style: none; overflow: hidden; background-color: #eed;}
+.images-dataview li { margin: 0; padding: 0; width: 150px; height: 110px; float: left; ; overflow: hidden; text-align: center; }
+.images-dataview p:hover { background-color: #eea; border: 1px solid gray;  }
+.images-dataview li div { text-align: center; overflow: hidden; padding: 5px;  margin: auto;  width: 100px;}
+.images-dataview li p { clear: both; display: inline; margin: auto; text-align: center;  border: 1px solid transparent;   }
+.images-dataview li div img { padding: 0px; display: block; margin: auto; float: left; }
+.images-dataview li div a { float: left; display: block; }
+.images-dataview li div a img { border: 1px solid gray; }
+
+h5.images { border: 1px solid #666; border-bottom: 0px; clear: both; background-color: #999;  color: white; font-weight: bold; font-size: 1.1em; padding: 3px 0px 1px 3em;}

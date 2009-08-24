@@ -175,7 +175,6 @@ class helpers_files extends ActiveRecord {
 					$image = new Imagick($this->phisical().'[0]');
 				    $image->setImageFormat("png");
 					$image->thumbnailImage($size[0], $size[1], true);
-			    	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[0], $xcenter, $ycenter, $operation);
 	    	    	if(!is_dir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/")) mkdir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/", 0744, true);
 					$image->writeImage($_SERVER["DOCUMENT_ROOT"].$this->cached_image_url.".png");
 					$image->clear();
@@ -196,7 +195,7 @@ class helpers_files extends ActiveRecord {
 
 
     private function cacheImage($url, $img) {
-    	if(!is_dir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/")) mkdir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/", 0744, true);
+    	if(!is_dir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/")) mkdir($_SERVER["DOCUMENT_ROOT"]."/cached/imgs/", 0777, true);
 		$img->save($_SERVER["DOCUMENT_ROOT"].$url.".".$this->output_type, $this->output_type);
 	}
 

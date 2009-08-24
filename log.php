@@ -25,7 +25,7 @@ class log {
 	}
 
 	function to_file($str) {
-		fwrite(fopen($_SERVER["DOCUMENT_ROOT"] . "/log_debug.html", "a+"), time().": $str\n");
+		fwrite(fopen($_SERVER["DOCUMENT_ROOT"] . "/log_debug.txt", "a+"), time().": $str\n");
 	}
 
 	function verbose($arr = null, $type = 4) {

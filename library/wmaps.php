@@ -8,13 +8,13 @@
 
 class WMaps {
 
-    private $width 	= 100;
+    private $width = 100;
     private $height = 100;
-	private $centerMap = array();
+    private $centerMap = array();
     private $apiKey = "";    public $show_control = true;
     public $show_type = true;
     public $control_type = 'small';
-    public $zoomLevel = 4;
+    public $zoom = 4;
     private $points = array();
     private $id = "map";
 	private $map_type = "G_NORMAL_MAP";
@@ -24,7 +24,7 @@ class WMaps {
 
 
 	public function __call($method, $args) {
-		if(!in_array($method, array("width", "height", "key", "show_control", "zoom", "id", "clustered", "fitMapToMarkers", "map_type"))) return;
+		if(!in_array($method, array("width", "height", "key", "show_control", "zoom", "id", "clustered", "fitMapToMarkers", "map_type", "show_type"))) return;
 
 		if (empty($args)) {
 			return $this->$method;
@@ -66,34 +66,32 @@ class WMaps {
 		return $icon;
 	}
 
+	public function jsapi() { return "<script src='http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=".$this->key."' type='text/javascript'></script>"; }
 	public function initialize() {
 		$str = "
 <div id='{$this->id}' style='width: $this->width; height: $this->height;'></div>
-<script src='http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=".$this->key."' type='text/javascript'></script>
+
 <script type='text/javascript'>
-	var {$this->id}; var myPano; var svOverlay;
+	var {$this->id};
 
     function initialize_GoogleMAPS() {
 		if (GBrowserIsCompatible()) {
-		    myPano = new GStreetviewPanorama(document.getElementById('streetview'));
-			GEvent.addListener(myPano, 'error', handleNoFlash);
 	  		{$this->id} = new GMap2(document.getElementById('$this->id'));
 			{$this->id}.enableScrollWheelZoom();
 			";
 
 		if ($this->show_control) {
-			if ($this->control_type == 'small') { $str.= "map.addControl(new GSmallMapControl());\n"; }
-          	if ($this->control_type == 'large') { $str.= "map.addControl(new GLargeMapControl());\n"; }
+			if ($this->control_type == 'small') { $str.= "{$this->id}.addControl(new GSmallMapControl());\n"; }
+          	if ($this->control_type == 'large') { $str.= "{$this->id}.addControl(new GLargeMapControl());\n"; }
 		}
 
-		if($this->show_type) $str.= "map.addControl(new GMapTypeControl());\n";
-      	if($this->centerMap) $str.= "map.setCenter(new GLatLng(".$this->centerMap[0].",".$this->centerMap[1]."), $this->zoomLevel);";
-      	if($this->map_type != "G_NORMAL_MAP") $str.= "map.setMapType($this->map_type);";
+		if($this->show_type) $str.= "{$this->id}.addControl(new GMapTypeControl());\n";
+      	if($this->centerMap) $str.= "{$this->id}.setCenter(new GLatLng(".$this->centerMap[0].",".$this->centerMap[1]."), $this->zoom);";
+      	if($this->map_type != "G_NORMAL_MAP") $str.= "{$this->id}.setMapType($this->map_type);";
 
 	$str .= "
 		}
 	}
-	function handleNoFlash(errorCode) { if (errorCode == FLASH_UNAVAILABLE) { alert('Error: Flash doesn\'t appear to be supported by your browser'); return; } }
 	initialize_GoogleMAPS();
 </script>";
 	   	return $str;
@@ -105,7 +103,7 @@ class WMaps {
 
 		$str = "
 <script type='text/javascript'>
-			var marker, markersArray=[];";
+		var {$this->id}_markersArray=[];";
 
 
 		foreach($this->icons as $icon) $str .= $icon->js();
@@ -117,8 +115,8 @@ class WMaps {
 
 		// Esto es para clustermarker
        	if($this->clustered)  {
-       		$str .= "var cluster=new ClusterMarker(map, { markers:markersArray, clusterMarkerTitle : '$this->clustered_title' } );";
-	       	$str .= "cluster.fitMapToMarkers();";
+       		$str .= "var {$this->id}_cluster = new ClusterMarker({$this->id}, { markers : {$this->id}_markersArray, clusterMarkerTitle : '$this->clustered_title' } );";
+	       	$str .= "{$this->id}_cluster.fitMapToMarkers();";
 	    }
 	    // Ponemos los eventos al final para que los puntos se cargen antes.
 	    $str .= $events;
@@ -136,7 +134,7 @@ class WMaps {
 		return array("city" => "Mula", "region_name" => "Murcia", "country_name" => "España", "latitude" =>  38.035112, "longitude" => -1.539459);
     }
 
-	public function display() { return $this->initialize().$this->geoPoints(); }
+	public function display() { return $this->jsapi().$this->initialize().$this->geoPoints(); }
 
 }
 
@@ -162,25 +160,25 @@ class MapsPoint {
 	public function js($map) {
 			$map_id = $map->id();
 
-			$options = array("title : '".str_replace(array('"'), '\"', str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $this->name))."'");
+			$options = array('title : "'.str_replace(array('"'), '\"', str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $this->name)).'"');
 			if($this->icon) $options[]= "icon : icon_{$this->icon}";
 
 			$options = "{ ".implode(", ", $options)." }";
 
-			$str = "\nvar marker{$this->count} = new GMarker(new GLatLng($this->latitude, $this->longitude), ".($options).");markersArray.push(marker{$this->count});";
-			if(!$map->clustered) $str .= "{$map_id}.addOverlay(marker{$this->count});";
+			$str = "\nvar {$map_id}_marker{$this->count} = new GMarker(new GLatLng($this->latitude, $this->longitude), ".($options).");{$map_id}_markersArray.push({$map_id}_marker{$this->count});";
+			if(!$map->clustered) $str .= "{$map_id}.addOverlay({$map_id}_marker{$this->count});";
 
 			// Mostramos el mensaje al pulsar
-			if($this->message) $events .= "\nGEvent.addListener(marker{$this->count}, 'click', function() { ".$this->getMessage()." } );";
+			if($this->message) $events .= "\nGEvent.addListener({$map_id}_marker{$this->count}, 'click', function() { ".$this->getMessage($map_id)." } );";
 
 			// procesamos los callbacks
 			foreach($this->callback as $event => $function)
-				$events .= "\nGEvent.addListener(marker{$this->count}, '$event', function() { $function(marker{$this->count}, '$this->id'); } );";
+				$events .= "\nGEvent.addListener({$map_id}_marker{$this->count}, '$event', function() { $function({$map_id}_marker{$this->count}, '$this->id'); } );";
 
 			return array($str, $events);
 	}
 
-	private function getMessage() {
+	private function getMessage($map_id) {
 		if(is_array($this->message)) {
 			// Creamos las pestañas
 			$tabs = array();
@@ -188,10 +186,10 @@ class MapsPoint {
 				$message = str_replace(array('"'), "'", str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $contenido));
 				$tabs[]= "\n	new GInfoWindowTab(\"$titulo\",\"".$message."\")";
 			}
-			$str.= "marker".$this->count.".openInfoWindowTabsHtml([".implode(",", $tabs)."]);\n";
+			$str.= "{$map_id}_marker".$this->count.".openInfoWindowTabsHtml([".implode(",", $tabs)."]);\n";
 		} else {
 			$message = str_replace(array('"'), '\"', str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $this->message));
-			$str = "marker".$this->count.".openInfoWindowHtml(\"".$message."\");\n";
+			$str = "{$map_id}_marker".$this->count.".openInfoWindowHtml(\"".$message."\");\n";
 		}
 		return $str;
 
@@ -210,12 +208,9 @@ class MapsPoint {
 class MapsIcon {
 	public $image, $shadow, $iconSize, $shadowSize, $iconArchor;
 
-	public function __construct($name, $image, $shadow, $size, $ssize) {
+	public function __construct($name, $image) {
 		$this->name = $name;
 		$this->image = $image;
-		$this->shadow = $shadow;
-		$this->iconSize = $size;
-		$this->shadowSize = $ssize;
 	}
 
 	public function __call($method, $args) {
@@ -228,11 +223,13 @@ class MapsIcon {
 	}
 
 	public function js() {
-
-		$str = "var icon_{$this->name} = new GIcon();\n";
+		$options = array();
 		foreach(get_object_vars($this) as $item => $value) {
-			if($value && $item != 'name') $str .= "icon_{$this->name}.$item = $value;";
+			if(in_array($item, array("shadow"))) $value = "'$value'";
+			if($value && $item != 'name') $options[]= "'$item' : $value";
 		}
+
+		$str = "var icon_{$this->name} = new GIcon({".implode(',', $options)."});\n";
 		return $str;
 	}
 }

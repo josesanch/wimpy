@@ -70,13 +70,13 @@ function __($str) {
 	return l10n::instance()->get($str);
 }
 
-function init_extjs() {
-	return css_once("ext/resources/css/ext-all")."\n".
-		css_once("ext/resources/css/xtheme-gray")."\n".
-		js_once("ext/adapter/ext/ext-base")."\n".
-		js_once("ext/ext-all")."\n".
+function init_extjs($version = "ext") {
+	return css_once("$version/resources/css/ext-all")."\n".
+		css_once("$version/resources/css/xtheme-gray")."\n".
+		js_once("$version/adapter/ext/ext-base")."\n".
+		js_once("$version/ext-all")."\n".
 //		js_once("ext/ext-all-debug").
-		js_once("ext/build/locale/ext-lang-sp")."\n";
+		js_once("$version/build/locale/ext-lang-sp")."\n";
 }
 
 function make_link_resources() {
@@ -221,4 +221,40 @@ function date_to_sql($date) {
 	return "$year-$month-$day";
 }
 
+
+function checkFileSafety($file) {
+		$safeExtensions = array(
+		  'html',
+		  'htm',
+		  'gif',
+		  'jpg',
+		  'jpeg',
+		  'png',
+		  'txt',
+		  'avi',
+		  'mp3',
+		  'wav',
+		  'pdf',
+		  'doc',
+		  'exe',
+		  'zip',
+		  'rar',
+		  'ppt',
+		  'pps',
+		  'docx',
+		  'xlsx',
+		  'pptx',
+		  'ogg',
+		  'flv'
+		);
+
+		$path_parts = pathinfo($file['name']);
+		$extension = $path_parts['extension'];
+
+		if(!in_array(strtolower($extension), $safeExtensions)) {
+			unlink($file['tmp_name']);
+			return false;
+		}
+		return true;
+}
 ?>
