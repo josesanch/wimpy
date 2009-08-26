@@ -152,14 +152,14 @@ class MapsPoint {
 		$this->message = $message;
 		$this->icon = $icon;
 		$this->id = $id;
-		if($id) $this->count = $id;
+
 		$this->callback = $callback;
 	}
 
 
 	public function js($map) {
 			$map_id = $map->id();
-
+			if($this->id) $this->count = $this->id;
 			$options = array('title : "'.str_replace(array('"'), '\"', str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $this->name)).'"');
 			if($this->icon) $options[]= "icon : icon_{$this->icon}";
 

@@ -67,13 +67,14 @@ class Model extends ActiveRecord {
 			$items = $type == 'image' ? new helpers_images() : new helpers_files();
 			$orden = $items->count("module='$module' and iditem='".$this->$primary_key."'");
 			$item = $type == 'image' ? new helpers_images() : new helpers_files();
+			$mime_type = mime_content_type($file['tmp_name']);
 			$values = array(
 							"iditem" => $this->id,
 						//	"descripcion" => $descripcion,
 							"extension" => $extension,
 							"nombre" => $file["name"],
 //							"tipo" => $file["type"],
-							"tipo" => $file['tmp_name'],
+							"tipo" => $mime_type,
 							"fecha" =>  date("Y-m-d H:i:s"),
 							"module" => $module,
 							"orden" => $orden + 1
