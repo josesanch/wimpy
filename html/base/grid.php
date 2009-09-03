@@ -59,7 +59,15 @@ class html_base_grid extends html_object {
 			}
 		}
 		$results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
+		$de = ($model->current_page - 1) * $model->page_size + 1;
+		$hasta = $de + $model->page_size - 1;
+		$hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
 
+		$paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
+		$paginacion = helpers_paginate::toHtml($results);
+		if($paginacion) $paginas[]= $paginacion;
+
+		$paginas = implode("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;", $paginas);
 		$form->add("
 				<div style='width: 90%; background-color: gray; margin: auto; '>
 				<div style='padding: 10px; color: white; width: 98%; height: 20px;' >
@@ -68,7 +76,8 @@ class html_base_grid extends html_object {
 							Buscar: <input type='text' name='search' value='".urldecode(web::request('search'))."' size=20>
 							<input type=button value=buscar onclick=\"do_search(this.form)\";>
 							<input type=button value=' + nuevo' onclick='document.location=\"/admin/".get_class($model)."/edit/0".web::params()."\"'>
-						<td align='right'>".helpers_paginate::toHtml($results)."</td>
+
+						<td align='right'>$paginas</td>
 					</table>
 				</div>
 				</div>

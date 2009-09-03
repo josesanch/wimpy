@@ -29,7 +29,7 @@ class helpers_model_ajax  {
 			case 'read':
 				$this->model->select($id);
 				$images = new helpers_images();
-				$module = web::request("tmp_upload") ? web::request("tmp_upload") : get_class($this->model);
+				$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->model->image_label;
 				if(!web::request("tmp_upload")) $cond = " and iditem='$id' ";
 
 				$data =  $images->select("module='$module' $cond and field='$field' ", "order:orden", "columns: id, nombre, extension, tipo");
