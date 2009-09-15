@@ -27,6 +27,7 @@
 		<div id="tabs">
           <ul>
 			{$data->getMenu()}
+			{if:$data->show_back_to_web}<li class='volver-a-web'><a href='http://{eval:return $_SERVER['SERVER_NAME']}'>{t:Ver web pública}</a></li>{/if}
           </ul>
 		</div>
 	</div><div id="crumbsWrapper">

@@ -5,9 +5,10 @@ body {
   margin: 0px 0px 0px 0px;
 }
 
-	#header_div { margin: 0px 10px auto 0px;  position: absolute; text-align: right; float: right; width: 100%;}
+	#header_div {   text-align: right; width: 96%; position: absolute; margin-top: 0.6em;}
+	#boton_salir { color:#a0a0a0; text-decoration: none;}
 	#logo { margin: auto auto 20px auto; float: left;}
-	#boton_salir { margin: auto 10px auto auto; float: right; width: 4em; text-align: center; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
+
 	#menu_div { background-color: white; border: 1px solid white;}
 	#content_div { background-color: white; margin: 2em 2em; }
 
@@ -44,7 +45,7 @@ h1 {
 
 #tabs ul {
   margin: 0;
-  padding: 0 100px;
+  padding: 0 4%;
   list-style: none;
 }
 
@@ -95,7 +96,8 @@ h1 {
 
 
 }
-
+#tabs ul li.volver-a-web  {float: right; font-weight: normal;}
+#tabs ul li.volver-a-web a { font-weight: normal;}
 /** Crumbs **/
 
 #crumbsWrapper {
@@ -119,7 +121,7 @@ h1 {
 
 #crumbs {
   float: left;
-  padding-left: 100px;
+  padding-left: 4%;
 
 }
 

@@ -13,6 +13,7 @@ class AdministrationController extends ApplicationController {
 	public $show_webmail = true;
 	public $show_stats = true;
 	public $show_menu = true;
+	public $show_back_to_web = true;
 	public $show_languages = false;
 	public $show_header = true;
 	public $url_webmail;
