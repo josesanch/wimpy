@@ -39,12 +39,12 @@ class html_form_files extends html_form_input {
 		$fileDataName = $field ? $field : "file";
 
 		$str .= "
-		<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform' style='clear: both;'>".$this->attrs['label']."</label>
+		<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform no-margin' style='clear: both;'>".$this->attrs['label']."</label>
 		<div id='container-files-$field'></div>
 
 		<div id='fileQueue_$field'></div>
-		<div style='clear: both; float: right; width: 120px; margin-top: 5px; '>
-			<input type='file' name='uploadify_$field' id='uploadify_$field' />
+		<div class='contenedor-boton-upload'>
+			<input type='file' name='uploadify_$field' id='uploadify_$field'/>
 		</div>
 		<script type='text/javascript'>
 				function load_images_$field() {

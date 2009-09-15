@@ -19,11 +19,11 @@ class Web {
 	private static $default_instance;	// La primera clase que se crea
 	private $default_controller = "index";
 	private $application_path;
-	public $defaultHtmlEditor = "fckeditor";
+	public $defaultHtmlEditor = "ckeditor";
 	public $controller, $action, $params, $uri, $model;
 	public $l10n;
 	public $initialized = false;
-
+	public $bench;
 
 	public function __construct($database = null, $languages = null) {
 		session_start();
@@ -35,6 +35,7 @@ class Web {
 		if(!web::$default_instance)  {
 			web::$default_instance = $this;
 			$this->l10n = new l10n();
+			$this->bench = new bench();
 
 		}
 //		if($languages) $this->setLanguages($languages);
@@ -142,7 +143,7 @@ class Web {
 		$_SESSION['initialized'] = true;
 
 		if(!$uri) {
-			$render = true;
+			$this->render = $render = true;
 			$uri = $_SERVER["REQUEST_URI"];
 		}
 
@@ -160,6 +161,10 @@ class Web {
 				$this->callAjaxDispatcher();
 			break;
 
+			case 'helpers':
+				$this->callHelpersDispatcher();
+			break;
+
 			case 'resources':
 				if(file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
 					return $this->callDefaultDispatcher($render, $view);
@@ -171,6 +176,7 @@ class Web {
 			default:
 				return $this->callDefaultDispatcher($render, $view);
 		}
+
 	}
 
 
@@ -250,6 +256,15 @@ class Web {
 		$ajax = new helpers_model_ajax($model);
 		call_user_method_array($action, $ajax, $this->params);
 	}
+
+	private function callhelpersDispatcher() {
+		// Cuando el controlador es ajax llamamos a la funcion function usando helpers_model_ajax del modelo /helpers/class/action
+		$controller_name = "helpers_$this->action";
+		$action = array_shift($this->params);
+		$model = new $controller_name();
+		call_user_method_array($action, $model, $this->params);
+	}
+
 
 	public function getApplicationPath() {
 		return $this->application_path;
@@ -381,5 +396,8 @@ class Web {
 		}
 	}
 
+	public static function bench() {
+		if(!web::instance()->isInProduction()) return web::instance()->bench->toHtml();
+	}
 }
 ?>

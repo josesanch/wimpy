@@ -1,15 +1,15 @@
 
 body {
   font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 11px;  background-color: #E5E5E5;
+  font-size: 12px;  background-color: #E5E5E5;
   margin: 0px 0px 0px 0px;
 }
 
-	#header_div { margin: 0px 10px auto 0px;  background-color: white;}
+	#header_div { margin: 0px 10px auto 0px;  position: absolute; text-align: right; float: right; width: 100%;}
 	#logo { margin: auto auto 20px auto; float: left;}
-	#boton_salir { margin: auto 10px auto auto; float: right; border: 1px dotted lightgray; width: 4em; text-align: center; background-color: #DFDFDF; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
+	#boton_salir { margin: auto 10px auto auto; float: right; width: 4em; text-align: center; color:#a0a0a0; text-decoration: none; margin-top: 5px; padding-top: 1px;  padding-bottom: 1px;}
 	#menu_div { background-color: white; border: 1px solid white;}
-	#content_div { background-color: #E5E5E5; }
+	#content_div { background-color: white; margin: 2em 2em; }
 
 
 
@@ -23,8 +23,10 @@ h1 {
 
 
 #tabsWrapper {
-  margin: 5px auto 0 auto;
+  margin: 0px auto 0 auto;
+  padding-top: 0.5em;
   text-align: left;
+	background: url("/resources/admin/images/header.gif") 0 120%;
 
 
 }
@@ -34,7 +36,10 @@ h1 {
 }
 
 #tabs {
-  float: left;
+	width: 100%;
+	overflow: hidden;
+	margin-top: 2em;
+	background: url("/resources/admin/images/menu.gif");
 }
 
 #tabs ul {
@@ -46,58 +51,61 @@ h1 {
 #tabs ul li {
   margin: 0 ;
   float: left;
-  background: url('/resources/admin/images/tab_right.gif') no-repeat top right;
+
 }
 
 #tabs ul li a {
   border: 0;
   display: block;
   padding: 0 15px;
-  background: url('/resources/admin/images/tab_left.gif') no-repeat top left;
-  text-align: center;
-  color: #666;
-  font-size: 1.3em;
-  line-height: 28px;
-  text-decoration: none;
-}
+	color: #d4d4d4;
 
-#tabs ul li a:hover {
- border: 0;
-  display: block;
-  padding: 0 15px;
+
   text-align: center;
-  color: #000;
-  font-size: 1.3em;
+	font-weight: bold;
+  font-size: 1.1em;
   line-height: 2em;
   text-decoration: none;
 }
 
-#tabs ul li.active {
-  background: url('/resources/admin/images/tab_active_right.gif') no-repeat top right;
+#tabs ul li a:hover {
+	border: 0;
+  display: block;
+  padding: 0 15px;
+	color: white;
+  text-align: center;
+  background: #ffa600;
+  font-size: 1.1em;
+  line-height: 2em;
+  text-decoration: none;
 }
+
 
 #tabs ul li.active a {
   	padding: 0 15px;
-
-  	background: url('/resources/admin/images/tab_active_left.gif') no-repeat top left;
   	color: white;
 	line-height:2em;
 	font-weight:bold;
+  background: #ffa600 url(/resources/admin/images/menutop.gif) 50% 0% no-repeat;
 }
 
 #tabs ul li.active a:hover {
   color: white;
   text-decoration: none;
+
+
 }
 
 /** Crumbs **/
 
 #crumbsWrapper {
   clear: both;
-  background: #515151;
+  background: #3A3A3A;
   margin: 0 auto;
   float: left;
   width: 100%;
+  border-top: 2px solid #FFA600;
+
 
 }
 
@@ -112,6 +120,7 @@ h1 {
 #crumbs {
   float: left;
   padding-left: 100px;
+
 }
 
 #crumbs ul {
@@ -124,7 +133,7 @@ h1 {
   display: inline;
   line-height: 22px;
   color: white;
-  font-size: 10px;
+  font-size: 0.9em;
   font-weight: bold;
 }
 
@@ -169,9 +178,10 @@ h1 {
 *	FORMS
 *****************************************************************************************************************/
 
-fieldset.admin_form {	background-color: #f0f0f0; border: 1px solid #C9DCA6; padding: 2em 2.5em;width: 85%; margin: auto; }
+fieldset.admin_form {	background-color: #fcfcfc; border: 2px solid #FFA600; padding: 2em 2em; margin: 0em 1em 1em 1em; }
 
 label.autoform {
+
 	display: block;
 	padding-bottom: 2em;
 	font-weight: bold; color: gray;
@@ -181,16 +191,18 @@ label.autoform {
 
 }
 
-label.autoform span {  display: block; }
-label.autoform input  { margin-top: 0.1em; }
+
+
+label.autoform span {  display: block; 	}
+
+label.autoform input  { margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; }
 
 label.autoform.textarea { clear: both; }
-label.autoform.textarea textarea { float: left; margin-top: 0.1em; }
-
+label.autoform.textarea textarea { float: left; margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333;  padding: 0.2em;}
 label.autoform.htmleditor { width: 100%;}
-div.form-buttons  { clear: both; padding-top: 1em; display: block; margin: auto; width: 18em;}
 
-
+div.form-buttons  { clear: both; padding-top: 1em; display: block; margin: auto;  text-align: center; }
+div.form-buttons  input { display: inline; }
 
 textarea, input[type=text] { border: 1px solid gray; }
 textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
@@ -199,7 +211,14 @@ input.error { border: 1px dotted red;  }
 
 label.error { background: url("/resources/icons/jquery.liveValidation-invalid.png") 0 50% no-repeat; padding-left: 20px; margin-top: 3px; color: red; display: block; font-weight: normal; text-transform: none;}
 
-fieldset legend { margin-top: 1px; font-weight: bold; color: gray; font-size: 2em;}
+fieldset legend { margin: 0px; padding: 0px;  font-weight: bold; color: gray; font-size: 2em;}
+
+/*****************************************************************************************************************
+*	CKEDITOR
+*****************************************************************************************************************/
+
+label.ckeditor { overflow: hidden; display: block; float: none; clear: both; font-weight: bold; color: gray; }
+.cke_skin_kama { margin-bottom: 2em; }
 
 /* === GRID ======================================== */
 table.grid {
@@ -208,10 +227,12 @@ table.grid {
 }
 .grid_header {
 	padding: 3px;
-
-	background-color: #C9DCA6;
+	background: url("/resources/admin/images/menu.gif");
 	font-weight: bold;
+
+
 }
+
 
 tr.row_even {
 	background-color: #f0f0f0;
@@ -223,8 +244,8 @@ tr.row_odd {
 
 
 tr.grid_row_hover {
-	background-color: #a4a7db;
-	color: white;
+	background-color: #DBDBDB;
+	color: #;
 	cursor: pointer;
 }
 
@@ -235,13 +256,14 @@ td.grid_cell {
 	padding-right: 5px;
 
 }
+td.grid_cell a { color: #333; text-decoration: none; padding: 0.1em 0px; display: block; }
 a.header {
-	color: #64676b;
+	color: white;
 	text-decoration: none;
 
 }
 a.header:hover {
-	color: blue;
+	color: white;
 	text-decoration: underline;
 }
 a.query_page {
@@ -255,7 +277,7 @@ a.query_page {
 /*****************************************************************************************************************
 *	IMAGES DATAVIEW
 *****************************************************************************************************************/
-.images-dataview {clear: both;  border: 1px solid gray; margin: 0; padding: 1em; outline: 0; list-style: none; overflow: hidden; background-color: #eed;}
+.images-dataview { clear: both;  border: 1px solid #002B58; margin: 0; padding: 1em; outline: 0; list-style: none; overflow: hidden; background: white url("/resources/admin/images/header.gif") 0px 100% repeat-x;  }
 .images-dataview li { margin: 0; padding: 0; width: 150px; height: 110px; float: left; ; overflow: hidden; text-align: center; }
 .images-dataview p:hover { background-color: #eea; border: 1px solid gray;  }
 .images-dataview li div { text-align: center; overflow: hidden; padding: 5px;  margin: auto;  width: 100px;}
@@ -264,4 +286,27 @@ a.query_page {
 .images-dataview li div a { float: left; display: block; }
 .images-dataview li div a img { border: 1px solid gray; }
 
-h5.images { border: 1px solid #666; border-bottom: 0px; clear: both; background-color: #999;  color: white; font-weight: bold; font-size: 1.1em; padding: 3px 0px 1px 3em;}
+h5.images { border-bottom: 0px; clear: both; 	background: url("/resources/admin/images/menu.gif"); color: white; font-weight: bold; font-size: 1.1em; padding: 3px 0px 1px 3em;  margin: 0;}
+div.contenedor-boton-upload object  { float: right; }
+div.contenedor-boton-upload { clear: both; margin-top: 5px; margin-bottom: 2em; }
+.autoform.no-margin { padding: 0px; }
+
+
+/*****************************************************************************************************************
+*	LISTADOS
+*****************************************************************************************************************/
+div.listado-resultados { width: 98%;  color: #333; margin: auto;  }
+div.listado-resultados div { margin-bottom: 0.5em; }
+div.pie-listado-resultados { width: 98%; margin: auto; text-align: right; color: white; }
+div.pie-listado-resultados div { padding: 5px; color: #333; }
+div.listado-resultados .texto-buscar { border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; margin-left: 0.5em;}
+div.listado-resultados .boton-buscar { padding: 0.2em; border: 0px; background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat; padding-left: 20px;; color: white; margin-left: 0.5em; }
+div.listado-resultados .boton-nuevo { padding: 0.2em; border: 0px; background: #99D177 url("/resources/admin/images/list-add.png") 5px 50% no-repeat; padding-left: 20px;; color: white;  margin-left: 0.5em; }
+
+
+/*****************************************************************************************************************
+*	FORMULARIO
+*****************************************************************************************************************/
+input.boton-volver { padding: 0.3em; border: 0px; background: #96AABF url("/resources/admin/images/edit-undo.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
+input.boton-eliminar { padding: 0.3em; border: 0px; background: #FFB5B5 url("/resources/admin/images/process-stop.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
+input.boton-guardar { padding: 0.3em; border: 0px; background:  #99D177 url("/resources/admin/images/document-save.png") 5px 50% no-repeat; padding-left: 25px; color: white; margin-left: 0.5em;}

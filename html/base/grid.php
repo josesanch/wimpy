@@ -69,13 +69,13 @@ class html_base_grid extends html_object {
 
 		$paginas = implode("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;", $paginas);
 		$form->add("
-				<div style='width: 90%; background-color: gray; margin: auto; '>
-				<div style='padding: 10px; color: white; width: 98%; height: 20px;' >
+				<div class='listado-resultados'>
+				<div>
 					<table border=0 width='100%' cellpadding=0 cellspacing='0'>
 						<td>
-							Buscar: <input type='text' name='search' value='".urldecode(web::request('search'))."' size=20>
-							<input type=button value=buscar onclick=\"do_search(this.form)\";>
-							<input type=button value=' + nuevo' onclick='document.location=\"/admin/".get_class($model)."/edit/0".web::params()."\"'>
+							Buscar: <input type='text' name='search' class='texto-buscar' value='".urldecode(web::request('search'))."' size=20>
+							<input type=button value=buscar class='boton-buscar'  onclick=\"do_search(this.form)\";>
+							<input type=button value='nuevo' class='boton-nuevo' onclick='document.location=\"/admin/".get_class($model)."/edit/0".web::params()."\"'>
 
 						<td align='right'>$paginas</td>
 					</table>
@@ -85,7 +85,7 @@ class html_base_grid extends html_object {
 
 		");
 
-		$form->add("\n<table border=0 class='grid' cellpadding=3 cellspacing=1 align=center width='90%'>
+		$form->add("\n<table border=0 class='grid' cellpadding=3 cellspacing=1 align=center width='98%'>
 						<tr >\n");
 
 		foreach($columns as $column) {
@@ -112,14 +112,14 @@ class html_base_grid extends html_object {
 
 
 			foreach($columns as $column) {
-				$form->add("	<td class=grid_cell>".$row->get($column)."</td>\n");
+				$form->add("	<td class=grid_cell><a href='/admin/".get_class($row)."/edit".web::params("/".$row->get("id"))."'>".$row->get($column)."</a></td>\n");
 			}
 
 			$form->add("</tr>\n");
 		}
 		$form->add("</tbody></table>\n");
 
-		$form->add("<div style='width: 90%; background-color: gray; margin: auto; text-align: right;'><div style='padding: 5px;margin-right: 10px; color: white;'>".helpers_paginate::toHtml($results)."</div></div><br><br>
+		$form->add("<div class='pie-listado-resultados'><div>".helpers_paginate::toHtml($results)."</div></div><br>
 		<script>
 			var background = '';
 			$('.grid_row').bind('mouseover', function() {

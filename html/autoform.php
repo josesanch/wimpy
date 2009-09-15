@@ -52,14 +52,14 @@ class html_autoform extends html_form {
 				$('#".get_class($this->model)."').validate();
 			</script>
 			<div class='form-buttons'>
-				<input class='submit' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
+				<input class='submit boton-volver' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
 			");
 
 		if($this->model->id)
-			$this->add("<input class='submit' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">");
+			$this->add("<input class='submit boton-eliminar' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">");
 
 		$this->add("
-				<input class='submit' type='submit' value=enviar>
+				<input class='submit boton-guardar' type='submit' value='guardar'/>
 			</div>
 			");
 		$this->add("</fieldset>");

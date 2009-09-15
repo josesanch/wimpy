@@ -17,6 +17,8 @@ class html_form_htmleditor extends html_form_input {
 				return $this->toHtmlFCKeditor();
 			case "tinymce":
 				return $this->toHtmlTinymce();
+			case "ckeditor":
+				return $this->toHtmlCKeditor();
 		}
 
 //
@@ -103,6 +105,24 @@ class html_form_htmleditor extends html_form_input {
 		$txt = $oFCKeditor->CreateHtml() ;
 		$str .= $txt;
 		if($this->attrs['label']) $str .= "</label>";
+		return $str;
+	}
+
+
+	private function toHtmlCKeditor() {
+		$str = js_once('ckeditor/ckeditor')."\n".js_once('ckeditor/config');
+		$id = $this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'];
+		if($this->attrs['label']) {
+			$str .= "
+					<label for='$id' class='ckeditor'>
+						<span>".$this->attrs['label']."</span>
+					</label>
+					";
+
+		}
+
+		$str .= '<textarea name="'.$id.'" id="'.$id.'" class="ckeditor">'.$this->attrs['value'].'</textarea>';
+//		if($this->attrs['label']) { $str .= "</label>\n"; }
 		return $str;
 	}
 }

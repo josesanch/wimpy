@@ -59,7 +59,6 @@ class Model extends ActiveRecord {
 //		log::to_file("Upload $field, tipo: $type");
 //		log::to_file("vardump ".var_export($_FILES, true));
 		if(is_uploaded_file($file['tmp_name']) && checkFileSafety($file)) {
-
 //			log::to_file("El fichero existe ".$file['tmp_name']);
 			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 			$primary_key = array_shift($this->getPrimaryKeys());

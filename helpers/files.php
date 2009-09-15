@@ -7,6 +7,7 @@ class helpers_files extends ActiveRecord {
 	protected $local_file = null;
 	protected $image = null;
 	protected $cache_images = true;
+	protected $quality = 95;
 	protected $fields = array(
 								"id" => "int not_null primary_key auto_increment",
 								"nombre" => "string(255) not_null default=''",
@@ -25,6 +26,7 @@ class helpers_files extends ActiveRecord {
 		parent::__construct();
 		if(!is_numeric($url)) {
 			$this->local_file = $url;
+			$this->nombre = basename($url);
 			$this->tipo = image_type_to_mime_type(exif_imagetype($this->local_file));
 		}
 	}

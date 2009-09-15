@@ -107,7 +107,7 @@ class ActiveRecord {
 			$values = "'".join("', '", $values)."'";
 			$sql = "INSERT into $this->database_table ($fields) values ($values)";
 		}
-		log::to_file($sql."<br/><hr>");
+//		log::to_file($sql."<br/><hr>");
 //		web::debug(__FILE__, __LINE__, $sql);
 
 		if(!$this->database->exec($sql) && $this->database->errorCode() > 0 )

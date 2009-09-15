@@ -74,7 +74,7 @@ class WMaps {
 <script type='text/javascript'>
 	var {$this->id};
 
-    function initialize_GoogleMAPS() {
+    function init_wmaps_{$this->id}() {
 		if (GBrowserIsCompatible()) {
 	  		{$this->id} = new GMap2(document.getElementById('$this->id'));
 			{$this->id}.enableScrollWheelZoom();
@@ -92,7 +92,7 @@ class WMaps {
 	$str .= "
 		}
 	}
-	initialize_GoogleMAPS();
+	init_wmaps_{$this->id}();
 </script>";
 	   	return $str;
 	}
