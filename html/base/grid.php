@@ -62,7 +62,7 @@ class html_base_grid extends html_object {
 		$de = ($model->current_page - 1) * $model->page_size + 1;
 		$hasta = $de + $model->page_size - 1;
 		$hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
-
+		if($de > $hasta) $de = $hasta;
 		$paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
 		$paginacion = helpers_paginate::toHtml($results);
 		if($paginacion) $paginas[]= $paginacion;

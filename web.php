@@ -6,6 +6,8 @@ require dirname(__FILE__)."/database.php";
 require dirname(__FILE__)."/l10n.php";
 require dirname(__FILE__)."/html/object.php";
 require dirname(__FILE__)."/html/template.php";
+require dirname(__FILE__)."/model.php";
+require dirname(__FILE__)."/library/log.php";
 
 
 class Web {
@@ -24,6 +26,8 @@ class Web {
 	public $l10n;
 	public $initialized = false;
 	public $bench;
+	public $auth;
+
 
 	public function __construct($database = null, $languages = null) {
 		session_start();
@@ -36,7 +40,7 @@ class Web {
 			web::$default_instance = $this;
 			$this->l10n = new l10n();
 			$this->bench = new bench();
-
+			$this->auth = new auth();
 		}
 //		if($languages) $this->setLanguages($languages);
 		if($database) $this->setDatabase($database);
@@ -399,5 +403,10 @@ class Web {
 	public static function bench() {
 		if(!web::instance()->isInProduction()) return web::instance()->bench->toHtml();
 	}
+
+	public static function &auth() {
+		return web::instance()->auth;
+	}
+
 }
 ?>

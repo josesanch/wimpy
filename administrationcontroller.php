@@ -26,10 +26,10 @@ class AdministrationController extends ApplicationController {
 	private $selected_menu;
 
 	protected $auth;
-	protected $components = array("auth");
+//	protected $components = array("auth");
 
 	public function beforeFilter() {
-
+		$this->auth = &web::instance()->auth;
 		if(web::instance()->isInProduction() && !$this->auth->isLogged())	{
 			$this->auth->requestAuth();
 			if(!$this->auth->isLogged()) exit;
@@ -137,6 +137,7 @@ class AdministrationController extends ApplicationController {
 
 			web::instance()->loadModel($model);
 			$model = new $model();
+
 			$this->view->titulo = $model->getTitle();
 			if(method_exists($model, $admin_action)) {
 				// If the model has "AdminList" method we call the method of the model.

@@ -22,10 +22,12 @@ class auth {
 			$result = $statement->fetch();
 			if($result['id']) {
 				$_SESSION["auth_session_".$this->table] = $result;
+				log::add($result['user'], "LOGIN $user", log::OK);
 				return true;
 			}
 
 		}
+		log::add("", "LOGIN FAILED $user", log::ERROR, "USER: $user, PASS: $pass");
 		return false;
 	}
 
@@ -35,6 +37,7 @@ class auth {
 
 	public function logout() {
 		$_SESSION['logout'] = true;
+		log::add($result['user'], "LOGOUT $user", log::OK);
 	 	unset($_SESSION["auth_session_".$this->table]);
 	}
 
@@ -49,7 +52,7 @@ class auth {
 			$clave = mysql_escape_string($_SERVER['PHP_AUTH_PW']);
 			if($this->login($usuario, $clave) == true)  { return true; unset($_SESSION['logout']);}
    		}
-
+		unset($_SESSION['logout']);
    		$content = ob_get_clean();
 		header('WWW-Authenticate: Basic realm="Zona de acceso restringido"');
    		header('HTTP/1.0 401 Unauthorized');

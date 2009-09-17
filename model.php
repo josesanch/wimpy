@@ -19,8 +19,7 @@ class Model extends ActiveRecord {
 	protected $has_images = False;
 	protected static $table_created = false;
 
-	public function __construct($createdFromSql = False)
-	{
+	public function __construct($createdFromSql = False) {
 		parent::__construct();
 		$this->createTableIfNecessary();
 		if(!$this->image_label) $this->image_label = get_class($this);

@@ -79,12 +79,12 @@ class ActiveRecord {
 	}
 
 	public function save()	{
-
 		if($this->exists()) {
 			$insert = false;
-			$sql = "update $this->database_table set ";
+			$sql = "UPDATE $this->database_table SET ";
 			$fields_to_update = array();
 			foreach($this->getFields() as $name => $attrs) {
+
 				if(is_null($this->row_data[$name])) {
 					$fields_to_update[] = $name."=Null";
 				} else {
@@ -106,10 +106,12 @@ class ActiveRecord {
 
 			$values = "'".join("', '", $values)."'";
 			$sql = "INSERT into $this->database_table ($fields) values ($values)";
+
 		}
 //		log::to_file($sql."<br/><hr>");
 //		web::debug(__FILE__, __LINE__, $sql);
 
+		// Execute the query.
 		if(!$this->database->exec($sql) && $this->database->errorCode() > 0 )
 			var_dump($sql, $this->database->errorInfo());
 		else
@@ -118,6 +120,10 @@ class ActiveRecord {
 		if(!$insert) $id = $this->row_data['id'];
 		$this->savel10n($id);
 		$this->id = $id;
+
+		// Save the changes in the log.
+		if(is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
+
 		return $id;
 
 	}
@@ -402,17 +408,11 @@ class ActiveRecord {
 	protected function deleteItem() {
 		$conditions = array();
 		$this->setWherePK();
-/*
-		foreach($this->getFields() as $field => $attrs) {
-			if(isset($this->row_data[$field]))	$conditions[] = $field."='".$this->row_data[$field]."'";
-		}
-*/
-
-//		$sql = "delete from $this->database_table where ".join(" and ", $conditions);
 		$sql = "delete from $this->database_table where ".$this->where_primary_keys;
 
 //		web::debug(__FILE__, __LINE__, $sql);
 
+		if(is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$this->id] DELETED", log::WARNING, $sql);
 		$this->database->exec($sql);
 	}
 
