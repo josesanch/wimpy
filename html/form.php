@@ -52,6 +52,7 @@ class html_form extends html_object {
 		$this->inputs[]= $object;
 	}
 
+
 	protected function process() {
 		foreach($this->inputs as $input) {
 			if(is_a($input, 'html_form_file')) $this->attrs['enctype'] = 'multipart/form-data';
@@ -177,10 +178,21 @@ class html_form extends html_object {
 		}
 		*/
 	}
-	public function get($field) {
+	public function &get($field) {
 		foreach($this->inputs as $input) {
 			if(is_a($input, 'html_object') && $input->name() == $field) return $input;
 		}
+	}
+	public function addAfter($field, $data) {
+		$count = 0;
+
+		foreach($this->inputs as $input) {
+			if(is_a($input, 'html_object') && $input->name() == $field) break;
+			$count++;
+		}
+		array_splice($this->inputs, $count+1, 0, $data);
+
+
 	}
 
 	public function setModel($model) {

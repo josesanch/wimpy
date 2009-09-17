@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="author" content="O2W (www.o2w.es)">
-  <title>. . . . : : : : Administración : : : : . . . .</title>
+  <title>{if:$titulo}{$titulo} | {/if}Administración web</title>
   <link href="/resources/admin/css/admin.css" rel="stylesheet" type="text/css" />
   	{eval:return js::validate()}
 	{eval:return js("jquery/ui")}
@@ -18,6 +18,7 @@
 	{eval:return css("jquery/autocomplete/thickbox")}
 	<script src="/resources/admin/js/funciones.js" type="text/javascript"></script>
 <body>
+<h1>{t:Panel de administración web} | {filter:ucfirst:$titulo}</h1>
 <div id="menu_div" class="clearfix">
 	<div id="header_div" >
 		<a href="/admin/index/logout"  id="boton_salir" class="no_print">{t:Salir}</a>

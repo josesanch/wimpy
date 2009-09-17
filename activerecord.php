@@ -251,6 +251,7 @@ class ActiveRecord {
 			if($this->fields) {
 				$metadata[$this->database_table]= array("fields" => array(), "primary_keys" => array());
 				foreach($this->fields as $name => $attrs) {
+					if(!$attrs || $attrs == 'separator' || $attrs == '---') continue;
 
 					ActiveRecord::$metadata[$this->database_table]["AllFields"][$name] = array();
 					$field = &ActiveRecord::$metadata[$this->database_table]["AllFields"][$name];
@@ -553,6 +554,10 @@ class ActiveRecord {
 
 	public function &fields($field) {
 		return new fields(ActiveRecord::$metadata[$this->database_table]["AllFields"][$field]);
+	}
+
+	public function getAllFieldsForForm() {
+		return $this->fields;
 	}
 }
 

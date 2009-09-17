@@ -12,6 +12,7 @@ class Model extends ActiveRecord {
 	public $has_images = true;
 
 */
+	protected $label;
 	public $field_used_for_ordenation = "orden";
 	public $image_label;
 	protected $has_files = False;
@@ -118,7 +119,9 @@ class Model extends ActiveRecord {
 			if($this->getFields($field)) { return $field; }
 		}
 	}
-
+	public function getTitle() {
+		return $this->title ? $this->title : get_class($this);
+	}
 
 }
 ?>

@@ -3,8 +3,10 @@ body {
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 12px;  background-color: #E5E5E5;
   margin: 0px 0px 0px 0px;
+  padding: 0px;
 }
 
+	h1 { position: absolute; padding: 0px; margin: 0.3em 1em; font-size: 1.25em; color: #999;}
 	#header_div {   text-align: right; width: 96%; position: absolute; margin-top: 0.6em;}
 	#boton_salir { color:#a0a0a0; text-decoration: none;}
 	#logo { margin: auto auto 20px auto; float: left;}
@@ -13,14 +15,6 @@ body {
 	#content_div { background-color: white; margin: 2em 2em; }
 
 
-
-h1 {
-  padding-bottom: 5px;
-  font-size: 200%;
-  margin: 25px auto 10px 90px;
-  color: #404040;
-  font-weight: normal;
-}
 
 
 #tabsWrapper {
@@ -98,6 +92,7 @@ h1 {
 }
 #tabs ul li.volver-a-web  {float: right; font-weight: normal;}
 #tabs ul li.volver-a-web a { font-weight: normal;}
+#tabs ul li.volver-a-web a:hover { background: transparent; }
 /** Crumbs **/
 
 #crumbsWrapper {
@@ -312,3 +307,5 @@ div.listado-resultados .boton-nuevo { padding: 0.2em; border: 0px; background: #
 input.boton-volver { padding: 0.3em; border: 0px; background: #96AABF url("/resources/admin/images/edit-undo.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
 input.boton-eliminar { padding: 0.3em; border: 0px; background: #FFB5B5 url("/resources/admin/images/process-stop.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
 input.boton-guardar { padding: 0.3em; border: 0px; background:  #99D177 url("/resources/admin/images/document-save.png") 5px 50% no-repeat; padding-left: 25px; color: white; margin-left: 0.5em;}
+
+h2 {  padding-bottom: 0.2em; border-bottom: 1px solid #c0c0c0; margin-bottom: 1em; clear: both;}

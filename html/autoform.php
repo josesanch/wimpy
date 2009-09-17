@@ -16,15 +16,20 @@ class html_autoform extends html_form {
 	private function construct_head() {
 		$this->add("
 				<fieldset class='admin_form ".get_class($this->model)."'>
-				<legend>".get_class($this->model)."</legend>
+				<legend>".$this->model->getTitle()."</legend>
 			");
 
 		if(!$this->model->id) {
 			$tmp_upload = get_class($this->model)."_".rand();
 		 	$this->hidden("tmp_upload")->value($tmp_upload);
 		}
+		foreach($this->model->getAllFieldsForForm() as $field => $type) {
+			if($type == 'separator' || $type == '---') {
+				$this->add("<h2>$field</h2>");
+				continue;
+			}
 
-		foreach($this->model->getAllFields() as $field => $attrs) {
+			$attrs = $this->model->getFields($field);
 			if($attrs['primary_key']) {
 				$id =$this->model->$field;
 				$this->hidden($field)->value($this->model->$field);

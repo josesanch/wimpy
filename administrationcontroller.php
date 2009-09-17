@@ -62,7 +62,6 @@ class AdministrationController extends ApplicationController {
 		$action = web::instance()->model;
 		foreach($this->menu[$this->selected_menu]['items'] as $name => $submenu) {
 			$active = $action == $submenu['link'] ? "class='active'" : "";
-
 			$href = "href='/admin/".$submenu['link']."'";
 			$subitems[]= "
 						<li $active>
@@ -92,7 +91,11 @@ class AdministrationController extends ApplicationController {
 				$menu[$name]["link"] = "";
 				$menu[$name]["items"] = $this->preprocessMenu($data, false);
 			} else {	// Si es el final
-				$menu[$data]= array("link" => "$name");
+				if(class_exists($name)) {
+					$model = new $name();
+					$data = __($model->getTitle());
+				}
+				$menu[$data]= array("link" => $name);
 			}
 		}
 		return $menu;
@@ -133,6 +136,8 @@ class AdministrationController extends ApplicationController {
 			$admin_action = "admin$action";
 
 			web::instance()->loadModel($model);
+			$model = new $model();
+			$this->view->titulo = $model->getTitle();
 			if(method_exists($model, $admin_action)) {
 				// If the model has "AdminList" method we call the method of the model.
 				$model = new $model();
