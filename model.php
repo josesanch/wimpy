@@ -31,7 +31,7 @@ class Model extends ActiveRecord {
 	}
 
 	private function createTableIfNecessary() {
-		if(!ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()]) {
+		if(!ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] && $this->fields) {
 			web::instance()->database->createTable($this->getDatabaseTable(), ActiveRecord::$metadata	[$this->getDatabaseTable()]["fields"]);
 			ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] = true;
 		}
@@ -113,6 +113,7 @@ class Model extends ActiveRecord {
 	}
 
 	public function getTitleField() {
+		if($this->title_field) return $this->title_field;
 		$fields = array("name", 'nombre', 'title', 'titulo');
 		foreach($fields as $field) {
 			if($this->getFields($field)) { return $field; }

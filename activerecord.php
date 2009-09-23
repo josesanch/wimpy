@@ -79,24 +79,24 @@ class ActiveRecord {
 	}
 
 	public function save()	{
-		if($this->exists()) {
+		if($this->exists()) {	// UPDATE
 			$insert = false;
 			$sql = "UPDATE $this->database_table SET ";
 			$fields_to_update = array();
 			foreach($this->getFields() as $name => $attrs) {
 
-				if(is_null($this->row_data[$name])) {
+				if(is_null($this->row_data[$name]) || (!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal')))) {
 					$fields_to_update[] = $name."=Null";
 				} else {
 					$fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
 				}
 			}
-
 			$sql .= join(", ", $fields_to_update)." where ".$this->where_primary_keys;
-		} else {
+		} else {				// INSERT
 			$insert = true;
 			$fields = array(); $values = array();
 			foreach($this->getFields() as $name => $attrs) {
+				if(!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal'))) continue;
 				if(isset($this->row_data[$name])) {
 					$fields[] = $name;
 					$values[] = mysql_escape_string($this->row_data[$name]);
@@ -451,7 +451,7 @@ class ActiveRecord {
 						break;
 
 					default:
-						if($attrs['autocomplete'] && !$_REQUEST[$field]) {	// We've to insert the new value in the related table.
+						if($attrs['autocomplete'] && !$_REQUEST[$field] && $_REQUEST[$field."_autocomplete"]) {	// We've to insert the new value in the related table.
 							$model_name = $attrs["belongs_to"];
 							$model = new $model_name;
 							$name = $model->getTitleField();

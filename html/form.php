@@ -74,6 +74,7 @@ class html_form extends html_object {
 				$model_name = $attrs["belongs_to"];
 				$model_item = new $model_name;
 				$name = $model_item->getTitleField();
+
 				if(!$attrs['autocomplete']) {
 					$input = new html_form_select($field);
 					$input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
@@ -81,10 +82,12 @@ class html_form extends html_object {
 					// Autocomplete
 					$input = new html_form_input($field."_autocomplete");
 					$input_hidden = new html_form_hidden($field);
+					$primary_key = array_shift($model_item->getPrimaryKeys());
 					if($this->model->$field) {
-						$input_hidden->value($this->model->$field);
 						$model_item->select($this->model->$field);
-						$input->value($model_item->$name);
+						$model_item->select("columns: $primary_key as value, $name as text", "$primary_key='".$this->model->$field."'");
+						$input_hidden->value($model_item->value);
+						$input->value($model_item->text);
 					}
 
 					$this->addJS("

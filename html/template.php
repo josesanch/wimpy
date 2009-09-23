@@ -74,8 +74,8 @@ class html_template extends html_object
 	{
 		if(isset($file) && $file != $this->__file)	{
 			$this->__file = $file;
+			if(!file_exists($file)) web::warning("No existe el archivo $file", __FILE__, __LINE__);
 			$this->loadData(file_get_contents($file));
-
 		}
 	}
 

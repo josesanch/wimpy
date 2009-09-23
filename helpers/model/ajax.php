@@ -129,9 +129,9 @@ class helpers_model_ajax  {
 		$q = strtolower($_GET["q"]);
 		$primary_key = array_shift($this->model->getPrimaryKeys());
 		$name = $this->model->getTitleField();
-		$results = $this->model->select("columns: $primary_key, $name", "where: $name like '%$q%'", "order: $name");
+		$results = $this->model->select("columns: $primary_key as id, $name as text", "where: $name like '%$q%'", "order: $name");
 		foreach($results as $row) {
-			echo $row->$name."|".$row->$primary_key."\n";
+			echo $row->text."|".$row->id."\n";
 		}
 		exit;
 	}
