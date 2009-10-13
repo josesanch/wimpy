@@ -143,6 +143,7 @@ class AdministrationController extends ApplicationController {
 				// If the model has "AdminList" method we call the method of the model.
 				$model = new $model();
 				$this->view->content = $model->$admin_action($params[0]);
+//                call_user_method_array($admin_action, $model, $params);
 			} else {
 				if(web::instance()->loadController($controller_name)) {
 					$controller = new $controller_name();

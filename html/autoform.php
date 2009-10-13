@@ -1,6 +1,6 @@
 <?
 class html_autoform extends html_form {
-
+    public $buttons = array("back", "delete", "save");
 	public function __construct($model = null, $css = null) {
 		$this->css = $css;
 
@@ -45,10 +45,10 @@ class html_autoform extends html_form {
 		}
 	}
 
-	private function construct_foot() {
-
+	private function construct_foot()
+	{
 		$this->add("
-		<script>
+    		<script>
 				function delete_item(id) {
 					if(confirm('Está seguro')) {
 						document.location='/admin/".get_class($this->model)."/delete/' + id + '".web::params()."';
@@ -56,19 +56,28 @@ class html_autoform extends html_form {
 				}
 				$('#".get_class($this->model)."').validate();
 			</script>
-			<div class='form-buttons'>
-				<input class='submit boton-volver' type='button' value=volver onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">
-			");
+			<div class='form-buttons'>");
 
-		if($this->model->id)
-			$this->add("<input class='submit boton-eliminar' type='button' value=eliminar onclick=\"delete_item('".$this->model->id."');\">");
+		if(in_array("back", $this->buttons)) {
+    		$this->add("<input class='submit boton-volver' id='boton-volver'
+    		            type='button' value=volver
+    		            onclick=\"document.location='/admin/".get_class($this->model)."/list".web::params()."'\">"
+    		          );
+		}
 
-		$this->add("
-				<input class='submit boton-guardar' type='submit' value='guardar'/>
-			</div>
-			");
-		$this->add("</fieldset>");
+		if($this->model->id && in_array("delete", $this->buttons)) {
+			$this->add("<input class='submit boton-eliminar' id='boton-eliminar'
+			            type='button' value=eliminar
+			            onclick=\"delete_item('".$this->model->id."');\">"
+			          );
 
+		}
+
+		if(in_array("save", $this->buttons)) {
+    		$this->add("<input class='submit boton-guardar' type='submit' id='boton-guardar' value='guardar'/>");
+    	}
+
+    	$this->add("</div></fieldset>");
 	}
 
 	public function toHtml() {

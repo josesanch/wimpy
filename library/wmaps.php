@@ -6,25 +6,28 @@
 */
 
 
-class WMaps {
+class WMaps
+{
+    public $show_control = true;
+    public $show_type = true;
+    public $control_type = 'small';
+    public $zoom = 4;
+	public $clustered = false;
+	public $fitToMarkers = false;
 
     private $width = 100;
     private $height = 100;
     private $centerMap = array();
-    private $apiKey = "";    public $show_control = true;
-    public $show_type = true;
-    public $control_type = 'small';
-    public $zoom = 4;
+    private $apiKey = "";
     private $points = array();
     private $id = "map";
 	private $map_type = "G_NORMAL_MAP";
 	private $icons = array();
-	public $clustered = false;
-	public $fitToMarkers = false;
 
 
-	public function __call($method, $args) {
-		if(!in_array($method, array("width", "height", "key", "show_control", "zoom", "id", "clustered", "fitMapToMarkers", "map_type", "show_type"))) return;
+	public function __call($method, $args)
+	{
+		if (!in_array($method, array("width", "height", "key", "show_control", "zoom", "id", "clustered", "fitMapToMarkers", "map_type", "show_type"))) return;
 
 		if (empty($args)) {
 			return $this->$method;

@@ -30,7 +30,8 @@ function __autoload($class)
 }
 
 
-function js($module) {
+function js($module)
+{
 	$file = str_replace("::", "/", $module).".js";
 	$directories = array("/js/", "/resources/js/");
 	foreach($directories as $dir)
@@ -38,14 +39,16 @@ function js($module) {
 			return  "<script src=\"$dir$file\" type=\"text/javascript\"></script>";
 }
 
-function js_once($module) {
+function js_once($module)
+{
 	static $js_archivos = array();
 	if(in_array($module, $js_archivos)) return;
 	$js_archivos[]= $module;
 	return js($module);
 }
 
-function css($module) {
+function css($module)
+{
 	$file = str_replace("::", "/", $module).".css";
 	$directories = array("/css/", "/resources/css/", "/resources/js/", "/resources/");
 	foreach($directories as $dir) {
@@ -55,22 +58,26 @@ function css($module) {
 	}
 }
 
-function css_once($module) {
+function css_once($module)
+{
 	static $css_archivos = array();
 	if(in_array($module, $css_archivos)) return;
 	$css_archivos[]= $module;
 	return css($module);
 }
 
-function _t($str) {
+function _t($str)
+{
 	return l10n::instance()->get($str);
 }
 
-function __($str) {
+function __($str)
+{
 	return l10n::instance()->get($str);
 }
 
-function init_extjs($version = "ext") {
+function init_extjs($version = "ext")
+{
 	return css_once("$version/resources/css/ext-all")."\n".
 		css_once("$version/resources/css/xtheme-gray")."\n".
 		js_once("$version/adapter/ext/ext-base")."\n".
@@ -79,7 +86,8 @@ function init_extjs($version = "ext") {
 		js_once("$version/build/locale/ext-lang-sp")."\n";
 }
 
-function make_link_resources() {
+function make_link_resources()
+{
 	$dir = $_SERVER["DOCUMENT_ROOT"].basename("/")."/resources";
 	if(!is_link($dir))
 		symlink(dirname(__FILE__).'/resources/', $dir);
@@ -87,7 +95,8 @@ function make_link_resources() {
 
 
 
-function create_images_and_files_tables($database) {
+function create_images_and_files_tables($database)
+{
 	$database->exec("
 						CREATE TABLE IF NOT EXISTS `files` (
 						  `fecha` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -143,7 +152,8 @@ function create_images_and_files_tables($database) {
 //						  KEY `new_index` (`lang`,`model`,`field`,`row`)
 }
 
-function convert_to_url($url) {
+function convert_to_url($url)
+{
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
 	$str=   str_replace(' ', '-', strtr(strtolower($url), $arr));
 	return implode("/", array_map("rawurlencode", explode("/", $str)));

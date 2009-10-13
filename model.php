@@ -30,14 +30,16 @@ class Model extends ActiveRecord {
 		}
 	}
 
-	private function createTableIfNecessary() {
+	private function createTableIfNecessary()
+	{
 		if(!ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] && $this->fields) {
-			web::instance()->database->createTable($this->getDatabaseTable(), ActiveRecord::$metadata	[$this->getDatabaseTable()]["fields"]);
+			web::instance()->database->createTable($this->getDatabaseTable(), ActiveRecord::$metadata[$this->getDatabaseTable()]["fields"]);
 			ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] = true;
 		}
 	}
 
-	public function __get($item) {
+	public function __get($item)
+	{
 		if($this->has_files && $item == "files") {
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$files = new helpers_files();
@@ -51,7 +53,8 @@ class Model extends ActiveRecord {
 	}
 
 
-	protected function upload($field, $type = 'file', $ajax = false) {
+	protected function upload($field, $type = 'file', $ajax = false)
+	{
 
 		if($ajax) $file = $_FILES['file'];
 		else $file = $field ? $_FILES[$field] : $_FILES['file'];
