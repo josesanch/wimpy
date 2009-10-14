@@ -267,4 +267,9 @@ function checkFileSafety($file) {
 		}
 		return true;
 }
-?>
+
+function tlink($url)
+{
+	if(l10n::instance()->isNotDefault()) return "/".l10n::instance()->getSelectedLang().$url;
+
+}
