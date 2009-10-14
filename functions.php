@@ -270,6 +270,9 @@ function checkFileSafety($file) {
 
 function tlink($url)
 {
-	if(l10n::instance()->isNotDefault()) return "/".l10n::instance()->getSelectedLang().$url;
+	if(l10n::instance()->isNotDefault())
+	    return "/".l10n::instance()->getSelectedLang().$url;
+    else
+        return $url;
 
 }

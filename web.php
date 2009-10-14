@@ -9,10 +9,12 @@ require dirname(__FILE__)."/html/template.php";
 require dirname(__FILE__)."/model.php";
 require dirname(__FILE__)."/library/log.php";
 
-
+/**
+*
+* Base class of the framework
+*/
 class Web
 {
-
     public $laguages = array("es");
     public $database;
     public $defaultHtmlEditor = "ckeditor";
@@ -63,11 +65,18 @@ class Web
     {
         $this->l10n->setLanguages($langs);
     }
+
+    /**
+     * Return the array with the languages of the web
+     */
     public function getLanguages()
     {
         return $this->l10n->getLanguages();
     }
 
+    /**
+     * Set the maximum size for saving the image files.
+     */
     public function setImagesMaxSize($height, $width)
     {
         $this->_imagesMaxSize = array($height, $width);
