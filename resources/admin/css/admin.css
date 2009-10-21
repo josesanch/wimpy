@@ -178,28 +178,29 @@ body {
 fieldset.admin_form {	background-color: #fcfcfc; border: 2px solid #FFA600; padding: 2em 2em; margin: 0em 1em 1em 1em; }
 
 label.autoform {
-
 	display: block;
-	padding-bottom: 2em;
+	margin-bottom: 1.3em;
 	font-weight: bold; color: gray;
-	float: left;
 	margin-right: 2em;
-	text-transform: capitalize;
-
+	float: left;
+	min-height: 3.3em;
+	height: auto !important;
+	height: 3.3em;
 }
 
 
 
 label.autoform span {  display: block; 	}
+label.autoform select  { margin-top: 0.1em;  color: #333;  }
+label.autoform input.textbox  { margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; }
 
-label.autoform input  { margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; }
 
 label.autoform.textarea { clear: both; }
 label.autoform.textarea textarea { float: left; margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333;  padding: 0.2em;}
 label.autoform.htmleditor { width: 100%;}
 
 div.form-buttons  { clear: both; padding-top: 1em; display: block; margin: auto;  text-align: center; }
-div.form-buttons  input { display: inline; }
+div.form-buttons input { display: inline; }
 
 textarea, input[type=text] { border: 1px solid gray; }
 textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
@@ -210,6 +211,7 @@ label.error { background: url("/resources/icons/jquery.liveValidation-invalid.pn
 
 fieldset legend { margin: 0px; padding: 0px;  font-weight: bold; color: gray; font-size: 2em;}
 
+label.autoform.no-margin { margin: 0;  padding: 0px; min-height: 0;  }
 /*****************************************************************************************************************
 *	CKEDITOR
 *****************************************************************************************************************/
@@ -254,12 +256,14 @@ td.grid_cell {
 
 }
 td.grid_cell a { color: #333; text-decoration: none; padding: 0.1em 0px; display: block; }
+
 a.header {
 	color: white;
 	text-decoration: none;
 
 }
-a.header:hover {
+.grid_header a.header { color: white; }
+.header:hover {
 	color: white;
 	text-decoration: underline;
 }
@@ -320,3 +324,21 @@ h2 {  padding-bottom: 0.2em; border-bottom: 1px solid #c0c0c0; margin-bottom: 1e
 .geolocation .comprueba input {border: 0px; }
 .geolocation #map {margin-top: 1em; }
 .geolocation .enviar { float: right: font-weight: bold; margin-left: 2em; }
+
+
+input.dialog { margin-left: 0.2em; margin-top: 2px;background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat;  padding-left: 20px;  border: 0; display: inline; height: 21px; }
+
+
+/*****************************************************************************************************************
+*    SMS
+*****************************************************************************************************************/
+
+#sms_usuariosgrupos tr td { background-color: #eee; padding: 0.5em; }
+#listado-usuarios h3 { padding-top: 2em; padding-bottom: 0.2em; border-bottom: 1px solid #c0c0c0; margin-bottom: 1em; clear: both; }
+#sms-grupos { list-style: none; }
+#sms-grupos li { padding: 0.4em; }
+#sms-grupos li input { margin-right: .5em; }
+
+#listado-usuarios.envio { list-style: none; }
+#listado-usuarios.envio li { padding: 0.4em; }
+#listado-usuarios.envio li a { margin-left: 5em; }

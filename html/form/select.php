@@ -5,7 +5,7 @@ class html_form_select extends html_form_input {
 	protected $attrs = array
 	(
 		'type'    => 'select',
-		'class'   => 'textbox',
+		'class'   => 'select',
 		'value'   => '',
 		'options' => array()
 
@@ -13,7 +13,7 @@ class html_form_select extends html_form_input {
 
 	public function toHtml() {
 		if($this->attrs['label']) {
-			$str = "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'><span>".$this->attrs['label']."</span>\n";
+			$str = "\n<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>\n    <span>".$this->attrs['label']."</span>\n";
 		}
 
 		$str .= "	<select ".$this->getAttributes(array('value', 'type', 'options', 'selectedOptions')).">".$this->getOptions()."</select>\n";
@@ -57,7 +57,7 @@ class html_form_select extends html_form_input {
 			if(isset($this->selectedValues)) {
 				$selected = in_array($value, is_array($this->selectedValues) ? $this->selectedValues : array($this->selectedValues)) ? " selected" : "";
 				}
-			$html .= "		<option value=\"$value\"$selected>$text</option>\n";
+			$html .= "\n		<option value=\"$value\"$selected>$text</option>";
 		}
 		return $html;
 

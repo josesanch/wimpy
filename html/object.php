@@ -57,7 +57,7 @@ class html_object
 		if(!is_array($except)) $except = split(" ?, ?", $except);
 		foreach($this->attrs  as $item => $value) {
 			if(!in_array($item, $except))
-				$strAttr .= isset($value) ? strtoupper($item)."=\"$value\" " : "$item ";
+				$strAttr .= isset($value) ? strtolower($item)."=\"$value\" " : "$item ";
 		}
 		return $strAttr;
 	}

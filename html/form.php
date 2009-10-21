@@ -4,7 +4,9 @@ class html_form extends html_object
 {
 
     public $css = null;
-    private $js = "";
+    protected $_javascript = "";
+    protected $_javascriptOnload = "";
+    protected $_endData;
 
     protected $attrs = array(
         'method' => 'POST'
@@ -64,14 +66,16 @@ class html_form extends html_object
     protected function process()
     {
         foreach($this->inputs as $input) {
-            if(is_a($input, 'html_form_file')) $this->attrs['enctype'] = 'multipart/form-data';
+            if(is_a($input, 'html_form_file'))
+                $this->attrs['enctype'] = 'multipart/form-data';
             $this->data .= $input;
         }
         $this->data .= "
-<script>
+<script type='text/javascript'>
     $(document).ready(function() {
-            $this->js
+            $this->_javascriptOnload
     });
+    $this->_javascript;
 </script>";
     }
 
@@ -81,27 +85,35 @@ class html_form extends html_object
         $attrs = $this->model->getFields($field);
 
         if(isset($attrs["belongs_to"])) {
-                $model_name = $attrs["belongs_to"];
-                $model_item = new $model_name;
-                $name = $model_item->getTitleField();
+                $relatedModelName = $attrs["belongs_to"];
 
                 if(!$attrs['autocomplete']) {
+
+	                $relatedModel = new $relatedModelName();
+	                $name = $relatedModel->getTitleField();
+
                     $input = new html_form_select($field);
-                    $input->add($model_item->select("columns: id as value, $name as text"))->select($this->model->$field);
+                    $input	->add(
+                    			$relatedModel->select(
+                    				"columns: id as value, $name as text"
+                    			)
+                    		)
+                    		->select($this->model->$field);
+
                 } else {
                     // Autocomplete
+					$value = $this->model->$field;
+					$relatedModel = new $relatedModelName($value);
+					$titleField = $relatedModel->getTitleField();
+					// Hidden field that containt the real value
+                    $inputHidden = new html_form_hidden($field);
+					$inputHidden->value($value)->class("");
+					// Text field that contain the name of the field.
                     $input = new html_form_input($field."_autocomplete");
-                    $input_hidden = new html_form_hidden($field);
-                    $primary_key = array_shift($model_item->getPrimaryKeys());
-                    if($this->model->$field) {
-                        $model_item->select($this->model->$field);
-                        $model_item->select("columns: $primary_key as value, $name as text", "$primary_key='".$this->model->$field."'");
-                        $input_hidden->value($model_item->value);
-                        $input->value($model_item->text);
-                    }
+                    $input->value($relatedModel->$titleField);
 
                     $this->addJS("
-                                $('#{$field}_autocomplete').autocomplete('/ajax/$model_name/autocomplete')
+                                $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete')
                                             .result(function(event, data, formatted) {
                                                 if (data)
                                                     $('#$field').val(data[1]);
@@ -110,9 +122,8 @@ class html_form extends html_object
                                             }).blur(function(){
                                                 $(this).search();
                                             });
-                    ");
-                    $this->add($input_hidden);
-
+                    ", true);
+                    $this->addToEnd($inputHidden);
                 }
 
         } else {
@@ -131,9 +142,10 @@ class html_form extends html_object
 
                 case 'date':
                     $input = new html_form_input($field);
-                    $this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n");
+                    $this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n", true);
                     $input->size(10);
-                    if($this->model->$field != '0000-00-00' and $this->model->$field != '') $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
+                    if($this->model->$field != '0000-00-00' and $this->model->$field != '')
+                        $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
 
                 break;
 
@@ -151,7 +163,7 @@ class html_form extends html_object
                 break;
 
                 case 'files':
-                    $input = new html_form_files($lang ? $field."|".$lang : $field, $this->model, $tmp_upload);
+                    $input = new html_form_files($lang ? $field."|".$lang : $field, $this->model, $tmp_upload, $this);
                     break;
 
                 case 'int':
@@ -176,13 +188,25 @@ class html_form extends html_object
         }
 
         if($lang)
-            $input->label($attrs['label'] ? $attrs['label']." ($lang)" : $field." ($lang)");
+            $input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
         else
-            $input->label($attrs['label'] ? $attrs['label'] : $field);
+            $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+
+        if($attrs["dialog"]) {
+
+            $input->add("
+                <input type='button' value='' class='dialog'
+            	onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\")'/>"
+			);
+			$this->addToEnd("<div id='{$relatedModelName}_dialog'></div>");
+        }
 
         $this->inputs[]= $input;
+
+
         if($attrs['l10n'] && !$lang) {
-            foreach(l10n::instance()->getNotDefaultLanguages() as $lang) $this->auto($field, $lang);
+            foreach(l10n::instance()->getNotDefaultLanguages() as $lang)
+            	$this->auto($field, $lang);
         }
 
         return $input;
@@ -190,15 +214,16 @@ class html_form extends html_object
 
     public function remove($field)
     {
-        $this->inputs = array_filter($this->inputs, create_function('$input', 'return !(is_a($input, "html_object") && $input->name() == '.$field.');'));
-/*        foreach($this->inputs as $id => $input) {
-
-            if(is_a($input, 'html_object') && $input->name() == $field) {
-                unset($this->inputs[]);
-            }
-        }
-        */
+        $this->inputs = array_filter(
+        	$this->inputs,
+        	create_function(
+        		'$input',
+        		'return !(is_a($input, "html_object")
+        		&& $input->name() == '.$field.');'
+        	)
+        );
     }
+
     public function &get($field)
     {
         foreach($this->inputs as $input) {
@@ -225,9 +250,17 @@ class html_form extends html_object
         $this->model = $model;
     }
 
-    public function addJS($str)
+    public function addJS($str, $onload = false)
     {
-        $this->js .= $str;
+        if($onload)
+            $this->_javascriptOnload .= $str;
+        else
+            $this->_javascript .= $str;
+    }
+
+    public function addToEnd($data)
+    {
+        $this->_endData .= $data;
     }
 }
 ?>

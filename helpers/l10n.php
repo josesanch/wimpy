@@ -1,5 +1,6 @@
 <?
-class helpers_l10n extends Model {
+class helpers_l10n extends Model
+{
 	protected $database_table = 'l10n';
 	protected $title = "Traducción";
 	public $grid_columns =  "id, field";

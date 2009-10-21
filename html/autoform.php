@@ -56,25 +56,37 @@ class html_autoform extends html_form
 
     private function construct_foot()
     {
-        $this->add(
-            "<script>
-                function delete_item(id) {
+    	$isDialog = web::request("dialog");
+    	$modelName = get_class($this->model);
+		if ($isDialog) {
+			$openUrl = "$('#".$modelName."_dialog').load(url);";
+			$ajaxForm = "$('#$modelName').ajaxForm({ target: '#{$modelName}_dialog' })";
+		} else {
+			$openUrl = "document.location = url;";
+		}
+
+        $this->addJS(
+                "function delete_item(id) {
                     if (confirm('Está seguro')) {
                         document.location='/admin/".
             get_class($this->model)."/delete/' + id + '".web::params()."';
                     }
                 }
                 $('#".get_class($this->model)."').validate();
-            </script>
-            <div class='form-buttons'>"
-        );
+
+				function openUrl(url) {
+					$openUrl
+				}
+				$ajaxForm"
+		);
+		$this->add("<div class='form-buttons'>");
 
         if (in_array("back", $this->buttons)) {
             $this->add(
                 "<input class='submit boton-volver' id='boton-volver'
                 type='button' value=volver
-                onclick=\"document.location='/admin/".
-                get_class($this->model)."/list".web::params()."'\">"
+                onclick=\"openUrl('/admin/".
+                get_class($this->model)."/list".web::params()."');\">"
             );
         }
 
@@ -94,6 +106,7 @@ class html_autoform extends html_form
             );
         }
 
+        $this->add($this->_endData);
         $this->add("</div></fieldset>");
     }
 

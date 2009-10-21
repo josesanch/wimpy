@@ -225,14 +225,20 @@ class Web
             $this->action = $this->action ? $this->action : 'index';
         }
 
-        $controllerClass = ucfirst(
-        str_replace('-', '_', web::canonize($this->controller))).
-        "Controller";
+
+        $controllerClass =  ucfirst(
+            str_replace(
+                '-',
+                '_',
+                web::canonize($this->controller)
+            )
+        )."Controller";
 
         $action = $this->action;
 
         if (!$this->loadController($controllerClass)
-            || (!method_exists($controllerClass, $this->action."Action") && !$admin)
+            || (!method_exists($controllerClass, $this->action."Action")
+            && !$admin)
         ) {
             $action = "error";
             $controllerClass = "ErrorController";
@@ -246,7 +252,7 @@ class Web
         $controller->view->action = $this->action;
 
         if (method_exists($controller, "beforeFilter")) {
-            call_user_method_array("beforeFilter", $controller, $this->params);
+            call_user_func_array(array($controller, "beforeFilter"), $this->params);
         }
         return array($controller, $action);
     }
@@ -270,13 +276,12 @@ class Web
         return $value;
     }
 
-    private    function callAdminDispatcher($render = true)
+    private function callAdminDispatcher($render = true)
     {
         if ($this->action == "index") {
             list($controller, $action) = $this->getController($view, true);
-            call_user_method_array(
-                $action."Action",
-                $controller,
+            call_user_func_array(
+                array($controller, $action."Action"),
                 $this->params
             );
         } else {
@@ -285,12 +290,14 @@ class Web
             $this->action = $action = array_shift($this->params);
             // By default we call to list method of the model.
             if (!$action) {
-                $this->redirect("/admin/$model/list"); exit;
+                $this->redirect("/admin/$model/list");
+                exit;
             }
-            call_user_method_array(
-                $model.ucfirst($action),
-                $controller,
-                $this->params
+            $params = $this->params;
+            array_unshift($params, $model);
+            call_user_func_array(
+                array($controller, $action."Action"),
+                $params
             );
         }
 

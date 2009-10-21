@@ -287,7 +287,7 @@ class ActiveRecord
                     $field["type"] = $egs[1];
                     $field["size"] = $egs[3];
                     if ($defaultegs[2]) $field["default_value"] = $defaultegs[2];
-                    $field["label"] = $labelregs[2] ? $labelregs[2] : $name;
+                    $field["label"] = $labelregs[2] ? ucfirst($labelregs[2]) : ucfirst($name);
 
                     $attrs = explode(" ", $attrs);
                     if (in_array("primary_key", $attrs)) {
@@ -306,6 +306,7 @@ class ActiveRecord
                     if (in_array("html", $attrs)) $field["html"] =  true;
                     if (in_array("auto_increment", $attrs) || in_array("autoincrement", $attrs)) $field["autoincrement"] = true;
                     if (in_array("autocomplete", $attrs) || in_array("autocomplete", $attrs)) $field["autocomplete"] = true;
+					if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
                         ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;
 

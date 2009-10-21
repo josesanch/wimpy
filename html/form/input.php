@@ -64,10 +64,13 @@ class html_form_input extends html_object {
 
 	public function toHtml() {
 		$str = "";
-		if($this->attrs['label']) $str .= "<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'><span>".$this->attrs['label']."</span>\n";
+		if($this->attrs['label'])
+			$str .= "\n<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] ).
+					"' class='autoform'>\n  <span>".$this->attrs['label']."</span>\n";
 
-		$str .= "\n	<input ".$this->getAttributes()."/>\n";
-		if($this->attrs['label']) $str.= "</label>";
+		$str .= "     <input ".$this->getAttributes()."/>";
+		if($this->data) $str .= "\n".$this->data;
+		if($this->attrs['label']) $str.= "\n</label>";
 		return $str;
 	}
 

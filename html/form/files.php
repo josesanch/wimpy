@@ -13,9 +13,10 @@ class html_form_files extends html_form_input {
 		'value'   => ''
 	);
 
-	public function __construct($field, $model, $tmp_upload) {
+	public function __construct($field, $model, $tmp_upload, $form = null) {
 		$this->model = $model;
 		$this->tmp_upload = $tmp_upload;
+		$this->form = $form;
 		parent::__construct($field);
 		if(!html_form_files::$default_instance)  {
 			html_form_files::$default_instance = $this;
@@ -30,8 +31,8 @@ class html_form_files extends html_form_input {
 
 	}
 
-	public function toHtml() {
-
+	public function toHtml()
+	{
 		$model_name = get_class($this->model);
 		$iditem = $this->model->id;
 		$field = $this->attrs['name'];
@@ -39,14 +40,17 @@ class html_form_files extends html_form_input {
 		$fileDataName = $field ? $field : "file";
 
 		$str .= "
-		<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform no-margin' style='clear: both;'>".$this->attrs['label']."</label>
+		<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."'
+		    class='autoform no-margin' style='clear: both;'>
+		    ".$this->attrs['label']."
+        </label>
 		<div id='container-files-$field'></div>
-
 		<div id='fileQueue_$field'></div>
 		<div class='contenedor-boton-upload'>
 			<input type='file' name='uploadify_$field' id='uploadify_$field'/>
-		</div>
-		<script type='text/javascript'>
+		</div>";
+
+		$javascript = "
 				function load_images_$field() {
 					$('#container-files-$field').load('/ajax/$model_name/files/read/$iditem/$field/?tmp_upload=$tmp_upload');
 				}
@@ -68,8 +72,12 @@ class html_form_files extends html_form_input {
 					});
 					load_images_$field();
 				});
-		</script>
 		";
+		if($this->form) {
+            $this->form->addJS($javascript);
+		} else {
+		    $str .= "<script type='text/javascript'>$javascript</script>";
+		}
 
 
 		return $this->prepend."$str";
