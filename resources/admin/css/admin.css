@@ -192,7 +192,7 @@ label.autoform {
 
 label.autoform span {  display: block; 	}
 label.autoform select  { margin-top: 0.1em;  color: #333;  }
-label.autoform input.textbox  { margin-top: 0.1em;  border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; }
+label.autoform input.textbox  { margin-top: 0.1em;  border: 1px solid #96AABF; background-color: white; color: #333; padding: 0.2em; }
 
 
 label.autoform.textarea { clear: both; }
@@ -205,7 +205,7 @@ div.form-buttons input { display: inline; }
 textarea, input[type=text] { border: 1px solid gray; }
 textarea:focus, input[type=text]:focus { border: 1px dotted orange; }
 input.error { border: 1px dotted red;  }
-
+input.loading { background: url("/resources/icons/loading.gif") 0 100%; border: 1px solid red; }
 
 label.error { background: url("/resources/icons/jquery.liveValidation-invalid.png") 0 50% no-repeat; padding-left: 20px; margin-top: 3px; color: red; display: block; font-weight: normal; text-transform: none;}
 
@@ -228,7 +228,7 @@ table.grid {
 	padding: 3px;
 	background: url("/resources/admin/images/menu.gif");
 	font-weight: bold;
-
+    color: white;
 
 }
 
@@ -301,7 +301,7 @@ div.listado-resultados div { margin-bottom: 0.5em; }
 div.pie-listado-resultados { width: 98%; margin: auto; text-align: right; color: white; }
 div.pie-listado-resultados div { padding: 5px; color: #333; }
 div.listado-resultados .texto-buscar { border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; margin-left: 0.5em;}
-div.listado-resultados .boton-buscar { padding: 0.2em; border: 0px; background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat; padding-left: 20px;; color: white; margin-left: 0.5em; }
+div.listado-resultados .boton-buscar { padding: 0.2em; border: 0px; background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat; padding-left: 20px; color: white; margin-left: 0.5em; }
 div.listado-resultados .boton-nuevo { padding: 0.2em; border: 0px; background: #99D177 url("/resources/admin/images/list-add.png") 5px 50% no-repeat; padding-left: 20px;; color: white;  margin-left: 0.5em; }
 
 
@@ -313,6 +313,10 @@ input.boton-eliminar { padding: 0.3em; border: 0px; background: #FFB5B5 url("/re
 input.boton-guardar { padding: 0.3em; border: 0px; background:  #99D177 url("/resources/admin/images/document-save.png") 5px 50% no-repeat; padding-left: 25px; color: white; margin-left: 0.5em;}
 
 h2 {  padding-bottom: 0.2em; border-bottom: 1px solid #c0c0c0; margin-bottom: 1em; clear: both;}
+
+label.autoform input.checkbox { float: left; margin-top: 1.5em;}
+label.autoform.checkbox span { float: right; margin-left: 0.5em;  margin-top: 1.5em;}
+div.newline { clear: both; }
 
 
 /*****************************************************************************************************************

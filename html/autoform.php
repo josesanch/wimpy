@@ -45,6 +45,7 @@ class html_autoform extends html_form
             } else {
                 $this->auto($field, null, $tmpUpload);
                 if ($this->css) $this->css($this->css);
+                if($attrs["newline"]) $this->add("<div class='newline'></div>");
             }
             $this->add("\n");
         }

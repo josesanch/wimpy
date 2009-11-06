@@ -81,24 +81,24 @@ class AdministrationController extends ApplicationController
     private function preprocessMenu($menu_noprocess, $root = true)
     {
         $menu = array();
-        foreach($menu_noprocess as $name => $data)
+        foreach ($menu_noprocess as $name => $data)
         {
 
-            if(is_numeric($name)) $name = $data;
+            if (is_numeric($name)) $name = $data;
 
-            if(is_array($data) && in_array("items", array_keys($data), true))  { // Si está bien definido
+            if (is_array($data) && in_array("items", array_keys($data), true))  { // Si está bien definido
 
                 $menu[$name]["link"] = $data["link"];
                 $menu[$name]["target"] = $data["target"];
                 $menu[$name]["params"] = $data["params"];
                 $menu[$name]["items"] = $this->preprocessMenu($data["items"], false);
 
-            } elseif(is_array($data)) {// Si no está bien definido
+            } elseif (is_array($data)) {// Si no está bien definido
 
                 $menu[$name]["link"] = "";
                 $menu[$name]["items"] = $this->preprocessMenu($data, false);
             } else {    // Si es el final
-                if(class_exists($name)) {
+                if (class_exists($name)) {
                     $model = new $name();
                     $data = __($model->getTitle());
                 }
@@ -167,14 +167,13 @@ class AdministrationController extends ApplicationController
         }
         // If exists a controler named like the model and it has a method
         // named "AdminList", we call that method.
-        if ($controller && method_exists ($controller, $adminAction)) {
+        if ($controller && method_exists($controller, $adminAction)) {
             $this->view->content = call_user_func_array(
-                array($controller, $actionAction),
+                array($controller, $adminAction),
                 $params
             );
             return;
         }
-
         // Default actions.
         switch (strtolower($action)) {
             case "list":
@@ -214,15 +213,16 @@ class AdministrationController extends ApplicationController
                     );
                     exit;
                 } else {    // Update de parent form from the dialog.
-                    $titleField = $model->getTitleField();
                     $this->view->content = "
                         <script>
                             updateModelValueDialog('$modelName','".
-                            web::request("field")."',$model->id,'".
-                            $model->$titleField."');
+                            web::request("field")."','".
+                            web::request("parent")."','$model->id');
                         </script>
                         ";
+                    break;
                 }
+
             default:
                 header("HTTP/1.0 404 Not Found");
                 header("Status: 404 Not Found");

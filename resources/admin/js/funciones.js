@@ -85,11 +85,14 @@ function showModelDialog(model, field, parent)
 
 }
 
-function updateModelValueDialog(model, field, parent, value, txt) {
-	$("#" + model + "_dialog").dialog("close")
-	$("#" + parent + " #" + field).val(value)
-	$("#" + parent + " #" + field + "_autocomplete").val(txt)
+function updateModelValueDialog(model, field, parent, value)
+{
 
+	$("#" + parent + " #" + field).val(value)
+    $.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
+    	$("#" + parent + " #" + field + "_autocomplete").val(data);
+    	$("#" + model + "_dialog").dialog("close")
+    });
 }
 
 /*****************************************************************************************************************

@@ -7,22 +7,34 @@ class helpers_model_ajax  {
 		$this->model = $model;
 	}
 
-	public function listItems() {
-			$limit = $where = $order = "";
-			if(isset($_REQUEST["limit"])) $limit = "limit: ".$_REQUEST["start"].", ".$_REQUEST["limit"];
-			if(isset($_REQUEST["query"])) $where =  "nombre like '%".$_REQUEST["query"]."%'";
-			if(isset($_REQUEST["sort"]))  $order = "order: ".$_REQUEST["sort"]." ".$_REQUEST["dir"];
-			$count = $this->model->count($where);
-			if ($_REQUEST["fields"]) $columns = "columns: ".$_REQUEST["fields"];
-			$data =  $this->model->select($where, $limit, $columns, $order);
+	public function listItems()
+	{
+		$limit = $where = $order = "";
 
-			$items = array();
-			foreach($data as $item) $items[] = $item->getRowData();
-			echo json_encode(array("items" => $items, "count" => $count));
+		if(isset($_REQUEST["limit"]))
+		    $limit = "limit: ".$_REQUEST["start"].", ".$_REQUEST["limit"];
+
+		if(isset($_REQUEST["query"]))
+		    $where =  "nombre like '%".$_REQUEST["query"]."%'";
+
+		if(isset($_REQUEST["sort"]))
+		    $order = "order: ".$_REQUEST["sort"]." ".$_REQUEST["dir"];
+
+		$count = $this->model->count($where);
+
+		if ($_REQUEST["fields"])
+		    $columns = "columns: ".$_REQUEST["fields"];
+
+		$data =  $this->model->select($where, $limit, $columns, $order);
+
+		$items = array();
+		foreach($data as $item) $items[] = $item->getRowData();
+		echo json_encode(array("items" => $items, "count" => $count));
 	}
 
 
-	public function files($action, $id, $field) {
+	public function files($action, $id, $field)
+	{
 
 		switch ($action) {
 
@@ -104,7 +116,8 @@ class helpers_model_ajax  {
 	/* Reordenar las listas de administración.
 	 *
 	 */
-	public function reorderList($id, $pre) {
+	public function reorderList($id, $pre)
+	{
 		$rows = web::database()->query("SELECT id FROM ".$this->model->getDatabaseTable()." ORDER BY ".$this->model->field_used_for_ordenation.", id")->fetchAll();
 		$count = 0;
 
@@ -125,11 +138,24 @@ class helpers_model_ajax  {
 
 	}
 
-	public function autocomplete($valor) {
+	public function autocomplete($valor)
+	{
+
+        if(web::request("field")) {
+            $attrs = $this->model->getFields(web::request("field"));
+            if($attrs["show"]) $name = $attrs["show"];
+        }
+
+        if(!$name) $name = $this->model->getTitleField();
+
 		$q = strtolower($_GET["q"]);
 		$primary_key = array_shift($this->model->getPrimaryKeys());
-		$name = $this->model->getTitleField();
-		$results = $this->model->select("columns: $primary_key as id, $name as text", "where: $name like '%$q%'", "order: $name");
+
+		$results = $this->model->select(
+		    "columns: $primary_key as id, $name as text",
+		    "where: $name like '%$q%'", "order: $name"
+		);
+
 		foreach($results as $row) {
 			echo $row->text."|".$row->id."\n";
 		}
@@ -165,6 +191,22 @@ class helpers_model_ajax  {
 	private function parse($request) {
 	   return (isset($_REQUEST[$request])) ? json_decode(stripslashes($_REQUEST[$request]), true) : null;
 
+	}
+
+	public function getValue($id)
+	{
+	    $attrs = $this->model->getFields(web::request("field"));
+        if($attrs["show"]) $name = $attrs["show"];
+        if(!$name) $name = $this->model->getTitleField();
+
+        $primaryKey = array_shift($this->model->getPrimaryKeys());
+
+        $data = $this->model->selectFirst(
+			"columns: $name as text",
+			"where: $primaryKey='$id'"
+        );
+        echo $data->text;
+        exit;
 	}
 }
 

@@ -14,7 +14,9 @@ class html_form extends html_object
     protected $inputs = array();
     protected $model = null;
 
-    public function __construct($name, $action = null, $method = null, $attrs = array())
+    public function __construct(
+        $name, $action = null, $method = null, $attrs = array()
+    )
     {
         $this->attrs["name"] = $name;
         if($method) $this->attrs["method"] = $method;
@@ -84,15 +86,18 @@ class html_form extends html_object
 
         $attrs = $this->model->getFields($field);
 
-        if(isset($attrs["belongs_to"])) {
-                $relatedModelName = $attrs["belongs_to"];
+        if (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"])) {
+                $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
                 if(!$attrs['autocomplete']) {
-
 	                $relatedModel = new $relatedModelName();
-	                $name = $relatedModel->getTitleField();
+                    if ($attrs["show"])
+                        $name  = $attrs["show"];
+                    else
+    	                $name = $relatedModel->getTitleField();
 
                     $input = new html_form_select($field);
+
                     $input	->add(
                     			$relatedModel->select(
                     				"columns: id as value, $name as text"
@@ -104,24 +109,39 @@ class html_form extends html_object
                     // Autocomplete
 					$value = $this->model->$field;
 					$relatedModel = new $relatedModelName($value);
-					$titleField = $relatedModel->getTitleField();
+                    if ($attrs["show"]) {
+                        $primaryKey = array_shift($relatedModel->getPrimaryKeys());
+                        $data = $relatedModel->selectFirst(
+               				"columns: ".$attrs["show"]." as text",
+               				"where: $primaryKey='".$relatedModel->get($primaryKey)."'"
+                        );
+                        $text = $data->text;
+                    } else {
+    					$titleField = $relatedModel->getTitleField();
+    					$text = $relatedModel->$titleField;
+    				}
+
+
 					// Hidden field that containt the real value
                     $inputHidden = new html_form_hidden($field);
 					$inputHidden->value($value)->class("");
+
 					// Text field that contain the name of the field.
+                    $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
                     $input = new html_form_input($field."_autocomplete");
-                    $input->value($relatedModel->$titleField);
+                    $input->value($text)->size($size);
+
 
                     $this->addJS("
-                                $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete')
-                                            .result(function(event, data, formatted) {
-                                                if (data)
-                                                    $('#$field').val(data[1]);
-                                                else
-                                                    $('#$field').val('');
-                                            }).blur(function(){
-                                                $(this).search();
-                                            });
+                        $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field')
+                                    .result(function(event, data, formatted) {
+                                        if (data)
+                                            $('#$field').val(data[1]);
+                                        else
+                                            $('#$field').val('');
+                                    }).blur(function(){
+                                        $(this).search();
+                                    });
                     ", true);
                     $this->addToEnd($inputHidden);
                 }
@@ -163,7 +183,18 @@ class html_form extends html_object
                 break;
 
                 case 'files':
-                    $input = new html_form_files($lang ? $field."|".$lang : $field, $this->model, $tmp_upload, $this);
+                    $input = new html_form_files(
+                        $lang ? $field."|".$lang : $field,
+                        $this->model,
+                        $tmp_upload,
+                        $this
+                    );
+                    break;
+
+                case "bool":
+                    $input = new html_form_checkbox($field);
+                    $input->value(1);
+                    if($this->model->get($field)) $input->checked("True");
                     break;
 
                 case 'int':
@@ -196,7 +227,8 @@ class html_form extends html_object
 
             $input->add("
                 <input type='button' value='' class='dialog'
-            	onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\")'/>"
+            	onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".
+            	$this->attrs["name"]."\")'/>"
 			);
 			$this->addToEnd("<div id='{$relatedModelName}_dialog'></div>");
         }
@@ -261,6 +293,11 @@ class html_form extends html_object
     public function addToEnd($data)
     {
         $this->_endData .= $data;
+    }
+
+    public function setAction($action)
+    {
+        $this->attrs["action"] = $action;
     }
 }
 ?>

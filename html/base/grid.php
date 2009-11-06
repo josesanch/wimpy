@@ -146,7 +146,7 @@ class html_base_grid extends html_object
                     "(\"$modelName\",\"".web::request("field").
                     "\",\"".web::request("parent").
                     "\",\"".$row->get("id").
-                    "\",\"".($row->get($row->getTitleField()))."\")";
+                    "\")";
 
                 $url = "javascript:$urlFunction";
                 $trEvent = "onclick='$urlFunction'";
@@ -198,7 +198,7 @@ class html_base_grid extends html_object
 
 
                 function do_search(form) {
-                    openUrl('".web::uri("/page=/search=")."' + form.search.value);
+                    openUrl('".web::uri("/page=/search=")."' + escape(form.search.value));
                     return false;
                 }
                 $bindLinks

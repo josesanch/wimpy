@@ -197,7 +197,12 @@ class ActiveRecord
         if ($this->select_limit) $sql .= " LIMIT ".$this->select_limit;
 
         if ($this->page_size) {
-            $statement = $this->database->query("SELECT count(*) as total FROM ".$this->database_table.($this->select_conditions ? " WHERE ".$this->select_conditions : " "));
+            $statement = $this->database->query(
+                "SELECT count(*) as total FROM ".
+                $this->database_table.($this->select_conditions ?
+                " WHERE ".$this->select_conditions : " ")
+            );
+
             if ($statement) {
                 $total_result = $statement->fetch();
                 if (!$total_result) {
@@ -307,6 +312,7 @@ class ActiveRecord
                     if (in_array("auto_increment", $attrs) || in_array("autoincrement", $attrs)) $field["autoincrement"] = true;
                     if (in_array("autocomplete", $attrs) || in_array("autocomplete", $attrs)) $field["autocomplete"] = true;
 					if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
+					if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
                         ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;
 
@@ -351,12 +357,23 @@ class ActiveRecord
 
 
             if ($field['l10n'] && web::instance()->l10n->isNotDefault($selected_lang)) {
-                if (!$selected_lang) $selected_lang = web::instance()->l10n->getSelectedLang();
-                if ($this->row_data_l10n[$selected_lang][$property]) return stripslashes($this->row_data_l10n[$selected_lang][$property]);
+                if (!$selected_lang)
+                    $selected_lang = web::instance()->l10n->getSelectedLang();
 
-                $sta = $this->database->query("select data, field from l10n where lang='$selected_lang'
-                                                                            and model='".get_class($this)."'
-                                                                            and row='".$this->row_data['id']."'");
+                if ($this->row_data_l10n[$selected_lang][$property])
+                    return stripslashes($this->row_data_l10n[$selected_lang][$property]);
+
+                $sta = $this->database->query("
+                    SELECT
+                        data, field
+                    FROM
+                        l10n
+                    WHERE
+                        lang='$selected_lang'
+                        AND model='".get_class($this)."'
+                        AND row='".$this->row_data['id']."'"
+                );
+
 //                                                                        and field='".$property."'
 
                 // If not exists the value
@@ -540,7 +557,7 @@ class ActiveRecord
     {
         $model = strtolower(ereg_replace("^get", "", $method));
 
-        if (isset($this->belongs_to) && in_array($model, $this->belongs_to)){
+        if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
             $fk_field = $model."_id";
             $model = new $model();
             return $model->selectFirst($this->$fk_field);

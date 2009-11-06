@@ -252,7 +252,10 @@ class Web
         $controller->view->action = $this->action;
 
         if (method_exists($controller, "beforeFilter")) {
-            call_user_func_array(array($controller, "beforeFilter"), $this->params);
+            call_user_func_array(
+                array($controller, "beforeFilter"),
+                $this->params
+            );
         }
         return array($controller, $action);
     }
@@ -459,7 +462,7 @@ class Web
             echo $controller->renderHtml("notfound");
         } else {
 //            echo "<h1>Error 404</h1>";
-            $this->redirect("/");
+            web::instance()->redirect("/");
         }
 
         exit;

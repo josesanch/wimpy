@@ -92,10 +92,10 @@ class sms_envios extends Model
         $sqls = array();
         $usuarioEnviados = "";
 		$sms = new net_sms();
-		/*
-		$sms->username("o2w")
-		    ->password("o2w2004");
-		    */
+
+		$sms->username(web::instance()->smsUser)
+		    ->password(web::instance()->smsPassword);
+
         if(count($usuarios) > 0) {
             foreach ($usuarios as $usuario) {
                 $sqls[] = "insert into sms_envios

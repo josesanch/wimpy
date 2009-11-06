@@ -51,7 +51,8 @@ class html_object
 	}
 
 
-	protected function getAttributes($except = array()) {
+	protected function getAttributes($except = array())
+	{
 		if (!is_array($this->attrs)) return "";
 		if(!$this->attrs['id']) $this->attrs['id'] =  $this->attrs['name'];
 		if(!is_array($except)) $except = split(" ?, ?", $except);
@@ -92,7 +93,10 @@ class html_object
 
 
 	/** Muestra el objeto en pantalla */
-	function display() 	{ 	echo $this->toHtml();	}
+	function display()
+	{
+	    echo $this->toHtml();
+    }
 
 	private function __parseAttrib($attr)
 	{

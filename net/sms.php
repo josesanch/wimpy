@@ -35,23 +35,30 @@ class net_sms
     private function makeRequestToProvider()
     {
         $url = "/eapi/submission/send_sms/2/2.0";
-//        $url = "/eapi/submission/quote_sms/2/2.0";
-        $items = array();
-        foreach($this->_params as $item => $val) {
-            $items[]= "$item=$val";
-        }
+        $items = $this->_params;
 
-        $items[]= "message=".urlencode($this->eliminarTildes($this->_text));
-        $items[]= "msisdn=".join(",", $this->_numbers);
+        $items["message"] = urlencode($this->eliminarTildes($this->_text));
+        $items["msisdn"] = implode(",", $this->_numbers);
 
-        $url = $this->_url.$url."?".join("&", $items);
-
-
-        $value= explode("|", file_get_contents($url));
-
-//        echo join(",", $value);
+        $value = explode("|", $this->_post($this->_url.$url, $items));
         return $value;
 
+    }
+
+    private function _post($url, $post)
+    {
+        $context = array();
+
+        if (is_array($post)) {
+            ksort($post);
+
+            $context['http'] = array(
+                'method' => 'POST',
+                'content' => http_build_query($post, '', '&'),
+            );
+        }
+
+        return file_get_contents($url, false, stream_context_create($context));
     }
 
     private function eliminarTildes($s)

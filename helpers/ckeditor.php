@@ -1,6 +1,7 @@
 <?php
 
-class helpers_ckeditor {
+class helpers_ckeditor
+{
 	protected $path = "/assets";
 
 	public function upload() {
@@ -16,7 +17,8 @@ class helpers_ckeditor {
 		}
 	}
 
-	public function destroy($file) {
+	public function destroy($file)
+	{
 		$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
 		unlink("$dir/".urldecode($file));
 	}

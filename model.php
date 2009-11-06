@@ -1,5 +1,6 @@
 <?
-class Model extends ActiveRecord {
+class Model extends ActiveRecord
+{
 /*	protected  $fields = array(
 								"id" => "integer(11) not_null primary_key auto_increment",
 								"nombre" => "string(255) not_null default=''",
@@ -19,7 +20,8 @@ class Model extends ActiveRecord {
 	protected $has_images = False;
 	protected static $table_created = false;
 
-	public function __construct($createdFromSql = False) {
+	public function __construct($createdFromSql = False)
+	{
 		parent::__construct();
 		$this->createTableIfNecessary();
 		if(!$this->image_label) $this->image_label = get_class($this);
@@ -61,7 +63,7 @@ class Model extends ActiveRecord {
 
 //		log::to_file("Upload $field, tipo: $type");
 //		log::to_file("vardump ".var_export($_FILES, true));
-		if(is_uploaded_file($file['tmp_name']) && checkFileSafety($file)) {
+		if (is_uploaded_file($file['tmp_name']) && checkFileSafety($file)) {
 //			log::to_file("El fichero existe ".$file['tmp_name']);
 			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 			$primary_key = array_shift($this->getPrimaryKeys());
@@ -91,38 +93,51 @@ class Model extends ActiveRecord {
 		return false;
 	}
 
-	public function uploadFile($field = '') {
+	public function uploadFile($field = '')
+	{
 		return $this->upload($field, 'file');
 
 	}
-	public function uploadImage($field = '', $ajax = false) {
+
+	public function uploadImage($field = '', $ajax = false)
+	{
 		return $this->upload($field, 'image', $ajax);
 	}
 
-	public function hasImages() {
+	public function hasImages()
+	{
 		return $this->has_images;
 	}
 
-	public function hasFiles() {
+	public function hasFiles()
+	{
 		return $this->has_files;
 	}
 
-	public function saveFromRequest() {
+	public function saveFromRequest()
+	{
 		$item = parent::saveFromRequest();
 
 		if(web::request("tmp_upload")) {
-			$this->database->exec("UPDATE images set iditem='$item->id',module='".$this->image_label."' where module='".web::request("tmp_upload")."'");
+			$this->database->exec("UPDATE images set
+			    iditem='$item->id',
+			    module='".$this->image_label."'
+			    WHERE module='".web::request("tmp_upload")."'"
+			 );
 		}
 	}
 
-	public function getTitleField() {
+	public function getTitleField()
+	{
 		if($this->title_field) return $this->title_field;
 		$fields = array("name", 'nombre', 'title', 'titulo');
 		foreach($fields as $field) {
 			if($this->getFields($field)) { return $field; }
 		}
 	}
-	public function getTitle() {
+
+	public function getTitle()
+	{
 		return $this->title ? $this->title : get_class($this);
 	}
 
