@@ -70,7 +70,7 @@ class WMaps
 	}
 
 	public function jsapi() { return "<script src='http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=".$this->key."' type='text/javascript'></script>"; }
-	public function initialize($dontCall = false) {
+	public function initialize($run = true) {
 		$str = "
 <div id='{$this->id}' style='width: $this->width; height: $this->height;'></div>
 
@@ -96,7 +96,7 @@ class WMaps
 		}
 	}";
 
-	if(!$dontCall) $str .= "init_wmaps_{$this->id}();";
+	if($run) $str .= "init_wmaps_{$this->id}();";
 
 	$str .= "
 </script>";
