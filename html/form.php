@@ -129,17 +129,21 @@ class html_form extends html_object
                     $input = new html_form_input($field."_autocomplete");
                     $input->value($text)->size($size);
 
-
+                    if(!$attrs["newvalues"]) $mustMatch = "mustMatch : true";
                     $this->addJS("
-                        $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field')
-                                    .result(function(event, data, formatted) {
-                                        if (data)
-                                            $('#$field').val(data[1]);
-                                        else
-                                            $('#$field').val('');
-                                    }).blur(function(){
-                                        $(this).search();
-                                    });
+                        $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field', {
+                            $mustMatch
+                        }).result(function(event, data, formatted) {
+                                if (data) {
+                                    $('#$field').val(data[1]);
+                                    if(typeof(autocompleteCallback) != 'undefined')
+                                        autocompleteCallback('$relatedModelName', '$field', '', data[1]);
+                                } else {
+                                    $('#$field').val('');
+                                }
+                            }).blur(function(){
+                                $(this).search();
+                            });
                     ", true);
                     $this->addToEnd($inputHidden);
                 }

@@ -312,6 +312,7 @@ class ActiveRecord
                     if (in_array("auto_increment", $attrs) || in_array("autoincrement", $attrs)) $field["autoincrement"] = true;
                     if (in_array("autocomplete", $attrs) || in_array("autocomplete", $attrs)) $field["autocomplete"] = true;
 					if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
+					if (in_array("newvalues", $attrs) || in_array("newvalues", $attrs)) $field["newvalues"] = true;
 					if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
                         ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;

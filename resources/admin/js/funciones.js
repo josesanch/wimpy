@@ -91,8 +91,8 @@ function updateModelValueDialog(model, field, parent, value)
     $.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
     	$("#" + parent + " #" + field + "_autocomplete").val(data);
     	$("#" + model + "_dialog").dialog("close")
-    	if(typeof(updateModelValueDialogCallback) != "undefined")
-    	    updateModelValueDialogCallback(model, field, parent, value);
+    	if(typeof(autocompleteCallback) != "undefined")
+    	    autocompleteCallback(model, field, parent, value);
     });
 }
 
