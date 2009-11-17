@@ -1,70 +1,97 @@
-<?
-class html_form_select extends html_form_input {
+<?php
+class html_form_select extends html_form_input
+{
 
-	protected $selectedValues;
-	protected $attrs = array
-	(
-		'type'    => 'select',
-		'class'   => 'select',
-		'value'   => '',
-		'options' => array()
+    protected $selectedValues;
+    protected $attrs = array
+    (
+        'type'    => 'select',
+        'class'   => 'select',
+        'value'   => '',
+        'options' => array()
 
-	);
+    );
 
-	public function toHtml() {
-		if($this->attrs['label']) {
-			$str = "\n<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."' class='autoform'>\n    <span>".$this->attrs['label']."</span>\n";
-		}
+    public function toHtml()
+    {
+        if ($this->attrs['label']) {
+            $str = "\n<label for='".(
+                $this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name']
+                )."' class='autoform'>
+                <span>".$this->attrs['label']."</span>\n";
+        }
 
-		$str .= "	<select ".$this->getAttributes(array('value', 'type', 'options', 'selectedOptions')).">".$this->getOptions()."</select>\n";
-		if($this->attrs['label']) $str .= "</label>\n";
-		return $str;
-	}
+        $str .= "    <select ".$this->getAttributes(
+            array('value', 'type', 'options', 'selectedOptions')
+        ).">".$this->getOptions()."</select>\n";
 
-	public function add($values, $selectedValues = null, $at_top = false ) {
-		if(is_array($values)) {
-			if(count($values) > 0) {
-				if(is_a($values[0], 'activerecord')) {
-					foreach($values as $value) {
-						$row = array_values($value->getRowData());
-						$this->attrs['options'][$row[0]] = $row[1];
-					}
+        if($this->attrs['label'])
+            $str .= "</label>\n";
+        return $str;
+    }
 
-				} else {
-					if($at_top)
-						$this->attrs['options'] = $values + $this->attrs['options'];
-					else
-						$this->attrs['options'] += $values;
-/*					foreach($values as $value => $text) {
-						$this->attrs['options'][$value] = $text;
-					}
-					*/
-				}
-			}
-		}
-		if(isset($selectedValues)) $this->setSelectedValues($selectedValues);
-		return $this;
-	}
+    public function add($values, $selectedValues = null, $at_top = false )
+    {
+        if(is_array($values)) {
+            if(count($values) > 0) {
+                if(is_a($values[0], 'activerecord')) {
+                    foreach($values as $value) {
+                        $row = array_values($value->getRowData());
+                        $this->attrs['options'][$row[0]] = $row[1];
+                    }
 
-	public function select($values) {
-		if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
-		$this->selectedValues = $values;
-		return $this;
-	}
+                } else {
+                    if($at_top)
+                        $this->attrs['options'] = $values + $this->attrs['options'];
+                    else
+                        $this->attrs['options'] += $values;
+/*                    foreach($values as $value => $text) {
+                        $this->attrs['options'][$value] = $text;
+                    }
+                    */
+                }
+            }
+        }
+        if(isset($selectedValues)) $this->setSelectedValues($selectedValues);
+        return $this;
+    }
 
-	private function getOptions() {
-		foreach($this->attrs['options'] as $value => $text) 	{
-			if(isset($this->selectedValues)) {
-				$selected = in_array($value, is_array($this->selectedValues) ? $this->selectedValues : array($this->selectedValues)) ? " selected" : "";
-				}
-			$html .= "\n		<option value=\"$value\"$selected>$text</option>";
-		}
-		return $html;
+    public function select($values)
+    {
+        if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+        $this->selectedValues = $values;
+        return $this;
+    }
 
-	}
 
-	public function clear() {
-		$this->attrs['options'] = array();
-	}
+    private function getOptions()
+    {
+        foreach ($this->attrs['options'] as $value => $text) {
+            if ($this->selectedValues) {
+                $values = is_array($this->selectedValues) ?
+                    $this->selectedValues :
+                    array($this->selectedValues);
+
+                $selected = in_array($value, $values) ? " selected" : "";
+            }
+            $html .= "
+                       <option value=\"$value\"$selected>$text</option>";
+        }
+        return $html;
+
+    }
+
+    public function clear() {
+        $this->attrs['options'] = array();
+    }
+
+    public function getSelectedValues()
+    {
+        if ($this->selectedValues) {
+            if (count($this->selectedValues) == 1)
+                return $this->selectedValues[0];
+            return $this->selectedValues;
+        }
+        return array_shift(array_keys($this->attrs['options']));
+    }
 }
-?>

@@ -292,17 +292,18 @@ div.contenedor-boton-upload object  { float: right; }
 div.contenedor-boton-upload { clear: both; margin-top: 5px; margin-bottom: 2em; }
 .autoform.no-margin { padding: 0px; }
 
-
+#listado-paginas { float: right; }
 /*****************************************************************************************************************
 *	LISTADOS
 *****************************************************************************************************************/
-div.listado-resultados { width: 98%;  color: #333; margin: auto;  }
-div.listado-resultados div { margin-bottom: 0.5em; }
+div.listado-resultados { width: 98%;  color: #333; margin: auto;  margin-bottom: 0.5em; }
+
 div.pie-listado-resultados { width: 98%; margin: auto; text-align: right; color: white; }
 div.pie-listado-resultados div { padding: 5px; color: #333; }
-div.listado-resultados .texto-buscar { border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; margin-left: 0.5em;}
-div.listado-resultados .boton-buscar { padding: 0.2em; border: 0px; background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat; padding-left: 20px; color: white; margin-left: 0.5em; }
-div.listado-resultados .boton-nuevo { padding: 0.2em; border: 0px; background: #99D177 url("/resources/admin/images/list-add.png") 5px 50% no-repeat; padding-left: 20px;; color: white;  margin-left: 0.5em; }
+
+.texto-buscar { border: 1px solid #96AABF; background: white; color: #333; padding: 0.2em; margin-left: 0.5em;}
+.boton-buscar { padding: 0.2em; border: 0px; background: #96AABF url("/resources/admin/images/system-search.png") 5px 50% no-repeat; padding-left: 20px; color: white; margin-left: 0.5em; }
+.boton-nuevo { padding: 0.2em; border: 0px; background: #99D177 url("/resources/admin/images/list-add.png") 5px 50% no-repeat; padding-left: 20px;; color: white;  margin-left: 0.5em; }
 
 
 /*****************************************************************************************************************

@@ -5,6 +5,7 @@ class html_base_grid extends html_object
     public $onClick;
     public $buttons = array("search", "new");
     public $search;
+    public $onSubmit = 'return do_search(this);';
     private $_instance = true;
 
     public function toHtml($model, $sql = null, $columns = null, $order = null)
@@ -12,16 +13,22 @@ class html_base_grid extends html_object
         $modelName = get_class($model);
         $dialog = web::request("dialog") ? "dialog" : "";
         $form = new html_base_form($modelName);
-        $form->onsubmit('return do_search(this);');
+
+        if($this->_instance) {
+            if($this->onSubmit) $form->onsubmit($this->onSubmit);
+        } else {
+            $form->onsubmit('return do_search(this);');
+        }
 
         $model->setPageSize(25);
-        if(web::request("page")) $model->setCurrentPage(web::request("page"));
+        if (web::request("page"))
+            $model->setCurrentPage(web::request("page"));
 
-        if(web::request("search")) {
-            if($columns) $c = split(" ?, ?", $columns);
+        if (web::request("search")) {
+            if ($columns) $c = split(" ?, ?", $columns);
             else $c = array_keys($model->getFields());
             $search = array();
-            foreach($c as $field) {
+            foreach ($c as $field) {
                 $search[]= "$field like '%".urldecode(web::request('search'))."%'";
             }
             $search = " (".join(" or ", $search).")";
@@ -44,8 +51,11 @@ class html_base_grid extends html_object
             } else {
                 $sqlcolumns[] = $column;
             }
-
         }
+        // We add the primary key to the seleted fields.
+        $primaryKey = array_shift($model->getPrimaryKeys());
+        if(!in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]=$primaryKey;
+
         if($order) $order = "order: $order";
         if(web::request("order")) {
             $order = "order: ".web::request("order");
@@ -64,6 +74,8 @@ class html_base_grid extends html_object
                 $order = "order: id";
             }
         }
+
+
         $results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
         $de = ($model->current_page - 1) * $model->page_size + 1;
         $hasta = $de + $model->page_size - 1;
@@ -84,29 +96,32 @@ class html_base_grid extends html_object
         }
 
         $form->add(
-                "<div class='listado-resultados'>
-                <div>
-                    <table border=0 width='100%' cellpadding=0 cellspacing='0'>
-                        <td>
-                            Buscar:
-                            <input type='text' name='search' class='texto-buscar' id='search' value='".urldecode(web::request('search'))."' size=20/>"
+                "
+                <div class='listado-resultados'>
+                    Buscar:
+                    <input type='text' name='search'
+                    class='texto-buscar' id='search'
+                    value='".urldecode(web::request('search'))."'
+                    size=20/>"
         );
 
 
         if($botonBuscar)
-            $form->add("<input type=button value=buscar class='boton-buscar' onclick=\"do_search(this.form)\">");
+            $form->add(
+                "<input type=button value=buscar class='boton-buscar'
+                onclick=\"do_search(this.form)\">"
+            );
 
         if($botonNuevo)
             $form->add(
                 "<input type=button value='nuevo' class='boton-nuevo'
-                onclick='openUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\")'>"
+                onclick='openUrl(\"/admin/".get_class($model)."/edit/0".
+                web::params()."\")'>"
             );
 
         $form->add(
             "$data
-                 <td align='right'>$paginas</td>
-                    </table>
-                </div>
+                     <div id='listado-paginas'>$paginas</div>
                 </div>
                 <table border=0 class='grid' cellpadding=3 cellspacing=1
                 align=center width='98%'>

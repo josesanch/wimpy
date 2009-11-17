@@ -72,13 +72,8 @@ class html_form extends html_object
                 $this->attrs['enctype'] = 'multipart/form-data';
             $this->data .= $input;
         }
-        $this->data .= "
-<script type='text/javascript'>
-    $(document).ready(function() {
-            $this->_javascriptOnload
-    });
-    $this->_javascript;
-</script>";
+        $this->data .= $this->getJs();
+
     }
 
     public function auto($field, $lang = null, $tmp_upload = null)
@@ -89,7 +84,7 @@ class html_form extends html_object
         if (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"])) {
                 $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
-                if(!$attrs['autocomplete']) {
+                if (!$attrs['autocomplete']) {
 	                $relatedModel = new $relatedModelName();
                     if ($attrs["show"])
                         $name  = $attrs["show"];
@@ -100,27 +95,30 @@ class html_form extends html_object
 
                     $input	->add(
                     			$relatedModel->select(
-                    				"columns: id as value, $name as text"
+                    				"columns: id as value, $name as text",
+                    				"order: text"
                     			)
-                    		)
-                    		->select($this->model->$field);
+                    		);
+                    if($this->model->$field)
+                        $input->select($this->model->$field);
 
                 } else {
                     // Autocomplete
 					$value = $this->model->$field;
 					$relatedModel = new $relatedModelName($value);
                     if ($attrs["show"]) {
+
                         $primaryKey = array_shift($relatedModel->getPrimaryKeys());
                         $data = $relatedModel->selectFirst(
                				"columns: ".$attrs["show"]." as text",
-               				"where: $primaryKey='".$relatedModel->get($primaryKey)."'"
+               				"where: $primaryKey='".$relatedModel->get($primaryKey)."'",
+               				"order: text"
                         );
                         $text = $data->text;
                     } else {
     					$titleField = $relatedModel->getTitleField();
     					$text = $relatedModel->$titleField;
     				}
-
 
 					// Hidden field that containt the real value
                     $inputHidden = new html_form_hidden($field);
@@ -230,6 +228,7 @@ class html_form extends html_object
             	onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".
             	$this->attrs["name"]."\")'/>"
 			);
+
 			$this->addToEnd("<div id='{$relatedModelName}_dialog'></div>");
         }
 
@@ -298,6 +297,20 @@ class html_form extends html_object
     public function setAction($action)
     {
         $this->attrs["action"] = $action;
+    }
+
+    public function getJs()
+    {
+        return "<script type='text/javascript'>
+                    $(document).ready(function() {
+                            $this->_javascriptOnload
+                    });
+                    $this->_javascript;
+                </script>";
+    }
+
+    public function getEndData() {
+        return $this->_endData;
     }
 }
 ?>

@@ -225,7 +225,6 @@ class Web
             $this->action = $this->action ? $this->action : 'index';
         }
 
-
         $controllerClass =  ucfirst(
             str_replace(
                 '-',
@@ -404,7 +403,7 @@ class Web
 
     private function processAction($param)
     {
-        return str_replace('-', '_', $param);
+        return str_replace("-", "_", convert_to_url($param));
     }
 
     public function setDefaultHtmlEditor($editor = "fckeditor")
