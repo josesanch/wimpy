@@ -11,7 +11,7 @@ class helpers_files_thumbnail
     private $_img;
     private $_file;
     private $_imgId;
-    private $_rootThumbnails = "/images/thumbs";
+    private $_rootThumbnails = "/cached";
     private $_output = "jpg";
     function __construct ($file)
     {
