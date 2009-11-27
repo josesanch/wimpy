@@ -57,6 +57,7 @@ class html_autoform extends html_form
 
     private function construct_foot()
     {
+        if(web::auth()->hasPermission($this->model, auth::MODIFY))
     	$isDialog = web::request("dialog");
     	$modelName = get_class($this->model);
 		if ($isDialog) {
@@ -91,7 +92,7 @@ class html_autoform extends html_form
             );
         }
 
-        if ($this->model->id && in_array("delete", $this->buttons)) {
+        if ($this->model->id && in_array("delete", $this->buttons) && web::auth()->hasPermission($this->model, auth::DELETE)) {
             $this->add(
                 "<input class='submit boton-eliminar' id='boton-eliminar'
                 type='button' value=eliminar
@@ -100,7 +101,20 @@ class html_autoform extends html_form
 
         }
 
-        if (in_array("save", $this->buttons)) {
+        if (
+            in_array("save", $this->buttons) &&
+            (
+                (
+                    web::auth()->hasPermission($this->model, auth::ADD)
+                    && !$this->model->id
+                )
+                ||
+                (
+                    web::auth()->hasPermission($this->model, auth::MODIFY)
+                    && $this->model->id
+                )
+            )
+        ) {
             $this->add(
                 "<input class='submit boton-guardar'
                 type='submit' id='boton-guardar' value='guardar'/>"

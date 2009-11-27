@@ -233,7 +233,7 @@ class html_form extends html_object
             	$this->attrs["name"]."\")'/>"
 			);
 
-			$this->addToEnd("<div id='{$relatedModelName}_dialog'></div>");
+			$this->addToEnd("<div id='{$field}_dialog'></div>");
         }
 
         $this->inputs[]= $input;

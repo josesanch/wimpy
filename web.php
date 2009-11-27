@@ -210,6 +210,19 @@ class Web
                     $controller->getAction($this->action, $this->params);
                 }
                 break;
+
+            case 'images':
+                $file = new helpers_images();
+                $file->select($this->action);
+                $file->download();
+            break;
+
+            case 'files':
+                $file = new helpers_files();
+                $file->select($this->action);
+                $file->download("inline");
+            break;
+
         default:
                 return $this->callDefaultDispatcher($render, $view);
         }

@@ -39,7 +39,10 @@ class image
 //		$this->debug("Creando imagen de: $file");
 		//$type = strtolower($f->getExtension());
 		list($ancho, $altura, $tipo, $atr) = getimagesize($file);
-		$ftype_array = array(1 => "gif", 2 => "jpg", 3 => "png", 4 => "swf", 5 => "psd", 6 => "bmp", 7 => "tiff", 8 => "tiff");
+		$ftype_array = array(
+		    1 => "gif", 2 => "jpg", 3 => "png", 4 => "swf",
+		    5 => "psd", 6 => "bmp", 7 => "tiff", 8 => "tiff"
+        );
         $type =  $ftype_array[$tipo];
 		//echo "$file --> $type";
 		switch($type)
@@ -79,7 +82,15 @@ class image
 		$dest_image = imagecreatetruecolor($width, $height);
 		imagealphablending($dest_image,false);
  		imagesavealpha($dest_image, true);
-		imagecopyresampled($dest_image, $this->img, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+		imagecopyresampled(
+		    $dest_image,
+		    $this->img,
+		    0, 0, 0, 0,
+		    $width,
+		    $height,
+		    $this->getWidth(),
+		    $this->getHeight()
+        );
 		return new image($dest_image);
 
 	}
@@ -108,7 +119,7 @@ class image
    		$distx = bcdiv($this->getWidth(), $width);
    		$disty = bcdiv($this->getHeight(), $height);
 
-   		$div = ($distx < $disty) ? $distx : $disty;	// La mayor distancia.
+   		$div = ($distx < $disty) ? $distx : $disty;	// La menor distancia.
 
 
    		$_width = abs(bcdiv($this->getWidth(), $div));

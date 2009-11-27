@@ -7,6 +7,11 @@ class auth
     public $user_field = 'user';
     public $password_field = 'password';
 
+    const VIEW = 1;
+    const ADD = 2;
+    const MODIFY = 3;
+    const DELETE = 4;
+
     public function __construct($params)
     {
         if ($params['table']) $this->table = $params['table'];
@@ -84,5 +89,9 @@ class auth
         header('HTTP/1.0 401 Unauthorized');
     }
 
+    public function hasPermission($perm, $model)
+    {
+        return true;
+    }
 
 }

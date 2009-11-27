@@ -5,6 +5,7 @@ class html_base_grid extends html_object
     public $onClick;
     public $buttons = array("search", "new");
     public $search;
+    public $showSearch = true;
     public $onSubmit = 'return do_search(this);';
     private $_instance = true;
 
@@ -14,7 +15,7 @@ class html_base_grid extends html_object
         $dialog = web::request("dialog") ? "dialog" : "";
         $form = new html_base_form($modelName);
 
-        if($this->_instance) {
+        if ($this->_instance) {
             if($this->onSubmit) $form->onsubmit($this->onSubmit);
         } else {
             $form->onsubmit('return do_search(this);');
@@ -40,12 +41,16 @@ class html_base_grid extends html_object
         foreach ($columns as $column) {
             $attrs = $model->getFields($column);
             if($attrs['belongs_to']) {
+
+
                 $belongs_model_name = $attrs['belongs_to'];
+
                 $belongs_model = new $belongs_model_name;
-                $table = substr($column, 0, -3);
-                $fieldToSelect = $belongs_model->getTitleField();
-                if ($attrs["show"])
-                    $fieldToSelect = $attrs["show"];
+                $table = $belongs_model_name;
+
+                $fieldToSelect = !$attrs["show"] ?
+                    $belongs_model->getTitleField() :
+                    $attrs["show"];
 
 
                 $sqlcolumns[]= "(
@@ -102,37 +107,40 @@ class html_base_grid extends html_object
             $botonNuevo = $botonBuscar = true;
         }
 
-        $form->add(
-                "
-                <div class='listado-resultados'>
-                    Buscar:
-                    <input type='text' name='search'
-                    class='texto-buscar' id='search'
-                    value='".urldecode(web::request('search'))."'
-                    size=20/>"
-        );
-
-
-        if($botonBuscar)
+        if(!$this->_instance || $this->showSearch) {
             $form->add(
-                "<input type=button value=buscar class='boton-buscar'
-                onclick=\"do_search(this.form)\">"
+                    "<div class='listado-resultados'>Buscar:
+                        <input type='text' name='search'
+                        class='texto-buscar' id='search'
+                        value='".urldecode(web::request('search'))."'
+                        size=20/>"
             );
 
-        if($botonNuevo)
+
+            if($botonBuscar && web::auth()->hasPermission($this->model, auth::VIEW))
+                $form->add(
+                    "<input type=button value=buscar class='boton-buscar'
+                    onclick=\"do_search(this.form)\">"
+                );
+
+            if($botonNuevo && web::auth()->hasPermission($this->model, auth::ADD))
+                $form->add(
+                    "<input type=button value='nuevo' class='boton-nuevo'
+                    onclick='openUrl(\"/admin/".get_class($model)."/edit/0".
+                    web::params()."\")'>"
+                );
+
             $form->add(
-                "<input type=button value='nuevo' class='boton-nuevo'
-                onclick='openUrl(\"/admin/".get_class($model)."/edit/0".
-                web::params()."\")'>"
+                "$data
+                         <div id='listado-paginas'>$paginas</div>
+                    </div>"
             );
+        }
 
         $form->add(
-            "$data
-                     <div id='listado-paginas'>$paginas</div>
-                </div>
-                <table border=0 class='grid' cellpadding=3 cellspacing=1
-                align=center width='98%'>
-                <tr >\n"
+            "<table border=0 class='grid' cellpadding=3 cellspacing=1
+            align=center width='98%'>
+            <tr >\n"
         );
 
         foreach($columns as $column) {
@@ -200,7 +208,7 @@ class html_base_grid extends html_object
         $form->add("</tbody></table>\n");
         if (web::request("dialog")) {
             $bindLinks =  "$('a.dialog').bind('click', function() { openUrl($(this).attr('href')); return false; });";
-            $openUrl = "$('#".$modelName."_dialog').load(url);";
+            $openUrl = "$('#".web::request("field")."_dialog').load(url);";
         } else {
             $openUrl = "document.location = url;";
         }

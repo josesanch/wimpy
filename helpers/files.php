@@ -1,6 +1,7 @@
 <?
 
-class helpers_files extends ActiveRecord {
+class helpers_files extends ActiveRecord
+{
 	protected $database_table = "files";
 	protected $path = "/files";
 	protected $output_type = "jpg";
@@ -8,21 +9,22 @@ class helpers_files extends ActiveRecord {
 	protected $image = null;
 	protected $cache_images = true;
 	protected $quality = 95;
-	protected $fields = array(
-								"id" => "int not_null primary_key auto_increment",
-								"nombre" => "string(255) not_null default=''",
-								"extension" => "varchar(255)",
-								"tipo" => "varchar(255) not_null",
-								"iditem" => "int",
-								"module" => "varchar(255)",
-								"field" => "varchar(35)",
-								"descripcion" => "text",
-								"orden" => "int",
-								"fecha" => "datetime"
-							);
+	protected $fields = array (
+	    "id" => "int not_null primary_key auto_increment",
+	    "nombre" => "string(255) not_null default=''",
+	    "extension" => "varchar(255)",
+	    "tipo" => "varchar(255) not_null",
+	    "iditem" => "int",
+	    "module" => "varchar(255)",
+	    "field" => "varchar(35)",
+	    "descripcion" => "text",
+	    "orden" => "int",
+	    "fecha" => "datetime"
+    );
 
 
 	public function __construct($url) {
+    	require_once(dirname(__FILE__)."/files/thumbnail.php");
 		parent::__construct();
 		if(!is_numeric($url)) {
 			$this->local_file = $url;
@@ -31,11 +33,15 @@ class helpers_files extends ActiveRecord {
 		}
 	}
 
-	public function url() {
-		return $this->path."/".$this->id.".".$this->extension;
+	public function url()
+	{
+//		return $this->path."/".$this->id.".".$this->extension;
+        $info = pathinfo($this->nombre);
+        return "/files/$this->id/".$info["filename"].".".$this->extension;
 	}
 
-	public function phisical($id = '') {
+	public function phisical($id = '')
+	{
 		if($id) $this->select($id);
 		if($this->local_file) return $this->local_file;
 	 	return $_SERVER["DOCUMENT_ROOT"].$this->path."/".$this->id.".".$this->extension;
@@ -55,22 +61,23 @@ class helpers_files extends ActiveRecord {
 
 	public function isCompressed() { return ($this->getType() == 'application') && ($this->getSubtype() == 'zip' || $this->getSubtype() == 'x-gzip'); }
 
-	public function getTypeByExtension($id = null) {
+	public function getTypeByExtension($id = null)
+	{
 		$tipos = array(
-					  "image" => array("gif", "jpg", "png", "bmp")
-					, "audio" => array("mp3", "wav", "wma", "ogg")
-					, "compress" => array("zip", "rar", "ace" )
-					, "text" => array("doc", "txt", 'odt')
-					, "pdf" => array("ps", "pdf")
-					, "video" => array("avi", "mpg", "wmv", 'flv')
-					, "spreadsheet" => array("xls")
-					, "presentation" => array("ppt", "pps", 'odp')
-					, "executable" => array("exe", "com")
-					);
+              "image" => array("gif", "jpg", "png", "bmp")
+            , "audio" => array("mp3", "wav", "wma", "ogg")
+            , "compress" => array("zip", "rar", "ace" )
+            , "text" => array("doc", "txt", 'odt')
+            , "pdf" => array("ps", "pdf")
+            , "video" => array("avi", "mpg", "wmv", 'flv')
+            , "spreadsheet" => array("xls")
+            , "presentation" => array("ppt", "pps", 'odp')
+            , "executable" => array("exe", "com")
+        );
+
 		if(isset($id)) $this->id($id);
 		$ext = strtolower($this->extension);
-		foreach($tipos as $key => $arr)
-		{
+		foreach($tipos as $key => $arr) {
 			if(in_array($ext, $arr)) return $key;
 		}
 		return null;
@@ -146,19 +153,28 @@ class helpers_files extends ActiveRecord {
 	}
 
 
-	function src($size = null, $operation = "THUMB", $xcenter = 1, $ycenter = 1) {
+	function src($size = null, $operation = thumb::NORMAL, $xcenter = 1, $ycenter = 1) {
 		if(!$size) return $this->url();
+
 		$size = explode("x", $size);
+
+		if ($this->isImage() || $this->isPDF()) {
+            $thumb = new helpers_files_thumbnail($this);
+            try {
+                $url = $thumb->getUrl($size[0], $size[1], $operation);
+                return $url;
+          	} catch(Exception $e) {
+          	    if($this->isPDF()) return '/resources/admin/images/pdf.gif';
+          	    return '';
+			}
+        }
 
     	$this->cached_image_url = $this->generateCachedUrl($size[0], $size[1], $ycenter, $xcenter, $operation);
 
 		$cached = $this->isCached($this->cached_image_url);
     	if($cached)	return $cached;
 
-		if($this->isImage() && (!$this->isTiff()) ) {
-			$img = $this->getThumbnail($size[0], $size[1], $ycenter, $xcenter, $operation);
-
-		} elseif($this->isVideo()) {
+        if($this->isVideo()) {
 			if(class_exists('ffmpeg_movie')) {
 				$movie = new ffmpeg_movie($this->phisical());
 //				$frame = $movie->getFrame(1);

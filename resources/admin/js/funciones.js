@@ -69,8 +69,8 @@ function actualizarFormulario(campo1, campo2) {
 
 function showModelDialog(model, field, parent)
 {
-	$("#" + model + "_dialog").load("/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent, function() {
-			$("#" + model + "_dialog").dialog('open');
+	$("#" + field + "_dialog").load("/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent, function() {
+			$("#" + field + "_dialog").dialog('open');
 //			$("#usuarios").ajaxForm({ target: "#resultados" })
 	}).dialog({
 			width: '80%',
@@ -90,9 +90,10 @@ function updateModelValueDialog(model, field, parent, value)
 	$("#" + parent + " #" + field).val(value)
     $.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
     	$("#" + parent + " #" + field + "_autocomplete").val(data);
-    	$("#" + model + "_dialog").dialog("close")
+
     	if(typeof(autocompleteCallback) != "undefined")
     	    autocompleteCallback(model, field, parent, value);
+    	$("#" + field + "_dialog").dialog("close")
     });
 }
 

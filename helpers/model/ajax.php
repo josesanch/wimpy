@@ -149,12 +149,13 @@ class helpers_model_ajax  {
         if(!$name) $name = $this->model->getTitleField();
 
 		$q = strtolower($_GET["q"]);
-		$primary_key = array_shift($this->model->getPrimaryKeys());
+		$primaryKey = array_shift($this->model->getPrimaryKeys());
 
 		$results = $this->model->select(
-		    "columns: $primary_key as id, $name as text",
+		    "columns: $primaryKey as id, $name as text",
 		    "where: $name like '%$q%'", "order: $name"
 		);
+
 
 		foreach($results as $row) {
 			echo $row->text."|".$row->id."\n";
@@ -205,6 +206,10 @@ class helpers_model_ajax  {
 			"columns: $name as text",
 			"where: $primaryKey='$id'"
         );
+        /*
+        var_dump("columns: $name as text",
+			"where: $primaryKey='$id'");
+			*/
         echo $data->text;
         exit;
 	}
