@@ -3,7 +3,7 @@
 /**
 *  net::mail Clase
 * @author   José Sánchez Moreno
-* @version  v 0.0.1
+* @version  v 0.0.2
 * @package net
 * @access   public
 */
@@ -24,10 +24,33 @@ class Net_Mail
 		$this->__boundary = rand();
 	}
 
-	function to($to, $email)	{  $this->__to = "$to <$email>";	}
-	function from($from, $email)	{  $this->__from = "$from <$email>";	}
+//	function to($to, $email)	{  $this->__to = "$to <$email>";	}
 
-	function subject($subject) { $this->__subject = $subject; }
+	public function to($to = null, $email = null)	{
+	    if($to) {
+            $this->__to = array($to, $email);
+	    } else {
+            return $this->__to[1] ? '=?UTF-8?B?'.base64_encode($this->__to[0])."?= <".$this->__to[1].">" : $this->__to[0];
+        }
+	}
+
+
+	public function from($from = null, $email = null)	{
+	    if($from) {
+            $this->__from = array($from, $email);
+	    } else {
+            return $this->__from[1] ? '=?UTF-8?B?'.base64_encode($this->__from[0])."?= <".$this->__from[1].">" : $this->__from[0];
+        }
+	}
+
+	function subject($subject = null) {
+	    if($subject) {
+    	    $this->__subject = $subject;
+	    } else {
+            return '=?UTF-8?B?'.base64_encode($this->__subject)."?=";
+        }
+	}
+
 	function message($subject, $msg)	{  $this->subject($subject); $this->msg($msg);	}
 	function addCC($to, $email) { $this->__cc[] = "$to <$email>"; }
 
@@ -41,16 +64,14 @@ class Net_Mail
 	 */
 	function send($from = null, $to = null, $subject = null, $msg = null)
 	{
-		$this->__from = isset($from) ? $from : $this->__from;
-		$this->__to = isset($to) ? $to : $this->__to;
-		$this->__subject = isset($subject) ? $subject : $this->__subject;
+    	if($from) $this->from($from);
+		if($to) $this->to($to);
+		if($subject) $this->subject($subject);
 		if(isset($msg)) $this->msg($msg);
 
 		$content = $this->getContent();
-
 		//$this->debug("Enviando email de $this->__from a $this->__to ($this->__subject)");
-
-		return mail($this->__to, $this->__subject, $content, $this->__getHeaders());
+		return mail($this->to(), $this->subject(), $content, $this->__getHeaders());
 	}
 
 	function msg($msg)
@@ -129,8 +150,8 @@ class Net_Mail
 //		$headers .= "Content-Type: multipart/mixed; boundary=\"$this->__boundary\"\n";
 		$headers .= "Content-Type: multipart/mixed; boundary=\"$this->__boundary\"\n";
 //		$headers .="Content-Type: text/html; \"charset=UTF-8\"\r\n";
-		$headers .="From: $this->__from\n";
-		$headers .="Reply-To: $this->__from\n";
+		$headers .="From: ".$this->from()."\n";
+		$headers .="Reply-To: ".$this->from()."\n";
 
 
 		if(count($this->__cc) > 0)

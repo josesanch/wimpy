@@ -42,7 +42,6 @@ class html_base_grid extends html_object
             $attrs = $model->getFields($column);
             if($attrs['belongs_to']) {
 
-
                 $belongs_model_name = $attrs['belongs_to'];
 
                 $belongs_model = new $belongs_model_name;
@@ -87,8 +86,7 @@ class html_base_grid extends html_object
             }
         }
 
-
-        $results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
+        $results = $model->select($sql, "columns: ".join(", ", array_filter($sqlcolumns)), $order);
         $de = ($model->current_page - 1) * $model->page_size + 1;
         $hasta = $de + $model->page_size - 1;
         $hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;

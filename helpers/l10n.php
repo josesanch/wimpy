@@ -7,7 +7,7 @@ class helpers_l10n extends Model
 
 	public function adminList() {
 
-		return "<br>".html_base_grid::toHtml($this, "row=0 and lang='".web::instance()->l10n->getDefaultLanguage()."'", "id, field");
+		return "<br>".html_base_grid::toHtml($this, "row=0 and lang='".web::instance()->l10n->getDefaultLanguage()."'", $this->grid_columns);
 	}
 
 	public function adminEdit($id) {
