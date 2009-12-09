@@ -298,6 +298,12 @@ class helpers_files extends ActiveRecord
 		return $img;
 	}
 	public function setOutput($output = 'jpg'){ $this->output_type = $output; }
-
+	
+    public function quality($quality = null) 
+    {
+        if(!$quality) return $this->quality;
+        $this->quality = $quality;
+    
+    }
 }
 ?>

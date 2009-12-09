@@ -25,6 +25,8 @@ class helpers_files_thumbnail
     public function getUrl($width, $height, $operation = thumb::NORMAL)
     {
 
+		$img = $this->_file->image ? $this->_file->image : new image($this->_file->phisical());
+		
         $info = pathinfo($this->_file->nombre);
         switch ($operation) {
             case thumb::CROP:
@@ -32,8 +34,11 @@ class helpers_files_thumbnail
                 $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-crop-".$info["filename"].".".$this->_output;
                 if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
 
-                $this->_img = new Imagick($this->_file->phisical().'[0]');
-                $this->_img->cropThumbnailImage($width, $height);
+//                $this->_img = new Imagick($this->_file->phisical().'[0]');
+//                $this->_img->cropThumbnailImage($width, $height);
+            	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
+  				$img->setQuality($this->_file->quality());
+        		$img->save($url, $this->_output);  				
                 break;
 
             case thumb::NORMAL:
