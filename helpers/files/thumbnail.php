@@ -39,7 +39,7 @@ class helpers_files_thumbnail
             	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
   				$img->setQuality($this->_file->quality());
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
-        		$img->save($url, $this->_output);  				
+        		$img->save($_SERVER["DOCUMENT_ROOT"].$url, $this->_output);  				
         		return $url;
                 break;
 
