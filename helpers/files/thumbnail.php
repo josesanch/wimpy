@@ -38,6 +38,7 @@ class helpers_files_thumbnail
 //                $this->_img->cropThumbnailImage($width, $height);
             	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
   				$img->setQuality($this->_file->quality());
+            	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
         		$img->save($url, $this->_output);  				
                 break;
 
@@ -50,10 +51,11 @@ class helpers_files_thumbnail
 
                 $this->_img = new Imagick($this->_file->phisical().'[0]');
                 $this->_img->thumbnailImage($width, $height, true);
+            	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
+                $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
+                
                 break;
         }
-    	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
-        $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
         return $url;
     }
 
