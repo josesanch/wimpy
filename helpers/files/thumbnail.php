@@ -40,6 +40,7 @@ class helpers_files_thumbnail
   				$img->setQuality($this->_file->quality());
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
         		$img->save($url, $this->_output);  				
+        		return $url;
                 break;
 
             case thumb::NORMAL:
