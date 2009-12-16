@@ -52,12 +52,14 @@ class html_base_grid extends html_object
                     $attrs["show"];
 
 
-                $sqlcolumns[]= "(
-                    SELECT $fieldToSelect
-                        FROM $table secondary_table_$table
-                    WHERE
-                        secondary_table_$table.id=".
-                        $model->getDatabaseTable().".$column
+                $sqlcolumns[]= "
+                    (
+                        SELECT $fieldToSelect
+                        FROM 
+                            $table secondary_table_$table
+                        WHERE
+                            secondary_table_$table.id=".
+                            $model->getDatabaseTable().".$column
                     ) as $column";
             } else {
                 $sqlcolumns[] = $column;
@@ -115,13 +117,14 @@ class html_base_grid extends html_object
             );
 
 
-            if($botonBuscar && web::auth()->hasPermission($this->model, auth::VIEW))
+            if($botonBuscar && web::auth()->hasPermission($model, auth::VIEW))
                 $form->add(
                     "<input type=button value=buscar class='boton-buscar'
                     onclick=\"do_search(this.form)\">"
                 );
 
-            if($botonNuevo && web::auth()->hasPermission($this->model, auth::ADD))
+
+            if($botonNuevo && web::auth()->hasPermission($model, auth::ADD))
                 $form->add(
                     "<input type=button value='nuevo' class='boton-nuevo'
                     onclick='openUrl(\"/admin/".get_class($model)."/edit/0".

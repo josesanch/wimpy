@@ -19,16 +19,16 @@ class bench
         return true;
     }
 
-    function toHtml($sumaImagenes = true)
+    function toHtml($txt = "Pagina renderizada en")
     {
-    	$parser = new html_parser(ob_get_contents());
-		$html_weight = ob_get_length();
-		$imgs = array_unique($parser->getImages());
-		$images_weight = $this->getFilesSize($imgs);
-		$total = $html_weight + $images_weight;
+//    	$parser = new html_parser(ob_get_contents());
+//		$html_weight = ob_get_length();
+//		$imgs = array_unique($parser->getImages());
+//		$images_weight = $this->getFilesSize($imgs);
+//		$total = $html_weight + $images_weight;
 		$mem = memory_get_usage();
     	return "<div style='clear: both; border: 1px solid #ffaaaa; background-color: #fcc; color: #333; font-size: 8pt; padding: 1em; text-align: center; '>
-			    	Página renderizada en <b>".$this->elapsed()."</b>&nbsp; seg. Mem Used: <b>".format::bytes($mem)."</b>
+			    	$txt <b>".$this->elapsed()."</b> seg. Mem Used: <b>".format::bytes($mem)."</b>
     			</div>";
     }
 

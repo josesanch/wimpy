@@ -24,9 +24,6 @@ class helpers_files_thumbnail
 
     public function getUrl($width, $height, $operation = thumb::NORMAL)
     {
-
-		$img = $this->_file->image ? $this->_file->image : new image($this->_file->phisical());
-		
         $info = pathinfo($this->_file->nombre);
         switch ($operation) {
             case thumb::CROP:
@@ -36,6 +33,7 @@ class helpers_files_thumbnail
 
 //                $this->_img = new Imagick($this->_file->phisical().'[0]');
 //                $this->_img->cropThumbnailImage($width, $height);
+        		$img = $this->_file->image ? $this->_file->image : new image($this->_file->phisical());
             	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
   				$img->setQuality($this->_file->quality());
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
@@ -49,7 +47,6 @@ class helpers_files_thumbnail
             default:
                 $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-".$info["filename"].".".$this->_output;
                 if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
-
                 $this->_img = new Imagick($this->_file->phisical().'[0]');
                 $this->_img->thumbnailImage($width, $height, true);
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);

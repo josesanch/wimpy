@@ -153,13 +153,14 @@ class helpers_files extends ActiveRecord
 	}
 
 
-	function src($size = null, $operation = thumb::NORMAL, $xcenter = 1, $ycenter = 1) {
+	function src($size = null, $operation = thumb::NORMAL, $xcenter = 1, $ycenter = 1) 
+	{
 		if(!$size) return $this->url();
 
 		$size = explode("x", $size);
 
-		if ($this->isImage() || $this->isPDF()) {
-            $thumb = new helpers_files_thumbnail($this);
+		if (($this->isImage() || $this->isPDF()) && !$this->isTiff()) {
+            $thumb = new helpers_files_thumbnail($this);            
             try {
                 $url = $thumb->getUrl($size[0], $size[1], $operation);
                 return $url;
@@ -298,12 +299,12 @@ class helpers_files extends ActiveRecord
 		return $img;
 	}
 	public function setOutput($output = 'jpg'){ $this->output_type = $output; }
-	
-    public function quality($quality = null) 
+
+    public function quality($quality = null)
     {
         if(!$quality) return $this->quality;
         $this->quality = $quality;
-    
+
     }
 }
 ?>

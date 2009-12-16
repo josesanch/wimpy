@@ -23,6 +23,7 @@ class Web
     public $initialized = false;
     public $bench;
     public $auth;
+    public $enableTidy = false;
 
     private $_imagesMaxSize = array(1024, 1024);
     private $_htmlTemplateDir = "/templates";
@@ -288,6 +289,7 @@ class Web
         if (method_exists($controller, "afterFilter")) {
             call_user_method_array("afterFilter", $controller, $this->params);
         }
+
         return $value;
     }
 
@@ -497,7 +499,7 @@ class Web
         echo "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'>
                       <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
-        var_dump($texto);
+        echo $texto;
         echo "</h3></pre>";
     }
 
@@ -512,15 +514,29 @@ class Web
         }
     }
 
-    public static function bench()
+    public static function bench($force = null)
     {
-        if (!web::instance()->isInProduction())
-            return web::instance()->bench->toHtml();
+        if (!web::instance()->isInProduction() || $force)
+            return web::instance()->bench->toHtml($force);
     }
 
     public static function &auth()
     {
         return web::instance()->auth;
+    }
+    
+    public function tidy($value) 
+    {
+        $config = array(    
+           'indent'         => true,
+           'output-xhtml'   => true,
+           'wrap'           => 800
+        );
+
+        $tidy = new tidy();
+        $tidy->parseString($value, $config, 'utf8');
+        $tidy->cleanRepair();
+        return $tidy;
     }
 
 }

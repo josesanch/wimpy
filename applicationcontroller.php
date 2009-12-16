@@ -46,7 +46,10 @@ class ApplicationController {
 	}
 
 	public function render($view) {
-		echo $this->renderHtml($view);
+	    if(web::instance()->enableTidy)
+    		echo web::instance()->tidy($this->renderHtml($view));
+    	else
+        	echo $this->renderHtml($view);
 
 	}
 

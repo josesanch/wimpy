@@ -129,7 +129,7 @@ class Model extends ActiveRecord
 
 	public function getTitleField()
 	{
-		if($this->title_field) return $this->title_field;
+		if($this->titleField) return $this->titleField;
 		$fields = array("name", 'nombre', 'title', 'titulo');
 		foreach($fields as $field) {
 			if($this->getFields($field)) { return $field; }
