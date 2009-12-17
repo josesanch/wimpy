@@ -190,12 +190,11 @@ class image
 		imagestring($this->img, 6, $x, $y, $str, $color);
 	}
 
-	// Copia una imagen en otra en la posición especificada
+	// Copia una imagen en otra en la posiciÃ³n especificada
 	function putImage($img, $x, $y, $alfa = null)
 	{
 		if(isset($alfa)) ImageAlphaBlending($this->img, true);
 		imagecopy($this->img, $img->img, $x, $y, 0, 0, $img->getWidth(), $img->getHeight());
 	}
-	// Implementación del cache para el manipulado de imagenes
+	// ImplementaciÃ³n del cache para el manipulado de imagenes
 }
-?>
