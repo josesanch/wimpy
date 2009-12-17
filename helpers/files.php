@@ -153,14 +153,15 @@ class helpers_files extends ActiveRecord
 	}
 
 
-	function src($size = null, $operation = thumb::NORMAL, $xcenter = 1, $ycenter = 1) 
+	function src($size = null, $operation = thumb::NORMAL, $options = array())
 	{
 		if(!$size) return $this->url();
 
 		$size = explode("x", $size);
 
 		if (($this->isImage() || $this->isPDF()) && !$this->isTiff()) {
-            $thumb = new helpers_files_thumbnail($this);            
+            $thumb = new helpers_files_thumbnail($this);
+            if(isset($options["outputFormat"])) $thumb->setOutput($options["outputFormat"]);
             try {
                 $url = $thumb->getUrl($size[0], $size[1], $operation);
                 return $url;

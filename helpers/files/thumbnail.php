@@ -31,13 +31,19 @@ class helpers_files_thumbnail
                 $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-crop-".$info["filename"].".".$this->_output;
                 if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
 
-//                $this->_img = new Imagick($this->_file->phisical().'[0]');
-//                $this->_img->cropThumbnailImage($width, $height);
+                if ($this->_file->isPDF()) {
+                    $this->_img = new Imagick($this->_file->phisical().'[0]');
+                    $this->_img->setImageFormat($this->_output);
+                    $this->_img->cropThumbnailImage($width, $height);
+                    $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
+                    return $url;
+                }
+
         		$img = $this->_file->image ? $this->_file->image : new image($this->_file->phisical());
             	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
   				$img->setQuality($this->_file->quality());
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
-        		$img->save($_SERVER["DOCUMENT_ROOT"].$url, $this->_output);  				
+        		$img->save($_SERVER["DOCUMENT_ROOT"].$url, $this->_output);
         		return $url;
                 break;
 
@@ -48,10 +54,11 @@ class helpers_files_thumbnail
                 $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-".$info["filename"].".".$this->_output;
                 if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
                 $this->_img = new Imagick($this->_file->phisical().'[0]');
+                $this->_img->setImageFormat($this->_output);
                 $this->_img->thumbnailImage($width, $height, true);
             	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
                 $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
-                
+
                 break;
         }
         return $url;
