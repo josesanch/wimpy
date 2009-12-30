@@ -23,7 +23,8 @@ class helpers_files extends ActiveRecord
     );
 
 
-	public function __construct($url) {
+	public function __construct($url)
+	{
     	require_once(dirname(__FILE__)."/files/thumbnail.php");
 		parent::__construct();
 		if(!is_numeric($url)) {
@@ -161,7 +162,12 @@ class helpers_files extends ActiveRecord
 
 		if (($this->isImage() || $this->isPDF()) && !$this->isTiff()) {
             $thumb = new helpers_files_thumbnail($this);
-            if(isset($options["outputFormat"])) $thumb->setOutput($options["outputFormat"]);
+            if (isset($options["outputFormat"])) $thumb->setOutput($options["outputFormat"]);
+            if (isset($options["filters"])) {
+				foreach($options["filters"] as $filtro => $params) {
+					$thumb->addFilter($filtro, $params);
+				}
+			}
             try {
                 $url = $thumb->getUrl($size[0], $size[1], $operation);
                 return $url;

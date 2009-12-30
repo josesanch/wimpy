@@ -13,6 +13,7 @@ class helpers_files_thumbnail
     private $_imgId;
     private $_rootThumbnails = "/cached";
     private $_output = "jpg";
+    private $_filters = array();
     function __construct ($file)
     {
         $this->_file = $file;
@@ -22,45 +23,37 @@ class helpers_files_thumbnail
 
     }
 
+	public function addFilter($nombre, $params)
+	{
+		$this->_filters[]= array($nombre, $params);
+	}
+
     public function getUrl($width, $height, $operation = thumb::NORMAL)
     {
         $info = pathinfo($this->_file->nombre);
+        $url = $this->_getCachedUrl($width, $height, $operation);
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
+
+        $this->_img = new Imagick($this->_file->phisical().'[0]');
+		$this->_img->setImageFormat($this->_output);
+
         switch ($operation) {
+
             case thumb::CROP:
             case "OUTABOX":
-                $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-crop-".$info["filename"].".".$this->_output;
-                if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
-
-                if ($this->_file->isPDF()) {
-                    $this->_img = new Imagick($this->_file->phisical().'[0]');
-                    $this->_img->setImageFormat($this->_output);
-                    $this->_img->cropThumbnailImage($width, $height);
-                    $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
-                    return $url;
-                }
-
-        		$img = $this->_file->image ? $this->_file->image : new image($this->_file->phisical());
-            	$img = $img->thumbnailOutABox($width, $height, $ycenter, $xcenter);
-  				$img->setQuality($this->_file->quality());
-            	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
-        		$img->save($_SERVER["DOCUMENT_ROOT"].$url, $this->_output);
-        		return $url;
+				$this->_cropImage($width, $height);
                 break;
 
             case thumb::NORMAL:
             case "INABOX":
             case "THUMB":
             default:
-                $url = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}-".$info["filename"].".".$this->_output;
-                if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
-                $this->_img = new Imagick($this->_file->phisical().'[0]');
-                $this->_img->setImageFormat($this->_output);
                 $this->_img->thumbnailImage($width, $height, true);
-            	if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
-                $this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
-
                 break;
         }
+
+        $this->_applyFilters();
+        $this->_saveImage($url);
         return $url;
     }
 
@@ -68,5 +61,88 @@ class helpers_files_thumbnail
     {
         $this->_output = $output;
     }
+
+    private function _getCachedUrl($width, $height, $operation = thumb::NORMAL)
+    {
+		$info = pathinfo($this->_file->nombre);
+		$cachedUrl = $this->_rootThumbnails."/".$this->_imgId."-{$width}x{$height}";
+
+		switch ($operation) {
+            case thumb::CROP:
+            case "OUTABOX":
+				$cachedUrl.= "-crop-";
+				break;
+		}
+		$strFiltros = array();
+		// Process the filters
+		foreach ($this->_filters as $filtro) {
+			$strFiltros[]= $filtro[0]."-".implode("-", $filtro[1]);
+		}
+		$cachedUrl.= implode("-", $strFiltros);
+
+		$cachedUrl.= $info["filename"].".".$this->_output;
+		return $cachedUrl;
+	}
+
+	private function _cropImage($width, $height)
+	{
+		// Si center vale 1 recorta en el centro .. si recorta con el y  arriba.
+		$imageWidth = $this->_img->getImageWidth();
+		$imageHeight = $this->_img->getImageHeight();
+
+		bcscale(5);
+   		$distx = bcdiv($imageWidth, $width);
+   		$disty = bcdiv($imageHeight, $height);
+
+   		$div = ($distx < $disty) ? $distx : $disty;	// La menor distancia.
+   		$twidth = ceil(bcdiv($imageWidth, $div));
+		$theight = ceil(bcdiv($imageHeight, $div));
+
+		$this->_img->thumbnailImage($twidth, $theight, true);
+
+		$x = $this->_getPositionToCut(1, $twidth, $width);
+		$y = $this->_getPositionToCut(1, $theight, $height);
+		$this->_img->cropImage($width, $height, $x, $y);
+	}
+
+	private function _getPositionToCut($pos = 1, $size, $size2)
+	{
+		bcscale(5);
+		switch($pos)
+		{
+			case 0:
+				$x = 0;
+				break;
+			case 1:
+				$x = floor(bcsub(bcdiv($size, 2), bcdiv($size2, 2)));
+				break;
+			case 2:
+				$x = ($size / 2);
+				break;
+		}
+		return $x;
+	}
+
+	private function _saveImage($url)
+	{
+		if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
+		$this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
+
+	}
+
+	private function _applyFilters()
+	{
+		foreach ($this->_filters as $filtro) {
+			if (!is_array($filtro)) {
+				$filtro = array($filtro, array());
+			}
+
+			call_user_func_array(
+                array($this->_img, $filtro[0]),
+                $filtro[1]
+            );
+		}
+	}
+
 
 }

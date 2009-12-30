@@ -159,8 +159,10 @@ function convert_to_url($url)
 	return implode("/", array_map("rawurlencode", explode("/", $str)));
 }
 
-function convert_from_url($url) {
+function convert_from_url($url)
+{
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u');
+	$url = implode("/", array_map("rawurldecode", explode("/", $url)));
 	return str_replace('_', ' ', str_replace('-', ' ', strtr(strtolower($url), $arr)));
 }
 
