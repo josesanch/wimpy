@@ -24,7 +24,8 @@ class AdministrationController extends ApplicationController
     public $menu_width = 190;
     public $logo = "/images/logo.gif";
     public $css = array();
-    private $selected_menu;
+    private $_selectedMenu;
+    private $_selectedSubmenu;
 
     protected $auth;
 //    protected $components = array("auth");
@@ -48,13 +49,14 @@ class AdministrationController extends ApplicationController
     public function getMenu()
     {
         $str = "";
-        $this->selected_menu = $this->getSelectedMenu(web::instance()->model);
+		list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
+
         foreach ($this->menu as $menu => $submenu) {
-            if (!$this->selected_menu) $this->selected_menu = $menu;
+            if (!$this->_selectedMenu) $this->_selectedMenu = $menu;
 
             $item = array_shift(array_values($submenu['items']));
             $href = "href='/admin/".$item['link']."'";
-            $active = $this->selected_menu == $menu ? "class='active'" : "";
+            $active = $this->_selectedMenu == $submenu ? "class='active'" : "";
             $str .= "<li $active>
                         <a $href>$menu</a>
                     </li>\n";
@@ -65,9 +67,8 @@ class AdministrationController extends ApplicationController
     public function getSubMenu()
     {
         $subitems = array();
-        $action = web::instance()->model;
-        foreach ($this->menu[$this->selected_menu]['items'] as $name => $submenu) {
-            $active = $action == $submenu['link'] ? "class='active'" : "";
+        foreach ($this->_selectedMenu["items"] as $name => $submenu) {
+            $active = $this->_selectedSubmenu == $submenu ? "class='active'" : "";
             $href = "href='/admin/".$submenu['link']."'";
             $subitems[]= "
                         <li $active>
@@ -77,6 +78,38 @@ class AdministrationController extends ApplicationController
         return implode("<span class='separador_submenu'> | </span>", $subitems);
 
     }
+
+	private function _getItem($force = false)
+	{
+		$modelName = web::instance()->model;
+		if(!$modelName) $selectFirst = true;
+
+		$params = web::params();
+		if (web::instance()->action == "edit") {
+			// Eliminamos el elemento que estamos editando.
+			$params = "/".implode("/", array_slice(explode("/", $params), 2));
+		}
+		$regExp = "#$modelName/(list|edit)$params.*?#";
+
+		$menu = $this->menu;
+		foreach ($menu as $tab) {
+			foreach ($tab["items"] as $submenu) {
+				if ($selectFirst)
+					return array($tab, $submenu);
+
+				$link = $submenu["link"];
+				if (!$force) {
+					if (preg_match($regExp, $link))
+						return array($tab, $submenu);
+				} else {
+					if ($link == $modelName)
+						return array($tab, $submenu);
+				}
+			}
+		}
+		if (!$force)
+			return $this->_getItem(true);
+	}
 
     private function preprocessMenu($menu_noprocess, $root = true)
     {
@@ -108,32 +141,6 @@ class AdministrationController extends ApplicationController
         return $menu;
     }
 
-    private function getSelectedMenu($action, $menu = null, $root = False)
-    {
-            if(!$menu) {
-                $menu = $this->menu;
-                $root = True;
-            }
-
-            foreach ($menu as $name => $data) {
-
-                if ($data['link']
-                    && ($data['link']  == $action
-                        || "/admin/".$data['link'] == substr(
-                                                        "/".web::instance()->controller."/".
-                                                        (web::instance()->model ? web::instance()->model."/" : "").
-                                                        "list".web::params(null, false), 0, strlen("/admin/".$data['link'])))) {
-                    if($root) return $name;
-                    return True;
-                }
-                if(array_key_exists('items', $data) && count($data['items']))
-                    if(array_key_exists('items', $data)
-                        && $this->getSelectedMenu($action, $data['items']))
-                        return $name;
-            }
-            return False;
-    }
-
     public function __call($method, $params)
     {
         $modelName = array_shift($params);
@@ -141,7 +148,7 @@ class AdministrationController extends ApplicationController
         $adminAction = "admin".ucfirst(strtolower($action));
 
         $this->menu = $this->preprocessMenu($this->menu);
-        $this->view->menu = $this->getMenu();
+        $this->view->menu = $this->menu;
 
 
         if (web::request("no_layout"))
@@ -196,22 +203,15 @@ class AdministrationController extends ApplicationController
                      $model->select($params[0]);
                      $model->delete();
                 }
-                web::instance()->location(
-                    '/admin/'.get_class($model).
-                    "/list".web::params(null, false)
-                );
-                exit;
+
+				$model->adminRedir();
 
             case "save":
                 $model = new $modelName();
                 $model->saveFromRequest();
 
                 if (!web::request("dialog")) {
-                    web::instance()->location(
-                        '/admin/'.get_class($model).
-                        "/list".web::params(null, false)
-                    );
-                    exit;
+					$model->adminRedir();
                 } else {    // Update de parent form from the dialog.
                     $this->view->content = "
                         <script>
@@ -235,10 +235,19 @@ class AdministrationController extends ApplicationController
         return dirname(__FILE__)."/views/layouts/".$this->layout.".html";
     }
 
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $this->auth->logout();
         web::instance()->location("/");
         exit;
 
     }
+
+    public function indexAction()
+    {
+		$this->menu = $this->preprocessMenu($this->menu);
+		list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
+		web::instance()->location("/admin/".$this->_selectedSubmenu["link"]);
+		exit;
+	}
 }

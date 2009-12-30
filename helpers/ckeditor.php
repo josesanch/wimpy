@@ -40,6 +40,7 @@ class helpers_ckeditor
 		<div id='container-files'>
 EOF;
 		$this->files();
+		$functionNum = web::request("CKEditorFuncNum");
 		echo <<<EOF
 		</div>
 		<div id='fileQueue'></div>
@@ -50,7 +51,7 @@ EOF;
 		<script type='text/javascript'>
 
 			function select_image(item) {
-				window.opener.CKEDITOR.tools.callFunction(1, item, '');
+				window.opener.CKEDITOR.tools.callFunction($functionNum, item, '');
 				window.close();
 			}
 

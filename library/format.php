@@ -10,9 +10,11 @@ class format {
 		return text::txtToHtml($str);
 	}
 
-	function date($str, $format = null)
+	public static function date($str, $format = "d-m-Y")
 	{
-		return date::format($str, $format);
+		$time = strtotime($str);
+
+		return date($format, $time);
 	}
 
 

@@ -314,6 +314,7 @@ class ActiveRecord
 					if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
 					if (in_array("newvalues", $attrs) || in_array("newvalues", $attrs)) $field["newvalues"] = true;
 					if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
+					if (in_array("hidden", $attrs) || in_array("hidden", $attrs)) $field["hidden"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
                         ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;
 

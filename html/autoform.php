@@ -39,8 +39,8 @@ class html_autoform extends html_form
 
             $attrs = $this->model->getFields($field);
 
-            if ($attrs['primary_key']) {
-                $id =$this->model->$field;
+            if ($attrs['primary_key'] || $attrs["hidden"]) {
+                $id = $this->model->$field;
                 $this->hidden($field)->value($this->model->$field);
             } else {
                 $this->auto($field, null, $tmpUpload);
@@ -71,7 +71,8 @@ class html_autoform extends html_form
                 "function delete_item(id) {
                     if (confirm('Está seguro')) {
                         document.location='/admin/".
-            get_class($this->model)."/delete/' + id + '".web::params()."';
+						get_class($this->model).
+						"/delete/' + id + '".web::params()."';
                     }
                 }
                 $('#".get_class($this->model)."').validate();
@@ -84,11 +85,16 @@ class html_autoform extends html_form
 		$this->add("<div class='form-buttons'>");
 
         if (in_array("back", $this->buttons)) {
+			if(web::request("redir"))
+				$urlBack = web::request("redir");
+			else
+				$urlBack = "/admin/".get_class($this->model)."/list".
+							web::params();
+
             $this->add(
                 "<input class='submit boton-volver' id='boton-volver'
                 type='button' value=volver
-                onclick=\"openUrl('/admin/".
-                get_class($this->model)."/list".web::params()."');\">"
+                onclick=\"openUrl('$urlBack');\">"
             );
         }
 

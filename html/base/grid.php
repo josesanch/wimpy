@@ -3,6 +3,7 @@ class html_base_grid extends html_object
 {
 
     public $onClick;
+    public $redirectTo;
     public $buttons = array("search", "new");
     public $search;
     public $showSearch = true;
@@ -55,7 +56,7 @@ class html_base_grid extends html_object
                 $sqlcolumns[]= "
                     (
                         SELECT $fieldToSelect
-                        FROM 
+                        FROM
                             $table secondary_table_$table
                         WHERE
                             secondary_table_$table.id=".
@@ -108,41 +109,37 @@ class html_base_grid extends html_object
         }
 
         if(!$this->_instance || $this->showSearch) {
-            $form->add(
+            $formData =
                     "<div class='listado-resultados'>Buscar:
                         <input type='text' name='search'
                         class='texto-buscar' id='search'
                         value='".urldecode(web::request('search'))."'
-                        size=20/>"
-            );
+                        size=20/>";
+
 
 
             if($botonBuscar && web::auth()->hasPermission($model, auth::VIEW))
-                $form->add(
+                $formData .=
                     "<input type=button value=buscar class='boton-buscar'
-                    onclick=\"do_search(this.form)\">"
-                );
+                    onclick=\"do_search(this.form)\">";
 
 
             if($botonNuevo && web::auth()->hasPermission($model, auth::ADD))
-                $form->add(
+                $formData .=
                     "<input type=button value='nuevo' class='boton-nuevo'
                     onclick='openUrl(\"/admin/".get_class($model)."/edit/0".
-                    web::params()."\")'>"
-                );
+                    web::params()."\")'>";
 
-            $form->add(
+			$formData .=
                 "$data
-                         <div id='listado-paginas'>$paginas</div>
-                    </div>"
-            );
+                 <div id='listado-paginas'>$paginas</div>
+                 </div>";
         }
 
-        $form->add(
+        $formData .=
             "<table border=0 class='grid' cellpadding=3 cellspacing=1
             align=center width='98%'>
-            <tr >\n"
-        );
+            <tr >\n";
 
         foreach($columns as $column) {
             if(web::request('order') == $column) {
@@ -152,26 +149,27 @@ class html_base_grid extends html_object
             }
             $attrs = $model->getFields($column);
             $label = $attrs['label'] ? $attrs['label'] : $column;
-            $form->add(
-                "<th class=grid_header>
-                <a href='".web::uri("/order=$column/desc=$desc")."'
-                class='header $dialog'>
-                $label</a> $arrow</th>\n"
-            );
+            $formData .= "
+				<th class=grid_header>
+					<a href='".web::uri("/order=$column/desc=$desc")."' class='header $dialog'>$label</a>
+					$arrow
+				</th>\n";
         }
 
         $i = 0;
 
-        $form->add("<tbody id='table_body'>\n");
+        $formData .= "<tbody id='table_body'>\n";
 
-        foreach($results as $row) {
-            if($this->onClick) {
+        foreach ($results as $row) {
+            if ($this->onClick) {
+
                 $urlFunction = $this->onClick."\"".
                     $row->get("id").
                     "\",\"".($row->get($row->getTitleField()))."\")";
 
                 $url = "javascript:$urlFunction";
                 $trEvent = "onclick='$urlFunction'";
+
             } elseif($dialog) {
                 $urlFunction = "updateModelValueDialog".
                     "(\"$modelName\",\"".web::request("field").
@@ -183,30 +181,32 @@ class html_base_grid extends html_object
                 $trEvent = "onclick='$urlFunction'";
             } else {
                 $url = "/admin/".get_class($row)."/edit".web::params("/".$row->get("id"));
+
+                if($this->redirectTo) $url .= "/?redir=".$this->redirectTo;
+
                 $trEvent = "onclick=openUrl('$url')";
             }
-            $form->add(
+            $formData .=
                 "<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' $trEvent>
                     <td class='value' style='display: none;'>
                     ".$row->get("id")."
-                    </td>"
-                );
+                    </td>";
+
 
 
 //href='$url'
             foreach ($columns as $column) {
-                $form->add("
+                $formData .= "
                     <td class=grid_cell>
                         ".
                         $row->get($column)."
-                    </td>\n"
-                );
-
+                    </td>\n";
             }
 
-            $form->add("</tr>\n");
+            $formData .= "</tr>\n";
         }
-        $form->add("</tbody></table>\n");
+        $formData .= "</tbody></table>\n";
+
         if (web::request("dialog")) {
             $bindLinks =  "$('a.dialog').bind('click', function() { openUrl($(this).attr('href')); return false; });";
             $openUrl = "$('#".web::request("field")."_dialog').load(url);";
@@ -214,7 +214,7 @@ class html_base_grid extends html_object
             $openUrl = "document.location = url;";
         }
 
-        $form->add(
+        $formData .=
             "<div class='pie-listado-resultados'>
             <div>".helpers_paginate::toHtml($results)."</div></div><br>
              <script>
@@ -236,11 +236,11 @@ class html_base_grid extends html_object
 
                 function openUrl(url) {
                     $openUrl
-                }"
-            );
+                }";
+
 
         if($ordenation) {
-                $form->add(
+                $formData .=
                     "$(document).ready(function () {
                         $('#table_body').sortable({
                             containment:    'parent',
@@ -253,17 +253,21 @@ class html_base_grid extends html_object
                                 }
                         });
 
-                    });"
-                );
+                    });";
         }
-        $form->add(
+
+        $formData .=
             "</script>
             <div id='mensajes'
             style='display: none; border: 1px solid gray; padding: 1em;'>
-            </div>"
-        );
+            </div>";
 
-        return $form->toHtml();
+		if (!$this->_instance || $this->showSearch) {
+			$form->add($formData);
+			return $form->toHtml();
+		}
+		return $formData;
+
 
     }
 }

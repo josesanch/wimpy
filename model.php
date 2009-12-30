@@ -141,5 +141,17 @@ class Model extends ActiveRecord
 		return $this->title ? $this->title : get_class($this);
 	}
 
+	public function adminRedir()
+	{
+		if (web::request("redir")) {
+			web::instance()->location(web::request("redir"));
+		} else {
+			web::instance()->location(
+				'/admin/'.get_class($this).
+				"/list".web::params(null, false)
+			);
+		}
+        exit;
+	}
 }
 ?>

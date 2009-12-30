@@ -120,7 +120,7 @@ class html_form extends html_object
     					$text = $relatedModel->$titleField;
     				}
 
-					// Hidden field that containt the real value
+					// Hidden field that contain the real value
                     $inputHidden = new html_form_hidden($field);
 					$inputHidden->value($value)->class("");
 

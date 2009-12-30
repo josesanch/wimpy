@@ -524,10 +524,10 @@ class Web
     {
         return web::instance()->auth;
     }
-    
-    public function tidy($value) 
+
+    public function tidy($value)
     {
-        $config = array(    
+        $config = array(
            'indent'         => true,
            'output-xhtml'   => true,
            'wrap'           => 800
