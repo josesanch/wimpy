@@ -23,9 +23,9 @@ class helpers_files_thumbnail
 
     }
 
-	public function addFilter($nombre, $params)
+	public function addFilter($filter)
 	{
-		$this->_filters[]= array($nombre, $params);
+		$this->_filters[]= $filter;
 	}
 
     public function getUrl($width, $height, $operation = thumb::NORMAL)
@@ -36,7 +36,6 @@ class helpers_files_thumbnail
 
         $this->_img = new Imagick($this->_file->phisical().'[0]');
 		$this->_img->setImageFormat($this->_output);
-
         switch ($operation) {
 
             case thumb::CROP:
@@ -76,12 +75,22 @@ class helpers_files_thumbnail
 		$strFiltros = array();
 		// Process the filters
 		foreach ($this->_filters as $filtro) {
-			$strFiltros[]= $filtro[0]."-".implode("-", $filtro[1]);
+			$operation = array_shift($filtro);
+
+			$args = array();
+			foreach ($filtro as $arg) {
+				if (is_a($arg, "Imagick"))
+					$args[]= basename($arg->getImageFileName());
+				else
+					$args[]= $arg;
+			}
+
+			$strFiltros[]= $operation."-".implode("-", $args);
 		}
 		$cachedUrl.= implode("-", $strFiltros);
 
-		$cachedUrl.= $info["filename"].".".$this->_output;
-		return $cachedUrl;
+		$cachedUrl.= $info["filename"];
+		return $this->_convertUrl($cachedUrl).".".$this->_output;;
 	}
 
 	private function _cropImage($width, $height)
@@ -137,11 +146,19 @@ class helpers_files_thumbnail
 				$filtro = array($filtro, array());
 			}
 
+			$operation = array_shift($filtro);
 			call_user_func_array(
-                array($this->_img, $filtro[0]),
-                $filtro[1]
+                array($this->_img, $operation),
+                $filtro
             );
 		}
+	}
+
+	private function _convertUrl($url)
+	{
+		$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
+		$str= str_replace(' ', '-', strtr(strtolower($url), $arr));
+		return implode("/", str_replace('%', '-', array_map("rawurlencode", explode("/", $str))));
 	}
 
 

@@ -206,18 +206,21 @@ class ActiveRecord
             if ($statement) {
                 $total_result = $statement->fetch();
                 if (!$total_result) {
-
                     echo "Error: ",get_class($this)." -> $sql";
                 }
                 $this->total_results = $total_result[0];
                 $statement->fetchAll();    // Para soportar unbuferred queryes
                 $sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
             } else {
-                if ($this->xdebug)
-                    web::debug($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
-                else
+                if ($this->xdebug) {
+                    web::debug(
+						$sql."-".$this->database->errorInfo(),
+						__METHOD__."(".xdebug_call_function()."(".xdebug_call_line().")",
+						__LINE__
+					);
+                } else {
                     web::debug($sql, __METHOD__, __LINE__);
-
+				}
             }
 
 

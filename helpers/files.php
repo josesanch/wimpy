@@ -164,9 +164,9 @@ class helpers_files extends ActiveRecord
             $thumb = new helpers_files_thumbnail($this);
             if (isset($options["outputFormat"])) $thumb->setOutput($options["outputFormat"]);
             if (isset($options["filters"])) {
-				foreach($options["filters"] as $filtro => $params) {
-					$thumb->addFilter($filtro, $params);
-				}
+				foreach ($options["filters"] as $filtro)
+					$thumb->addFilter($filtro);
+
 			}
             try {
                 $url = $thumb->getUrl($size[0], $size[1], $operation);
