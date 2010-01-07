@@ -38,18 +38,19 @@ class Web
     {
         session_start();
         if (isset($_SESSION['initialized'])) $this->initialized = true;
-
-
         error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
         //error_reporting(E_STRICT);
+		if ($database) $this->setDatabase($database);
+
         if (!web::$_defaultInstance) {
             web::$_defaultInstance = $this;
             $this->l10n = new l10n();
             $this->bench = new bench();
             $this->auth = new auth();
+            $this->data = new webdata(1);
         }
 //        if ($languages) $this->setLanguages($languages);
-        if ($database) $this->setDatabase($database);
+
         $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
     }

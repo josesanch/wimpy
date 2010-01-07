@@ -486,7 +486,7 @@ class Securimage {
 
     if($this->bgimg != "") { $this->setBackground(); }
 
-    $this->createCode();
+	if(!$this->code) $this->createCode();
 
     if (!$this->draw_lines_over_text && $this->draw_lines) $this->drawLines();
 
