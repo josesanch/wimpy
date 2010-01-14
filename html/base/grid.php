@@ -95,7 +95,8 @@ class html_base_grid extends html_object
         $hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
         if($de > $hasta) $de = $hasta;
         $paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
-        $paginacion = helpers_paginate::toHtml($results);
+        $paginacion = html_base_grid::_getPaginate($results);
+
         if($paginacion) $paginas[]= $paginacion;
 
         $paginas = implode("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;", $paginas);
@@ -192,15 +193,20 @@ class html_base_grid extends html_object
                     ".$row->get("id")."
                     </td>";
 
-
-
-//href='$url'
+			// Ponemos los valores de las columnas
             foreach ($columns as $column) {
-                $formData .= "
-                    <td class=grid_cell>
-                        ".
-                        $row->get($column)."
-                    </td>\n";
+				$attrs = $row->getFields($column);
+				$value = $row->get($column);
+
+				switch ($attrs["type"]) {
+					case "date":
+						if($value != "0000-00-00")
+							$value = format::date($value);
+						else
+							$value = "";
+					break;
+				}
+                $formData .= "<td class=grid_cell>$value</td>\n";
             }
 
             $formData .= "</tr>\n";
@@ -216,7 +222,9 @@ class html_base_grid extends html_object
 
         $formData .=
             "<div class='pie-listado-resultados'>
-            <div>".helpers_paginate::toHtml($results)."</div></div><br>
+				<div>$paginacion</div>
+            </div>
+            <br/>
              <script>
                 var background = '';
                 $('.grid_row').bind('mouseover', function() {
@@ -243,8 +251,8 @@ class html_base_grid extends html_object
                 $formData .=
                     "$(document).ready(function () {
                         $('#table_body').sortable({
-                            containment:    'parent',
-                            axis:                   'y',
+                            containment: 'parent',
+                            axis:	'y',
                             update:
                                 function(e, ui) {
                                     prev = ui.item.prev().children('.value').html();
@@ -267,7 +275,35 @@ class html_base_grid extends html_object
 			return $form->toHtml();
 		}
 		return $formData;
-
-
     }
+
+	private static function _getPaginate($results)
+	{
+
+		if (web::request("dialog")) {
+            $arr = helpers_paginate::toArray($results);
+            $paginas = "";
+            foreach ($arr as $pagina) {
+				switch ($pagina[0]) {
+					case 'prev';
+						$paginas .= "\n<a href=javascript:openUrl('$pagina[1]')>&lsaquo;&lsaquo;</a>";
+					break;
+					case 'next':
+						$paginas .= "\n<a href=javascript:openUrl('$pagina[1]')>&rsaquo;&rsaquo;</a>";
+					break;
+
+					default :
+						if ($pagina[2] == "selected")
+							$paginas .= "\n$pagina[0]";
+						else
+							$paginas .= "\n<a href=javascript:openUrl('$pagina[1]')>$pagina[0]</a>";
+					break;
+				}
+			}
+		} else {
+			$paginas = helpers_paginate::toHtml($results);
+		}
+		return $paginas;
+	}
+
 }

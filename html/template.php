@@ -1,6 +1,4 @@
 <?
-//define(FIRST_ELEMENT_ONLY, 1);
-//define(IN_A_BLOCK, 2);
 /**
  *  @desc Clase para manipular plantillas html.
  *  @author José Sánchez Moreno
@@ -22,6 +20,7 @@ class html_template extends html_object
 	protected $inputFilter, $outputFilter;
 	protected $__regFuncs;
 	protected $form_items = array();
+	protected $_layout;
 
 //"html_template_filter_stripcomments"
 	function __construct($file= null, $assign = null, $inputFilter = null, $ouputFilter = null, $path = null)
@@ -60,9 +59,11 @@ class html_template extends html_object
 	}
 
 
-	public function toHtml($file = null) {
+	public function toHtml($file = null)
+	{
 		$this->loadFile($file);
-		return $this->execute($this->dataPrepared);
+		$data = $this->execute($this->dataPrepared);
+		return $data;
 	}
 
 	public function display($file = null)
@@ -72,10 +73,22 @@ class html_template extends html_object
 
 	protected function loadFile($file = null, $string = false)
 	{
-		if(isset($file) && $file != $this->__file)	{
+		if (isset($file) && $file != $this->__file) {
 			$this->__file = $file;
 			if(!file_exists($file)) web::warning("No existe el archivo $file", __FILE__, __LINE__);
-			$this->loadData(file_get_contents($file));
+			$fileData = file_get_contents($file);
+
+			if ($this->_layout) {
+				$templateData = file_get_contents($this->_layout);
+
+				// Obtenemos los espacios.
+				preg_match('/\n(.*?){\$content}/m', $templateData, $matches);
+				$spaces = preg_replace('/([^\s])/', ' ', $matches[1]);
+				$fileData = preg_replace('/(\n)/m', "\n$spaces", $fileData);
+				$fileData = str_replace('{$content}', $spaces.$fileData, $templateData);
+			}
+
+			$this->loadData($fileData);
 		}
 	}
 
@@ -175,15 +188,23 @@ class html_template extends html_object
 
 	protected function prepare($data)
 	{
-		if(!is_array($data))
-		{
+		if (!is_array($data)) {
 			$arr = preg_split('/({)|(})/s', $data, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 		} else {
 			$arr = $data;
 		}
+//		var_dump($arr);
 		$items = array();
-		while(count($arr)){
+		while (count($arr)) {
 			list($pre, $item, $arr) = $this->__getNextItem($arr);
+/*
+			echo "<hr>PRE";
+			var_dump($pre);
+			echo "<BR>ITEM:";
+			var_dump($item);
+			echo "<BR>ARR:";
+			var_dump($arr);
+*/
 			$items[] = $pre;
 			$items[] = $item;
 		}
@@ -193,12 +214,20 @@ class html_template extends html_object
 	protected function execute($data)
 	{
 		$txt = "";
-		foreach($data as $item) {
-			$txt .= is_array($item) ? $this->evalueBlock($item) : $item;
+		$preData = "";
+		$strData = array();
+		foreach ($data as $item) {
+			if (is_array($item)) {
+				if (substr($item[1], 0, 6) == "render") {
+					$predata = $strData[count($strData) - 1];
+					$len = strlen(array_pop(explode("\n", $predata)));
+				}
+				$strData[]= $this->evalueBlock($item, null, $len);
+			} else {
+				$strData[]= $item;
+			}
 		}
-		//$items = $this->prepare($txt);
-		//if(is_array($items)) $txt .= $this->execute($items);
-		return $txt;
+		return implode("", $strData);
 	}
 
 	private function getFunction($block)
@@ -209,7 +238,7 @@ class html_template extends html_object
 	}
 
 	/** @access private */
-	private function evalueBlock($block, $vars = null)
+	private function evalueBlock($block, $vars = null, $spaces = 0)
 	{
 		global $config;
 		if(isset($vars)) { $vars = &$vars;} else { $vars = &$this->__vars; }
@@ -242,7 +271,7 @@ class html_template extends html_object
 		// @TODO Error!!!!
 		elseif(!$function && $block[2] == "{")
 		{
-			return join("", array_slice($block, 0, 2)).$this->parse(array_slice($block, 2, -1))."}";
+			return implode("", array_slice($block, 0, 2)).$this->parse(array_slice($block, 2, -1))."}";
 		}
 
 		// Vemos si es un bloque o no
@@ -417,7 +446,13 @@ class html_template extends html_object
 				$t = new html_template($file, null, null, null, $this->__root);
 				$t->__vars = &$vars;
 				$t->__blocks =  $this->__blocks;
-				return $web->run($expresion, $t);
+				$txt = $web->run($expresion, $t);
+				if ($spaces) {
+					$tabSpaces = str_repeat("\t", $spaces);
+					return preg_replace("/\n/", "\n".$tabSpaces, $txt);
+				}
+				return $txt;
+
 				break;
 
 			case 'link:':
@@ -592,6 +627,21 @@ class html_template extends html_object
 	public function addJs($file) {
 		$this->__vars["js_files"] .= js($file);
 		return $this;
+	}
+
+	public function setLayout($layout)
+	{
+		$this->_layout = $layout;
+	}
+	public function getLayout()
+	{
+		return $this->_layout;
+	}
+
+	public function cloneTemplate($template)
+	{
+		$this->__vars = &$template->__vars;
+		$this->__blocks =  $template->__blocks;
 	}
 
 }

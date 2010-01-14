@@ -76,15 +76,17 @@ class html_form extends html_object
 
     }
 
-    public function auto($field, $lang = null, $tmp_upload = null)
+    public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
-
-        $attrs = $this->model->getFields($field);
+		if ($type == "---" or $type == "separation")
+			$attrs["type"] = $type;
+		else
+			$attrs = $this->model->getFields($field);
 
         if (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"])) {
                 $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
-                if (!$attrs['autocomplete']) {
+                if (!$attrs['autocomplete'] && !$attrs["dialog"]) {
 	                $relatedModel = new $relatedModelName();
                     if ($attrs["show"])
                         $name  = $attrs["show"];
@@ -121,13 +123,26 @@ class html_form extends html_object
     				}
 
 					// Hidden field that contain the real value
-                    $inputHidden = new html_form_hidden($field);
-					$inputHidden->value($value)->class("");
+                    $input = new html_form_hidden($field);
+					$input->value($value)->class("");
 
 					// Text field that contain the name of the field.
                     $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
-                    $input = new html_form_input($field."_autocomplete");
-                    $input->value($text)->size($size);
+                    $inputAutocomplete = new html_form_input($field."_autocomplete");
+                    $inputAutocomplete->value($text)->size($size)->class("autocomplete");
+					$inputAutocomplete->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+					if(!$attrs['autocomplete'])
+						$inputAutocomplete->disabled(true);
+					if ($attrs["dialog"]) {
+
+						$inputAutocomplete->add("
+							<input type='button' value='' class='dialog'
+							onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".
+							$this->attrs["name"]."\")'/>"
+						);
+
+						$this->addToEnd("<div id='{$field}_dialog'></div>");
+					}
 
                     if(!$attrs["newvalues"]) $mustMatch = "mustMatch : true";
                     $this->addJS("
@@ -145,9 +160,12 @@ class html_form extends html_object
                                 $(this).search();
                             });
                     ", true);
-                    $this->addToEnd($inputHidden);
+					$input->setData($inputAutocomplete);
+                    //$this->addToEnd($inputHidden);
                 }
-
+		} elseif ($attrs['primary_key'] || $attrs["hidden"]) {
+				 $input = new html_form_hidden($field);
+                 $input->value($this->model->$field);
         } else {
             switch($attrs['type']) {
                 case 'text':
@@ -199,6 +217,12 @@ class html_form extends html_object
                     if($this->model->get($field)) $input->checked("True");
                     break;
 
+				case "separator":
+				case "---":
+				    $input = new html_form_html($field);
+                    $input->value("<h2>$field</h2>");
+                    break;
+
                 case 'int':
                     $size = $attrs['size'] ? $attrs['size'] : 11;
 
@@ -225,19 +249,9 @@ class html_form extends html_object
         else
             $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
 
-        if($attrs["dialog"]) {
 
-            $input->add("
-                <input type='button' value='' class='dialog'
-            	onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".
-            	$this->attrs["name"]."\")'/>"
-			);
-
-			$this->addToEnd("<div id='{$field}_dialog'></div>");
-        }
 
         $this->inputs[]= $input;
-
 
         if($attrs['l10n'] && !$lang) {
             foreach(l10n::instance()->getNotDefaultLanguages() as $lang)
@@ -253,8 +267,11 @@ class html_form extends html_object
         	$this->inputs,
         	create_function(
         		'$input',
-        		'return !(is_a($input, "html_object")
-        		&& $input->name() == '.$field.');'
+        		'return !(
+					is_a($input, "html_object")
+					&&
+					$input->name() == "'.$field.'"
+				);'
         	)
         );
     }

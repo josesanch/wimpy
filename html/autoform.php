@@ -32,21 +32,11 @@ class html_autoform extends html_form
         }
 
         foreach ($this->model->getAllFieldsForForm() as $field => $type) {
-            if ($type == 'separator' || $type == '---') {
-                $this->add("<h2>$field</h2>");
-                continue;
-            }
 
-            $attrs = $this->model->getFields($field);
-
-            if ($attrs['primary_key'] || $attrs["hidden"]) {
-                $id = $this->model->$field;
-                $this->hidden($field)->value($this->model->$field);
-            } else {
-                $this->auto($field, null, $tmpUpload);
-                if ($this->css) $this->css($this->css);
-                if($attrs["newline"]) $this->add("<div class='newline'></div>");
-            }
+			$attrs = $this->model->getFields($field);
+			$this->auto($field, null, $tmpUpload, $type);
+			if ($this->css) $this->css($this->css);
+			if($attrs["newline"]) $this->add("<div class='newline'></div>");
             $this->add("\n");
         }
 
@@ -60,9 +50,10 @@ class html_autoform extends html_form
         if(web::auth()->hasPermission($this->model, auth::MODIFY))
     	$isDialog = web::request("dialog");
     	$modelName = get_class($this->model);
+
 		if ($isDialog) {
-			$openUrl = "$('#".$modelName."_dialog').load(url);";
-			$ajaxForm = "$('#$modelName').ajaxForm({ target: '#{$modelName}_dialog' })";
+			$openUrl = "$('#".web::request("field")."_dialog').load(url);";
+			$ajaxForm = "$('#$modelName').ajaxForm({ target: '#".web::request("field")."_dialog' })";
 		} else {
 			$openUrl = "document.location = url;";
 		}
@@ -89,7 +80,7 @@ class html_autoform extends html_form
 				$urlBack = web::request("redir");
 			else
 				$urlBack = "/admin/".get_class($this->model)."/list".
-							web::params();
+							web::params(null, false);
 
             $this->add(
                 "<input class='submit boton-volver' id='boton-volver'
@@ -121,14 +112,14 @@ class html_autoform extends html_form
                 )
             )
         ) {
-            $this->add(
-                "<input class='submit boton-guardar'
-                type='submit' id='boton-guardar' value='guardar'/>"
-            );
+            $this->add("\n<input class='submit boton-guardar' type='submit' id='boton-guardar' value='guardar'/>");
         }
 
         $this->add($this->_endData);
-        $this->add("</div></fieldset>");
+        $this->add("
+			</div>
+        </fieldset>"
+        );
     }
 
     public function toHtml()

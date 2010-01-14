@@ -193,20 +193,20 @@ class Web
 
         switch ($this->controller) {
             case 'admin':
-                return $this->callAdminDispatcher($render);
+                return $this->_callAdminDispatcher($render);
                 break;
 
             case 'ajax':
-                $this->callAjaxDispatcher();
+                $this->_callAjaxDispatcher();
                 break;
 
             case 'helpers':
-                $this->callHelpersDispatcher();
+                $this->_callHelpersDispatcher();
                 break;
 
             case 'resources':
                 if (file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
-                    return $this->callDefaultDispatcher($render, $view);
+                    return $this->_callDefaultDispatcher($render, $view);
                 } else {
                     $controller = new resourcesController();
                     $controller->getAction($this->action, $this->params);
@@ -226,13 +226,13 @@ class Web
             break;
 
         default:
-                return $this->callDefaultDispatcher($render, $view);
+                return $this->_callDefaultDispatcher($render, $view);
         }
 
     }
 
 
-    private function getController($view = null, $admin = false)
+    private function _getController($view = null, $admin = false)
     {
         // Si estamos en administración.
         if ($this->controller == 'admin' && $this->action  == 'index') {
@@ -275,9 +275,9 @@ class Web
     }
 
 
-    private function callDefaultDispatcher($render = true, $view = null)
+    private function _callDefaultDispatcher($render = true, $view = null)
     {
-        list($controller, $action) = $this->getController($view);
+        list($controller, $action) = $this->_getController($view);
         if (!$render) $controller->layout = '';
         call_user_method_array($action."Action", $controller, $this->params);
 
@@ -294,16 +294,16 @@ class Web
         return $value;
     }
 
-    private function callAdminDispatcher($render = true)
+    private function _callAdminDispatcher($render = true)
     {
         if ($this->action == "index") {
-            list($controller, $action) = $this->getController($view, true);
+            list($controller, $action) = $this->_getController($view, true);
             call_user_func_array(
                 array($controller, $action."Action"),
                 $this->params
             );
         } else {
-            list($controller, $action) = $this->getController(null, true);
+            list($controller, $action) = $this->_getController(null, true);
             $this->model = $model = $this->action;
             $this->action = $action = array_shift($this->params);
             // By default we call to list method of the model.
@@ -326,7 +326,7 @@ class Web
         }
     }
 
-    private function callAjaxDispatcher()
+    private function _callAjaxDispatcher()
     {
         // Cuando el controlador es ajax llamamos a la funcion function
         // usando helpers_model_ajax del modelo /ajax/model/function
@@ -337,7 +337,7 @@ class Web
         call_user_method_array($action, $ajax, $this->params);
     }
 
-    private function callhelpersDispatcher()
+    private function _callhelpersDispatcher()
     {
         // Cuando el controlador es ajax llamamos a la funcion function
         // usando helpers_model_ajax del modelo /helpers/class/action
