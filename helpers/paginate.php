@@ -15,7 +15,7 @@ class helpers_paginate {
 
 		$total_pages = ceil($object->total_results / $object->page_size);
 
-		if($total_pages <= $mostrar_paginas) 	// Si todos los resultados caben en una página
+		if ($total_pages <= $mostrar_paginas) 	// Si todos los resultados caben en una página
        	{
 			$desde = 1;
 			$hasta = $total_pages;  // Se muestran todas las páginas.
@@ -33,8 +33,7 @@ class helpers_paginate {
 			}
 		}
 
-		if($total_pages > 1) {
-
+		if ($total_pages > 1) {
 			$html.= $texto == "Páginas: " ? _("Páginas").": " : $texto;
 
 			$url = "?".query_string($no);

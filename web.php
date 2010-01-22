@@ -128,7 +128,7 @@ class Web
 
     public static function uri($params, $allParams = true, $exclude = array())
     {
-        $uri = web::params($params, $allParams, null, $exclude);
+        $uri = web::params($params, $allParams, null, true, $exclude);
         return "/".web::instance()->controller."/".(
                     web::instance()->model ? web::instance()->model."/" : "").
                     web::instance()->action.$uri;
@@ -154,6 +154,7 @@ class Web
                 $uri .= "/$item=$value";
             }
         }
+
         if ($_SERVER["QUERY_STRING"] && $queryString) {
 			$query = array();
 			foreach ($_GET as $item => $value) {
@@ -167,7 +168,6 @@ class Web
 
     private static function processParams($params, $arr, &$uri)
     {
-
         if (!is_array($params)) {
             $params = explode("/", $params);
             array_shift($params);
