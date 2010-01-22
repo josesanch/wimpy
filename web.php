@@ -128,7 +128,7 @@ class Web
 
     public static function uri($params, $allParams = true, $exclude = array())
     {
-        $uri = web::params($params, $allParams, null, true, $exclude);
+        $uri = web::params($params, $allParams, true, $exclude);
         return "/".web::instance()->controller."/".(
                     web::instance()->model ? web::instance()->model."/" : "").
                     web::instance()->action.$uri;
