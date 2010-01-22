@@ -1,13 +1,14 @@
 <?
 class html_base_grid extends html_object
 {
-
     public $onClick;
     public $redirectTo;
     public $buttons = array("search", "new");
     public $search;
     public $showSearch = true;
-    public $onSubmit = 'return do_search(this);';
+    public $onSubmit;
+    public $pageSize = 25;
+    //'return do_search(this);';
     private $_instance = true;
 
     public function toHtml($model, $sql = null, $columns = null, $order = null)
@@ -15,16 +16,18 @@ class html_base_grid extends html_object
         $modelName = get_class($model);
         $dialog = web::request("dialog") ? "dialog" : "";
         $form = new html_base_form($modelName);
+        $form->method("get");
+
 
         if ($this->_instance) {
             if($this->onSubmit) $form->onsubmit($this->onSubmit);
+			$model->setPageSize($this->pageSize);
         } else {
-            $form->onsubmit('return do_search(this);');
+            //$form->onsubmit('return do_search(this);');
+            $model->setPageSize(25);
         }
+		// Seleccionamos la página
 
-        $model->setPageSize(25);
-        if (web::request("page"))
-            $model->setCurrentPage(web::request("page"));
 
         if (web::request("search")) {
             if ($columns) $c = split(" ?, ?", $columns);
@@ -39,19 +42,16 @@ class html_base_grid extends html_object
 
         $columns = $columns ? split(" ?, ?", $columns) :  array_keys($model->getFields());
         $sqlcolumns = array();
+
         foreach ($columns as $column) {
             $attrs = $model->getFields($column);
             if($attrs['belongs_to']) {
-
                 $belongs_model_name = $attrs['belongs_to'];
-
                 $belongs_model = new $belongs_model_name;
                 $table = $belongs_model_name;
-
                 $fieldToSelect = !$attrs["show"] ?
                     $belongs_model->getTitleField() :
                     $attrs["show"];
-
 
                 $sqlcolumns[]= "
                     (
@@ -79,8 +79,8 @@ class html_base_grid extends html_object
             $desc = "false";
         }
 
-
-        if(!$order) {
+		// Tenemos encuenta la ordenación seleccionada.
+        if (!$order) {
             if($model->getFields($model->field_used_for_ordenation)) {
                 $order = "order: ".$model->field_used_for_ordenation;
                 $ordenation = true;
@@ -89,10 +89,20 @@ class html_base_grid extends html_object
             }
         }
 
-        $results = $model->select($sql, "columns: ".join(", ", array_filter($sqlcolumns)), $order);
+		if (web::request("page"))
+            $model->setCurrentPage(web::request("page"));
+
+		// Hacemos la consulta al modelo
+        $results = $model->select(
+			$sql,
+			"columns: ".implode(", ", array_filter($sqlcolumns)),
+			$order
+		);
+
+
         $de = ($model->current_page - 1) * $model->page_size + 1;
         $hasta = $de + $model->page_size - 1;
-        $hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
+		$hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
         if($de > $hasta) $de = $hasta;
         $paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
         $paginacion = html_base_grid::_getPaginate($results);
@@ -117,12 +127,9 @@ class html_base_grid extends html_object
                         value='".urldecode(web::request('search'))."'
                         size=20/>";
 
-
-
             if($botonBuscar && web::auth()->hasPermission($model, auth::VIEW))
                 $formData .=
-                    "<input type=button value=buscar class='boton-buscar'
-                    onclick=\"do_search(this.form)\">";
+                    "<input type=submit value=buscar class='boton-buscar'/>";
 
 
             if($botonNuevo && web::auth()->hasPermission($model, auth::ADD))
@@ -216,6 +223,7 @@ class html_base_grid extends html_object
         if (web::request("dialog")) {
             $bindLinks =  "$('a.dialog').bind('click', function() { openUrl($(this).attr('href')); return false; });";
             $openUrl = "$('#".web::request("field")."_dialog').load(url);";
+            $ajaxForm = "$('#".get_class($model)."').ajaxForm({ target: '#".web::request("field")."_dialog' })";
         } else {
             $openUrl = "document.location = url;";
         }
@@ -226,26 +234,12 @@ class html_base_grid extends html_object
             </div>
             <br/>
              <script>
-                var background = '';
-                $('.grid_row').bind('mouseover', function() {
-                    $(this).addClass('grid_row_hover');
-                });
-
-                $('.grid_row').bind('mouseout', function() {
-                    $(this).removeClass('grid_row_hover');
-                });
-
-
-                function do_search(form) {
-                    openUrl('".web::uri("/page=/search=")."' + escape(form.search.value));
-                    return false;
-                }
                 $bindLinks
-
+                $ajaxForm
+                mouseOverResults();
                 function openUrl(url) {
                     $openUrl
                 }";
-
 
         if($ordenation) {
                 $formData .=
@@ -260,7 +254,6 @@ class html_base_grid extends html_object
                                     $('#mensajes').html('Realizando cambios').load('/ajax/".get_class($model)."/reorderList/' + id + '/' + prev);
                                 }
                         });
-
                     });";
         }
 
@@ -270,6 +263,8 @@ class html_base_grid extends html_object
             style='display: none; border: 1px solid gray; padding: 1em;'>
             </div>";
 
+
+		$form->action(web::uri(null, null, array("page")));
 		if (!$this->_instance || $this->showSearch) {
 			$form->add($formData);
 			return $form->toHtml();

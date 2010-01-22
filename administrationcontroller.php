@@ -76,7 +76,6 @@ class AdministrationController extends ApplicationController
                         </li>";
         }
         return implode("<span class='separador_submenu'> | </span>", $subitems);
-
     }
 
 	private function _getItem($force = false)
@@ -84,7 +83,7 @@ class AdministrationController extends ApplicationController
 		$modelName = web::instance()->model;
 		if(!$modelName) $selectFirst = true;
 
-		$params = web::params();
+		$params = web::params(null, null, false, array("page"));
 		if (web::instance()->action == "edit") {
 			// Eliminamos el elemento que estamos editando.
 			$params = "/".implode("/", array_slice(explode("/", $params), 2));

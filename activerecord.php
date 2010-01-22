@@ -499,7 +499,7 @@ class ActiveRecord
                         break;
 
                     default:
-                        if ($attrs['autocomplete'] && !$_REQUEST[$field] && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
+                        if ($attrs['autocomplete'] && $attrs["newvalues"] && !$_REQUEST[$field] && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
                             $model_name = $attrs["belongs_to"];
                             $model = new $model_name;
                             $name = $model->getTitleField();

@@ -60,7 +60,8 @@ class auth
     {
         $_SESSION['logout'] = true;
         log::add($result['user'], "LOGOUT $user", log::OK);
-         unset($_SESSION["auth_session_".$this->table]);
+        unset($_SESSION["auth_session_".$this->table]);
+
     }
 
     public function get($item)
@@ -70,11 +71,9 @@ class auth
 
     public function requestAuth()
     {
-
-        if (isset($_SERVER['PHP_AUTH_USER'])
-            && $force == false
+		if (isset($_SERVER['PHP_AUTH_USER'])
             && !$_SESSION["auth_module"]["logout"]
-            && !$_SESSION['logout']
+            && !isset($_SESSION['logout'])
         ) {
             $usuario = mysql_escape_string($_SERVER['PHP_AUTH_USER']);
             $clave = mysql_escape_string($_SERVER['PHP_AUTH_PW']);
@@ -83,10 +82,11 @@ class auth
             }
         }
 
-        unset($_SESSION['logout']);
+		unset($_SESSION['logout']);
         $content = ob_get_clean();
         header('WWW-Authenticate: Basic realm="Zona de acceso restringido"');
         header('HTTP/1.0 401 Unauthorized');
+        exit;
     }
 
     public function hasPermission($perm, $model)

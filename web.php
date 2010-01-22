@@ -126,16 +126,16 @@ class Web
         $this->params = $uri;
     }
 
-    public static function uri($params, $allParams = true)
+    public static function uri($params, $allParams = true, $exclude = array())
     {
-        $uri = web::params($params, $allParams);
+        $uri = web::params($params, $allParams, null, $exclude);
         return "/".web::instance()->controller."/".(
                     web::instance()->model ? web::instance()->model."/" : "").
                     web::instance()->action.$uri;
     }
 
 
-    public static function params($params = null, $allParams = true)
+    public static function params($params = null, $allParams = true, $queryString = true, $exclude = array())
     {
         $arr = array();
         $uri = '';
@@ -150,12 +150,18 @@ class Web
         }
 
         foreach ($arr as $item => $value) {
-            if (!is_numeric($item)) {
+            if (!is_numeric($item) && !in_array($item, $exclude)) {
                 $uri .= "/$item=$value";
             }
         }
-
-        if ($_SERVER["QUERY_STRING"]) $uri .= "?".$_SERVER["QUERY_STRING"];
+        if ($_SERVER["QUERY_STRING"] && $queryString) {
+			$query = array();
+			foreach ($_GET as $item => $value) {
+				if (!array_key_exists($item, $arr) && !in_array($item, $exclude))
+				$query[]= "$item=$value";
+			}
+			$uri .= "?".implode("&", $query);
+		}
         return $uri;
     }
 

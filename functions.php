@@ -278,3 +278,9 @@ function tlink($url)
         return $url;
 
 }
+
+function includePdfPlugins()
+{
+	include_once(dirname(__FILE__)."/library/tcpdf.php");
+	include_once(dirname(__FILE__)."/library/tcpdf/tcpdf_plugins.php");
+}

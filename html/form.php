@@ -83,7 +83,7 @@ class html_form extends html_object
 		else
 			$attrs = $this->model->getFields($field);
 
-        if (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"])) {
+        if (!isset($attrs["hidden"]) && (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"]))) {
                 $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
                 if (!$attrs['autocomplete'] && !$attrs["dialog"]) {
@@ -129,11 +129,14 @@ class html_form extends html_object
 					// Text field that contain the name of the field.
                     $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
                     $inputAutocomplete = new html_form_input($field."_autocomplete");
-                    $inputAutocomplete->value($text)->size($size)->class("autocomplete");
+                    $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
 					$inputAutocomplete->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
-					if(!$attrs['autocomplete'])
+
+					if(!$attrs['autocomplete'] || $attrs["readonly"])
 						$inputAutocomplete->disabled(true);
-					if ($attrs["dialog"]) {
+
+
+					if ($attrs["dialog"] && !$attrs["readonly"]) {
 
 						$inputAutocomplete->add("
 							<input type='button' value='' class='dialog'
@@ -161,7 +164,7 @@ class html_form extends html_object
                             });
                     ", true);
 					$input->setData($inputAutocomplete);
-                    //$this->addToEnd($inputHidden);
+
                 }
 		} elseif ($attrs['primary_key'] || $attrs["hidden"]) {
 				 $input = new html_form_hidden($field);
@@ -293,8 +296,6 @@ class html_form extends html_object
             $count++;
         }
         array_splice($this->inputs, $count+1, 0, $data);
-
-
     }
 
     public function setModel($model)

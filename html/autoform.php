@@ -22,7 +22,9 @@ class html_autoform extends html_form
     private function construct_head()
     {
         $this->add(
-            "   <fieldset class='admin_form ".get_class($this->model)."'>
+            "
+				<div id='alert-messages'></div>
+				<fieldset class='admin_form ".get_class($this->model)."'>
                 <legend>".$this->model->getTitle()."</legend>"
         );
 
@@ -51,27 +53,11 @@ class html_autoform extends html_form
     	$isDialog = web::request("dialog");
     	$modelName = get_class($this->model);
 
-		if ($isDialog) {
-			$openUrl = "$('#".web::request("field")."_dialog').load(url);";
-			$ajaxForm = "$('#$modelName').ajaxForm({ target: '#".web::request("field")."_dialog' })";
-		} else {
-			$openUrl = "document.location = url;";
-		}
 
-        $this->addJS(
-                "function delete_item(id) {
-                    if (confirm('Está seguro')) {
-                        document.location='/admin/".
-						get_class($this->model).
-						"/delete/' + id + '".web::params()."';
-                    }
-                }
-                $('#".get_class($this->model)."').validate();
-
-				function openUrl(url) {
-					$openUrl
-				}
-				$ajaxForm"
+        $this->addJS("
+			jQuery.validator.addMethod('cif', function(value, element) { return this.optional(element) || check_cif(value); }, 'Dni no válido');
+			$('#".get_class($this->model)."').validate();
+			$ajaxForm", true
 		);
 		$this->add("<div class='form-buttons'>");
 
@@ -82,18 +68,33 @@ class html_autoform extends html_form
 				$urlBack = "/admin/".get_class($this->model)."/list".
 							web::params(null, false);
 
+			if ($isDialog) {
+				$back = "goUrl('$urlBack','".web::request("field")."', '$modelName');";
+			} else {
+				$back = "goUrl('$urlBack');";
+			}
+
             $this->add(
-                "<input class='submit boton-volver' id='boton-volver'
+                "<input
+                class='submit boton-volver' id='boton-volver'
                 type='button' value=volver
-                onclick=\"openUrl('$urlBack');\">"
+                onclick=\"$back\">"
             );
         }
 
         if ($this->model->id && in_array("delete", $this->buttons) && web::auth()->hasPermission($this->model, auth::DELETE)) {
+			$urlDelete = "/admin/".get_class($this->model)."/delete".web::params();
+
+			if ($isDialog) {
+				$delete = "confirmGoUrl('$urlDelete','".web::request("field")."', '$modelName');";
+			} else {
+				$delete = "confirmGoUrl('$urlDelete');";
+			}
+
             $this->add(
                 "<input class='submit boton-eliminar' id='boton-eliminar'
                 type='button' value=eliminar
-                onclick=\"delete_item('".$this->model->id."');\">"
+                onclick=\"$delete\">"
             );
 
         }

@@ -3,6 +3,7 @@ class html_form_select extends html_form_input
 {
 
     protected $selectedValues;
+    protected $disabledValues;
     protected $attrs = array
     (
         'type'    => 'select',
@@ -30,7 +31,7 @@ class html_form_select extends html_form_input
         return $str;
     }
 
-    public function add($values, $selectedValues = null, $at_top = false )
+    public function add($values, $selectedValues = null, $at_top = false, $disabled = false )
     {
         if(is_array($values)) {
             if(count($values) > 0) {
@@ -45,10 +46,6 @@ class html_form_select extends html_form_input
                         $this->attrs['options'] = $values + $this->attrs['options'];
                     else
                         $this->attrs['options'] += $values;
-/*                    foreach($values as $value => $text) {
-                        $this->attrs['options'][$value] = $text;
-                    }
-                    */
                 }
             }
         }
@@ -63,6 +60,21 @@ class html_form_select extends html_form_input
         return $this;
     }
 
+	public function disabled($values)
+	{
+		if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+        $this->disabledValues = $values;
+        return $this;
+	}
+
+	public function remove($values) {
+		if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+		foreach ($values as $value) {
+			if (isset($this->attrs['options'][$value]))
+				unset($this->attrs['options'][$value]);
+
+		}
+	}
 
     private function getOptions()
     {
@@ -72,10 +84,15 @@ class html_form_select extends html_form_input
                     $this->selectedValues :
                     array($this->selectedValues);
 
+				$disabledValues = is_array($this->disabledValues) ?
+                    $this->disabledValues :
+                    array($this->disabledValues);
+
                 $selected = in_array($value, $values) ? " selected" : "";
+                $disabled = in_array($value, $disabledValues) ? " disabled" : "";
             }
             $html .= "
-                       <option value=\"$value\"$selected>$text</option>";
+                       <option value=\"$value\"$selected{$disabled}>$text</option>";
         }
         return $html;
 
