@@ -136,7 +136,7 @@ class WMaps
 	public static function getGeoIPPoint() {
 		if(web::instance()->dbgeoip) {
 			$data = web::instance()->dbgeoip->query("SELECT * FROM ip_group_city where ip_start <= INET_ATON('".$_SERVER['REMOTE_ADDR']."') order by ip_start desc limit 1")->fetch();
-			if($date["latitude"] && $data["longitude"]) return $data;
+			if($data["latitude"] && $data["longitude"]) return $data;
 		}
 		return array("city" => "Mula", "region_name" => "Murcia", "country_name" => "España", "latitude" =>  38.035112, "longitude" => -1.539459);
     }
