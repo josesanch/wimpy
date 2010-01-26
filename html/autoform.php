@@ -53,12 +53,16 @@ class html_autoform extends html_form
     	$isDialog = web::request("dialog");
     	$modelName = get_class($this->model);
 
+        if ($isDialog) {
+            $ajaxForm = "$('#".get_class($this->model)."').ajaxForm({ target: '#".web::request("field")."_dialog' })";
+		}
 
         $this->addJS("
 			jQuery.validator.addMethod('cif', function(value, element) { return this.optional(element) || check_cif(value); }, 'Dni no válido');
 			$('#".get_class($this->model)."').validate();
 			$ajaxForm", true
 		);
+
 		$this->add("<div class='form-buttons'>");
 
         if (in_array("back", $this->buttons)) {
