@@ -177,7 +177,6 @@ class html_base_grid extends html_object
 
                 $url = "javascript:$urlFunction";
                 $trEvent = "onclick='$urlFunction'";
-
             } elseif($dialog) {
                 $urlFunction = "updateModelValueDialog".
                     "(\"$modelName\",\"".web::request("field").
