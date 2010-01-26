@@ -214,7 +214,7 @@ class AdministrationController extends ApplicationController
                 } else {    // Update de parent form from the dialog.
 					$this->view->content = "
                         <script>
-                            updateModelValueDialog('$modelName','".
+                            parent.updateModelValueDialog('$modelName','".
                             web::request("field")."','".
                             web::request("parent")."','$model->id');
                         </script>
