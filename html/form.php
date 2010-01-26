@@ -130,7 +130,7 @@ class html_form extends html_object
                     $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
                     $inputAutocomplete = new html_form_input($field."_autocomplete");
                     $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
-					$inputAutocomplete->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+					$input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
 
 					if(!$attrs['autocomplete'] || $attrs["readonly"])
 						$inputAutocomplete->disabled(true);
@@ -247,10 +247,12 @@ class html_form extends html_object
             }
         }
 
-        if($lang)
-            $input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
-        else
-            $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+		if (!$attrs['primary_key'] && !$attrs["hidden"]) {
+			if($lang)
+				$input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
+			else
+				$input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+        }
 
 
 
@@ -323,12 +325,21 @@ class html_form extends html_object
 
     public function getJs()
     {
-        return "<script type='text/javascript'>
+        if ($this->_javascriptOnload)
+			$str .= "
                     $(document).ready(function() {
                             $this->_javascriptOnload
                     });
-                    $this->_javascript;
-                </script>";
+                    ";
+		if ($this->_javascript)
+			$str .= $this->_javascript;
+
+        if ($str)
+			return "
+			<script type='text/javascript'>
+			$str
+			</script>
+			";
     }
 
     public function getEndData() {
