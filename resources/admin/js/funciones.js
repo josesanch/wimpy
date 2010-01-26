@@ -189,8 +189,10 @@ function sms_usuarios_envios_delete(id)
 function goUrl(url, field, modelName)
 {
 	if(typeof(field) != "undefined") {
-		$('#' + field + '_dialog').load(url);
-		$('#' + modelName).ajaxForm({ target: '#' + field + '_dialog' });
+		$('#' + field + '_dialog').load(url, function() {
+			$('#' + modelName).ajaxForm({ target: '#' + field + '_dialog' });
+		});
+
 	} else {
 		document.location = url;
 	}

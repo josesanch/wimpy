@@ -346,4 +346,3 @@ class html_form extends html_object
         return $this->_endData;
     }
 }
-?>

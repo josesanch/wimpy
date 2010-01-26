@@ -131,13 +131,12 @@ class html_base_grid extends html_object
                 $formData .=
                     "<input type=submit value=buscar class='boton-buscar'/>";
 
-
-            if($botonNuevo && web::auth()->hasPermission($model, auth::ADD))
-                $formData .=
-                    "<input type=button value='nuevo' class='boton-nuevo'
-                    onclick='openUrl(\"/admin/".get_class($model)."/edit/0".
-                    web::params()."\")'>";
-
+            if($botonNuevo && web::auth()->hasPermission($model, auth::ADD)) {
+				if (!$dialog)
+					$formData .= "<input type=button value='nuevo' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\")'>";
+				else
+					$formData .= "<input type=button value='nuevo' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\", \"".web::request("field")."\",\"".web::request("parent")."\")'>";
+			}
 			$formData .=
                 "$data
                  <div id='listado-paginas'>$paginas</div>

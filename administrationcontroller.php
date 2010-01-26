@@ -212,7 +212,7 @@ class AdministrationController extends ApplicationController
                 if (!web::request("dialog")) {
 					$model->adminRedir();
                 } else {    // Update de parent form from the dialog.
-                    $this->view->content = "
+					$this->view->content = "
                         <script>
                             updateModelValueDialog('$modelName','".
                             web::request("field")."','".
