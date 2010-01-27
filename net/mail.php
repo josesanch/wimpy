@@ -145,7 +145,7 @@ class Net_Mail
 
 	private function __getHeaders()
 	{
-		$headers = "MIME-Version: 1.0\r\n";
+		$headers = "MIME-Version: 1.0\n";
 //		Content-Type: multipart/mixed; boundary="46138324"
 //		$headers .= "Content-Type: multipart/mixed; boundary=\"$this->__boundary\"\n";
 		$headers .= "Content-Type: multipart/mixed; boundary=\"$this->__boundary\"\n";
