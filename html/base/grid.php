@@ -14,6 +14,9 @@ class html_base_grid extends html_object
     public function toHtml($model, $sql = null, $columns = null, $order = null)
     {
         $modelName = get_class($model);
+        $table = $model->getDatabaseTable();
+        $fields = array_keys($model->getFields());
+
         $dialog = web::request("dialog") ? "dialog" : "";
         $form = new html_base_form($modelName);
         $form->method("get");
@@ -28,47 +31,31 @@ class html_base_grid extends html_object
         }
 		// Seleccionamos la página
 
-
+		// Hacemos el or de los campos para ponerlo en el where
         if (web::request("search")) {
             if ($columns) $c = split(" ?, ?", $columns);
             else $c = array_keys($model->getFields());
             $search = array();
+
             foreach ($c as $field) {
-                $search[]= "$field like '%".urldecode(web::request('search'))."%'";
+				$search[]= $model->fields($field)->getSql()." like '%".urldecode(web::request('search'))."%'";
             }
+
             $search = " (".join(" or ", $search).")";
             $sql = $sql ? $sql." and ".$search : $search;
         }
 
-        $columns = $columns ? split(" ?, ?", $columns) :  array_keys($model->getFields());
+        $columns = $columns ? split(" ?, ?", $columns) : $fields;
         $sqlcolumns = array();
 
         foreach ($columns as $column) {
-            $attrs = $model->getFields($column);
-            if($attrs['belongs_to']) {
-                $belongs_model_name = $attrs['belongs_to'];
-                $belongs_model = new $belongs_model_name;
-                $table = $belongs_model_name;
-                $fieldToSelect = !$attrs["show"] ?
-                    $belongs_model->getTitleField() :
-                    $attrs["show"];
-
-                $sqlcolumns[]= "
-                    (
-                        SELECT $fieldToSelect
-                        FROM
-                            $table secondary_table_$table
-                        WHERE
-                            secondary_table_$table.id=".
-                            $model->getDatabaseTable().".$column
-                    ) as $column";
-            } else {
-                $sqlcolumns[] = $column;
-            }
+			$sqlcolumns[]= $model->fields($column)->getSqlColumn();
         }
+
         // We add the primary key to the seleted fields.
         $primaryKey = array_shift($model->getPrimaryKeys());
-        if(!in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]=$primaryKey;
+
+        if($primaryKey && !in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]= "$table.$primaryKey";
 
         if($order) $order = "order: $order";
         if(web::request("order")) {
@@ -82,21 +69,23 @@ class html_base_grid extends html_object
 		// Tenemos encuenta la ordenación seleccionada.
         if (!$order) {
             if($model->getFields($model->field_used_for_ordenation)) {
-                $order = "order: ".$model->field_used_for_ordenation;
+                $order = "order: $table.".$model->field_used_for_ordenation;
                 $ordenation = true;
             } else {
-                $order = "order: id";
+                $order = "order: $table.id";
             }
         }
 
 		if (web::request("page"))
             $model->setCurrentPage(web::request("page"));
-
+		//echo "<pre>$sql</pre>";
+		//var_dump($sqlcolumns);
 		// Hacemos la consulta al modelo
         $results = $model->select(
 			$sql,
 			"columns: ".implode(", ", array_filter($sqlcolumns)),
-			$order
+			$order,
+			ActiveRecord::INNER
 		);
 
 

@@ -15,6 +15,7 @@ require dirname(__FILE__)."/library/log.php";
 */
 class Web
 {
+	const NOTIFY_BY_EMAIL = "soporte@o2w.es";
     public $laguages = array("es");
     public $database;
     public $defaultHtmlEditor = "ckeditor";
@@ -501,13 +502,22 @@ class Web
         }
     }
 
-    public static function error($texto, $file, $linea)
+    public static function error($texto, $file, $linea, $notify = null)
     {
-        echo "<pre style='padding: 1em; border: 1px dashed #666;'>
+        $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'>
                       <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
-        echo $texto;
-        echo "</h3></pre>";
+        $str .= $texto;
+        $str .="</h3><br/>";
+
+        if ($notify == web::NOTIFY_BY_EMAIL && web::instance()->isInProduction()) {
+			$str .= "<hr/><h4>* Notificando por e-mail a ".web::NOTIFY_BY_EMAIL."</h4>";
+			$mail = new net_mail();
+			$mail->msg($str);
+			$mail->subject("ERROR de SQL en: ".$_SERVER["SERVER_NAME"]." - ".web::uri());
+			$mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
+		}
+		echo $str."</pre>";
     }
 
     public static function warning($texto, $file, $linea)

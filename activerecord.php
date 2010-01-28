@@ -2,6 +2,8 @@
 
 class ActiveRecord
 {
+	const NORMAL = "SQL_NORMAL";
+    const INNER = "SQL_INNER";
     public $current_page = 1;
     public $page_size = null;
     public $total_results;
@@ -154,13 +156,15 @@ class ActiveRecord
     {
         $this->select_columns = $this->select_order = $this->select_limit = $this->select_conditions = '';
         $args = func_get_args();
+		$table = $this->getDatabaseTable();
 
         // Toma el primer elemento como where
         if (count($args) > 0 && !in_array(array_shift(explode(":", $args[0])), array("order", "limit", "columns"))) {
             $what = array_shift($args);
         }
 
-        $this->select_columns = join(", ", array_keys($this->getFields()));
+        $this->select_columns = join(", $table.", array_keys($this->getFields()));
+        if ($this->select_columns) $this->select_columns = "$table.$this->select_columns";
 
         if (isset($what)) {
             if (is_numeric($what)) {
@@ -178,29 +182,52 @@ class ActiveRecord
                     case 'order':
                         $this->select_order = $arguments;
                     break;
+
                     case 'limit':
                         $this->select_limit = $arguments;
                     break;
+
                     case 'columns':
                         $this->select_columns = $arguments;
                     break;
+
                     case 'where':
                         $this->select_conditions = $arguments;
                     break;
                 }
-            }
+            } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
+				$mode = $arg;
+			}
         }
 
-        $sql = "SELECT ".$this->select_columns." FROM ".$this->database_table;
-        if ($this->select_conditions) $sql .= " WHERE ".$this->select_conditions;
-        if ($this->select_order)    $sql .= " ORDER BY ".$this->select_order;
-        if ($this->select_limit) $sql .= " LIMIT ".$this->select_limit;
+		if ($mode == ActiveRecord::INNER) {
+			$joins = $this->_getLeftJoins();
+		}
+
+        if ($this->select_conditions) 	$where = " WHERE ".$this->select_conditions;
+        if ($this->select_order)    	$order = " ORDER BY ".$this->select_order;
+        if ($this->select_limit) 		$limit = " LIMIT ".$this->select_limit;
+
+		$sql = "
+			SELECT
+				".$this->select_columns."
+			FROM
+				".$this->database_table."
+			$joins
+			$where
+			$order
+			$limit";
+
+		//echo "<hr><pre>$sql</pre>";
 
         if ($this->page_size) {
             $statement = $this->database->query(
-                "SELECT count(*) as total FROM ".
-                $this->database_table.($this->select_conditions ?
-                " WHERE ".$this->select_conditions : " ")
+                "SELECT
+					count(*) as total
+                FROM
+					".$this->database_table."
+				$joins
+				$where"
             );
 
             if ($statement) {
@@ -211,32 +238,13 @@ class ActiveRecord
                 $this->total_results = $total_result[0];
                 $statement->fetchAll();    // Para soportar unbuferred queryes
                 $sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
-            } else {
-                if ($this->xdebug) {
-                    web::debug(
-						$sql."-".$this->database->errorInfo(),
-						__METHOD__."(".xdebug_call_function()."(".xdebug_call_line().")",
-						__LINE__
-					);
-                } else {
-                    web::debug($sql, __METHOD__, __LINE__);
-				}
             }
-
-
         }
-//        web::debug(__FILE__, __LINE__, $sql);
+
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
-        if (!$statement) {
-            /*
-            if ($this->xdebug)
-                web::error($sql, __METHOD__."(".xdebug_call_function()."(".xdebug_call_function()." - ".xdebug_call_line().")", __LINE__);
-            else
-                web::error($sql, __METHOD__, __LINE__);
-            */
-        } else {
+        if ($statement) {
             $rows = $statement->fetchAll();
             $results = array();
 
@@ -258,7 +266,36 @@ class ActiveRecord
         }
     }
 
+	private function _getLeftJoins()
+	{
+		$joins = array();
+		$table = $this->getDatabaseTable();
+		$count = 2;
+		foreach ($this->getAllFields() as $field => $attrs) {
+			if ($attrs["belongs_to"]) {
+				$relatedTable = $attrs["belongs_to"];
+				$fieldName = $field;
+				if (substr($fieldName, -3) == "_id") $fieldName = substr($fieldName, 0, -3);
+				if ($fieldName == $table) $fieldName.= $count++;
+				$joins[]= "
+					LEFT OUTER JOIN $relatedTable $fieldName ON
+						$fieldName.id=$table.$field
+				";
+			}
+		}
+		return implode("\n", $joins);
+	}
 
+	private function _alterColumns($data)
+	{
+
+		if (!$data) return $data;
+		var_dump($data);
+		$fields = implode("|", array_keys($this->getAllFields()));
+		$table = $this->getDatabaseTable();
+		$data = preg_replace("/(^|[\(\s,=])(?<!as )($fields)([\s,=\)]|$)/i", '$1'.$table.'.$2'.'$3', $data);
+		return $data;
+	}
 
     protected function dumpValues()
     {
@@ -608,38 +645,87 @@ class ActiveRecord
     }
 
     public function &fields($field) {
-        return new fields(ActiveRecord::$metadata[$this->database_table]["AllFields"][$field]);
+        return new fields(&ActiveRecord::$metadata[$this->database_table]["AllFields"][$field], $field, $this->database_table);
     }
 
     public function getAllFieldsForForm()
     {
         return $this->fields;
     }
+
+    public function getFieldForSql($field)
+    {
+	}
 }
 
 class fields
 {
-    protected $attrs;
+    protected $_attrs;
+    private $_table;
+    private $_name;
 
-    public function __construct(&$attrs)
+    public function __construct(&$attrs, $name, $table)
     {
-        $this->attrs = &$attrs;
+        $this->_attrs = &$attrs;
+        $this->_name = $name;
+        $this->_table = $table;
     }
 
     public function __call($method, $args)
     {
         switch($method) {
+			case "belongsTo":
+				$this->_attrs[$method] = $args[0];
+				$this->_attrs["belongs_to"] = $args[0];
+				break;
+
             case 'required':
                 if (empty($args))
-                    $this->attrs["not null"] = true;
+                    $this->_attrs["not null"] = true;
                 else
-                    $this->attrs[$method] = $args[0];
+                    $this->_attrs[$method] = $args[0];
                 break;
+
+			case "getSql":
+				if ($this->_attrs["getSql"]) return $this->_attrs["getSql"];
+
+				if ($this->_attrs["show"]) {
+					$this->_attrs["getSql"] = $this->_attrs["show"];
+				} elseif($relatedTable = $this->_attrs['belongs_to']) {
+					$relatedModel = new $relatedTable;
+					$fieldToSelect = $relatedModel->getTitleField();
+
+					$field = $this->_name;
+					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+					$this->_attrs["getSql"] = "$field.$fieldToSelect";
+				} else {
+					$this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
+				}
+				return $this->_attrs["getSql"];
+
+			case "getSqlColumn":
+				if ($this->_attrs["getSqlColumn"]) return $this->_attrs["getSqlColumn"];
+
+				if ($this->_attrs["show"]) {
+					$this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
+				} elseif ($relatedTable = $this->_attrs['belongs_to']) {
+
+					$relatedModel = new $relatedTable;
+					$fieldToSelect = $relatedModel->getTitleField();
+
+					$field = $this->_name;
+					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+					$this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
+				} else {
+					$this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
+				}
+				return $this->_attrs["getSqlColumn"];
+
             default:
                 if (empty($args))
-                    return $this->attrs[$method];
+                    return $this->_attrs[$method];
                 else
-                    $this->attrs[$method] = $args[0];
+                    $this->_attrs[$method] = $args[0];
         }
 
         return $this;

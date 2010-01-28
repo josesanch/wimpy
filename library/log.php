@@ -38,7 +38,6 @@ class log extends Model {
 	public function adminList() {
 		$instance = new log();
 		return "<br/>". $this->listItems($instance, null, $instance->grid_columns, "modified desc");
-
 	}
 
 
@@ -94,6 +93,7 @@ class log extends Model {
 				$order = "order: id";
 			}
 		}
+
 		$results = $model->select($sql, "columns: ".join(", ", $sqlcolumns), $order);
 		$de = ($model->current_page - 1) * $model->page_size + 1;
 		$hasta = $de + $model->page_size - 1;

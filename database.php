@@ -101,10 +101,11 @@ class Database extends PDO
                     __METHOD__."(".xdebug_call_function()."(".
                     xdebug_call_function()." - ".xdebug_call_line().
                     ")<br/>".implode(": ", $this->errorInfo()),
-                    __LINE__
+                    __LINE__,
+                    web::NOTIFY_BY_EMAIL
                 );
             else
-                web::error($sql, __METHOD__, __LINE__);
+                web::error($sql, __METHOD__, __LINE__, web::NOTIFY_BY_EMAIL);
            }
            return $return;
 
@@ -130,13 +131,14 @@ class Database extends PDO
             if ($this->_xdebug)
                 web::error(
                     $sql,
-                    __METHOD__."(".xdebug_call_function()."(".
-                    xdebug_call_function()." - ".xdebug_call_line().")<br/>".
+                    __METHOD__.": ".
+                    xdebug_call_function()."(".xdebug_call_line().")<br/>".
                     implode(": ", $this->errorInfo()),
-                    __LINE__
+                    __LINE__,
+                    web::NOTIFY_BY_EMAIL
                 );
             else
-                web::error($sql, __METHOD__, __LINE__);
+                web::error($sql, __METHOD__, __LINE__, web::NOTIFY_BY_EMAIL);
            }
            return $return;
     }
