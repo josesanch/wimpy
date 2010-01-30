@@ -35,9 +35,9 @@ function js($module)
 	// Google hosted scripts
 	switch ($module) {
 		case "jquery":
-			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js\"></script>";
+			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js\" type=\"text/javascript\"></script>";
 		case "jquery/ui":
-			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js\"></script>";
+			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js\" type=\"text/javascript\"></script>";
 	}
 
 	$file = str_replace("::", "/", $module).".js";
