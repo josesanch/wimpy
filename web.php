@@ -504,20 +504,30 @@ class Web
 
     public static function error($texto, $file, $linea, $notify = null)
     {
+
+
         $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
-                    <h3 style='color: red;'>
-                      <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
-        $str .= $texto;
-        $str .="</h3><br/>";
+                    <h3 style='color: red;'> * Se ha producido un error </h3>";
+
+		if (!web::instance()->isInProduction())
+			$str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
 
         if ($notify == web::NOTIFY_BY_EMAIL && web::instance()->isInProduction()) {
-			$str .= "<hr/><h4>* Notificando por e-mail a ".web::NOTIFY_BY_EMAIL."</h4>";
+			$mailMsg = "<pre style='padding: 1em; border: 1px dashed #666;'>
+						<h3 style='color: red;'> * Se ha producido un error </h3>
+						<span style='font-size: 0.6em;'>$file ($linea)</span>:\n
+						$texto
+                    </pre>";
+
+			$notificando = "<hr/><h4>* Notificado por e-mail a ".web::NOTIFY_BY_EMAIL."</h4>";
+
 			$mail = new net_mail();
-			$mail->msg($str);
+			$mail->msg($mailMsg);
 			$mail->subject("ERROR de SQL en: ".$_SERVER["SERVER_NAME"]." - ".web::uri());
 			$mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
 		}
-		echo $str."</pre>";
+
+		echo $str."$notificando</pre>";
     }
 
     public static function warning($texto, $file, $linea)
