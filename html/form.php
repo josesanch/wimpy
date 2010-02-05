@@ -132,6 +132,7 @@ class html_form extends html_object
                     $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
 					$input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
 
+
 					if(!$attrs['autocomplete'] || $attrs["readonly"])
 						$inputAutocomplete->disabled(true);
 
@@ -146,12 +147,14 @@ class html_form extends html_object
 
 						$this->addToEnd("<div id='{$field}_dialog'></div>");
 					}
+					$options = array();
+                    if(!$attrs["newvalues"]) $options[]= "mustMatch : true";
 
-                    if(!$attrs["newvalues"]) $mustMatch = "mustMatch : true";
                     $this->addJS("
                         $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field', {
-                            $mustMatch
-                        }).result(function(event, data, formatted) {
+                            ".implode(",", $options)."
+                        });
+                        $('#{$field}_autocomplete').result(function(event, data, formatted) {
                                 if (data) {
                                     $('#$field').val(data[1]);
                                     if(typeof(autocompleteCallback) != 'undefined')
@@ -163,6 +166,7 @@ class html_form extends html_object
                                 $(this).search();
                             });
                     ", true);
+                    $input->labelFor($field."_autocomplete");
 					$input->setData($inputAutocomplete);
 
                 }

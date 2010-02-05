@@ -141,6 +141,7 @@ class helpers_model_ajax  {
 	public function autocomplete($valor)
 	{
 
+		if (!$valor) exit;
         if(web::request("field")) {
             $attrs = $this->model->getFields(web::request("field"));
             if($attrs["show"]) $name = $attrs["show"];
@@ -153,7 +154,7 @@ class helpers_model_ajax  {
 
 		$results = $this->model->select(
 		    "columns: $primaryKey as id, $name as text",
-		    "where: $name like '%$q%'", "order: $name"
+		    "where: $name like '%$q%'", "order: $name", "limit: ".web::request("limit")
 		);
 
 

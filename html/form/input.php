@@ -7,7 +7,7 @@ class html_form_input extends html_object {
         'class'   => 'textbox',
         'value'   => ''
     );
-
+	protected $_labelFor;
     // Protected data keys
     protected $protect = array();
 
@@ -28,6 +28,17 @@ class html_form_input extends html_object {
     {
         $this->attrs['name'] = $name;
     }
+
+	public function labelFor($for)
+	{
+		$this->_labelFor = $for;
+	}
+
+	protected function _getLabelFor()
+	{
+		if ($this->_labelFor) return $this->_labelFor;
+		return ($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] );
+	}
 
     public function __call($method, $args)
     {
@@ -65,7 +76,7 @@ class html_form_input extends html_object {
     {
         $str = "";
         if($this->attrs['label'])
-            $str .= "\n<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] ).
+            $str .= "\n<label for='".$this->_getLabelFor().
                     "' class='autoform'>\n
                         <span>".$this->attrs['label']."</span>\n";
 

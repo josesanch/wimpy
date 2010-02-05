@@ -14,7 +14,7 @@ class html_form_hidden extends html_form_input {
 		//var_dump($this->attrs);
         $str = "";
         if($this->attrs['label'])
-            $str .= "\n<label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] ).
+            $str .= "\n<label for='".($this->_getLabelFor()).
                     "' class='autoform'>\n
                         <span>".$this->attrs['label']."</span>\n";
 
