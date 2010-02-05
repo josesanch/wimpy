@@ -88,8 +88,8 @@ class html_form_select extends html_form_input
 
 
         foreach ($this->attrs['options'] as $value => $text) {
-            $selected = in_array($value, $values) ? " selected" : "";
-            $disabled = in_array($value, $disabledValues) ? " disabled" : "";
+            $selected = in_array($value, $values) ? " selected='selected'" : "";
+            $disabled = in_array($value, $disabledValues) ? " disabled='disabled'" : "";
             $html .= "
                        <option value=\"$value\"$selected{$disabled}>$text</option>";
         }

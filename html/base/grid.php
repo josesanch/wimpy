@@ -8,6 +8,8 @@ class html_base_grid extends html_object
     public $showSearch = true;
     public $onSubmit;
     public $pageSize = 25;
+    public $onDelete;
+
     //'return do_search(this);';
     private $_instance = true;
 
@@ -51,6 +53,7 @@ class html_base_grid extends html_object
         foreach ($columns as $column) {
 			$sqlcolumns[]= $model->fields($column)->getSqlColumn();
         }
+
 
         // We add the primary key to the seleted fields.
         $primaryKey = array_shift($model->getPrimaryKeys());
@@ -151,6 +154,7 @@ class html_base_grid extends html_object
 					$arrow
 				</th>\n";
         }
+        if ($this->onDelete) $formData .= "<th class=grid_header></th>";
 
         $i = 0;
 
@@ -203,6 +207,19 @@ class html_base_grid extends html_object
                 $formData .= "<td class=grid_cell>$value</td>\n";
             }
 
+            // Si hemos especificado un callback de borrado
+			if ($this->onDelete) {
+				$urlFunction = $this->onDelete."\"".
+                    $row->get("id").
+                    "\",\"".($row->get($row->getTitleField()))."\")";
+
+                $url = "javascript:$urlFunction";
+
+				$formData .= "
+				<td onClick='$urlFunction;event.cancelBubble=true;' style='font-size: 0.8em; color: gray; text-align: center;'>
+					<img src='/resources/icons/delete.gif'/>&nbsp;Eliminar
+				</td>";
+			}
             $formData .= "</tr>\n";
         }
         $formData .= "</tbody></table>\n";

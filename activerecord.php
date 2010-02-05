@@ -653,9 +653,6 @@ class ActiveRecord
         return $this->fields;
     }
 
-    public function getFieldForSql($field)
-    {
-	}
 }
 
 class fields
@@ -698,10 +695,14 @@ class fields
 					$field = $this->_name;
 					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
 					$this->_attrs["getSql"] = "$field.$fieldToSelect";
-				} else {
+				} elseif($this->_attrs) {
 					$this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
+				} else {
+					$this->_attrs["getSql"] = $this->_name;
+
 				}
 				return $this->_attrs["getSql"];
+
 
 			case "getSqlColumn":
 				if ($this->_attrs["getSqlColumn"]) return $this->_attrs["getSqlColumn"];
@@ -709,15 +710,17 @@ class fields
 				if ($this->_attrs["show"]) {
 					$this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
 				} elseif ($relatedTable = $this->_attrs['belongs_to']) {
-
 					$relatedModel = new $relatedTable;
 					$fieldToSelect = $relatedModel->getTitleField();
 
 					$field = $this->_name;
 					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+					if ($field == $this->_table) $field.="2";
 					$this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
-				} else {
+				} elseif($this->_attrs) {
 					$this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
+				} else {
+					$this->_attrs["getSqlColumn"] = $this->_name;
 				}
 				return $this->_attrs["getSqlColumn"];
 
