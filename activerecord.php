@@ -672,8 +672,12 @@ class fields
     {
         switch($method) {
 			case "belongsTo":
-				$this->_attrs[$method] = $args[0];
-				$this->_attrs["belongs_to"] = $args[0];
+				if (empty($args)) {
+					return $this->_attrs[$method] ? $this->_attrs[$method] : $this->_attrs["belongs_to"];
+				} else {
+					$this->_attrs[$method] = $args[0];
+					$this->_attrs["belongs_to"] = $args[0];
+				}
 				break;
 
             case 'required':
@@ -733,4 +737,15 @@ class fields
 
         return $this;
     }
+
+    public function label($label)
+    {
+		if ($label) {
+			$this->_attrs["label"] = $label;
+			return $this;
+		} else {
+			return $this->_attrs["label"] ?  $this->_attrs["label"] : $this->_name;
+		}
+
+	}
 }

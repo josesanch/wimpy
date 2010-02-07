@@ -15,7 +15,7 @@ require dirname(__FILE__)."/library/log.php";
 */
 class Web
 {
-	const NOTIFY_BY_EMAIL = "soporte@o2w.es";
+	const NOTIFY_BY_EMAIL = "jose@o2w.es";
     public $laguages = array("es");
     public $database;
     public $defaultHtmlEditor = "ckeditor";

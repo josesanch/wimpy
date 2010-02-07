@@ -77,61 +77,9 @@ class html_autoform extends html_form
 		);
 
 		$this->add("<div class='form-buttons'>");
-
-        if (in_array("back", $this->buttons)) {
-			if(web::request("redir"))
-				$urlBack = web::request("redir");
-			else
-				$urlBack = "/admin/".get_class($this->model)."/list".
-							web::params(null, false);
-
-			if ($isDialog) {
-				$back = "goUrl('$urlBack','".web::request("field")."', '$modelName');";
-			} else {
-				$back = "goUrl('$urlBack');";
-			}
-
-            $this->add(
-                "<input
-                class='submit boton-volver' id='boton-volver'
-                type='button' value=volver
-                onclick=\"$back\">"
-            );
-        }
-
-        if ($this->model->id && in_array("delete", $this->buttons) && web::auth()->hasPermission($this->model, auth::DELETE)) {
-			$urlDelete = "/admin/".get_class($this->model)."/delete".web::params();
-
-			if ($isDialog) {
-				$delete = "confirmGoUrl('$urlDelete','".web::request("field")."', '$modelName');";
-			} else {
-				$delete = "confirmGoUrl('$urlDelete');";
-			}
-
-            $this->add(
-                "<input class='submit boton-eliminar' id='boton-eliminar'
-                type='button' value=eliminar
-                onclick=\"$delete\">"
-            );
-
-        }
-
-        if (
-            in_array("save", $this->buttons) &&
-            (
-                (
-                    web::auth()->hasPermission($this->model, auth::ADD)
-                    && !$this->model->id
-                )
-                ||
-                (
-                    web::auth()->hasPermission($this->model, auth::MODIFY)
-                    && $this->model->id
-                )
-            )
-        ) {
-            $this->add("\n<input class='submit boton-guardar' type='submit' id='boton-guardar' value='guardar'/>");
-        }
+		foreach ($this->buttons as $button) {
+			$this->add($this->_getButton($button));
+		}
 
         $this->add($this->_endData);
         $this->add("
@@ -139,6 +87,52 @@ class html_autoform extends html_form
         </fieldset>"
         );
     }
+
+	private function _getButton($type)
+	{
+
+		switch ($type) {
+
+			case "back":
+				if(web::request("redir"))
+					$urlBack = web::request("redir");
+				else
+					$urlBack = "/admin/".get_class($this->model)."/list".
+								web::params(null, false);
+
+				if ($isDialog) {
+					$back = "goUrl('$urlBack','".web::request("field")."', '$modelName');";
+				} else {
+					$back = "goUrl('$urlBack');";
+				}
+                return "<input class='submit boton-volver' id='boton-volver' type='button' value=volver onclick=\"$back\">";
+
+			case "delete":
+				if ($this->model->id && web::auth()->hasPermission($this->model, auth::DELETE)) {
+					$urlDelete = "/admin/".get_class($this->model)."/delete".web::params();
+
+					if ($isDialog) {
+						$delete = "confirmGoUrl('$urlDelete','".web::request("field")."', '$modelName');";
+					} else {
+						$delete = "confirmGoUrl('$urlDelete');";
+					}
+					return "<input class='submit boton-eliminar' id='boton-eliminar' type='button' value='eliminar' onclick=\"$delete\">";
+				}
+				break;
+
+			case "save":
+				if (
+					(web::auth()->hasPermission($this->model, auth::ADD) && !$this->model->id)
+						||
+					(web::auth()->hasPermission($this->model, auth::MODIFY) && $this->model->id)
+				) {
+				  return "\n<input class='submit boton-guardar' type='submit' id='boton-guardar' value='guardar'/>";
+				}
+				break;
+			default:
+				return $type;
+		}
+	}
 
     public function toHtml()
     {
