@@ -309,9 +309,11 @@ div.pie-listado-resultados div { padding: 5px; color: #333; }
 /*****************************************************************************************************************
 *	FORMULARIO
 *****************************************************************************************************************/
+input.boton-open { padding: 0.3em; border: 0px; background: #96AABF url("/resources/admin/images/document-open.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
 input.boton-volver { padding: 0.3em; border: 0px; background: #96AABF url("/resources/admin/images/edit-undo.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
 input.boton-eliminar { padding: 0.3em; border: 0px; background: #FFB5B5 url("/resources/admin/images/process-stop.png") 5px 50% no-repeat; padding-left: 20px; color: white;  margin-left: 0.5em; }
 input.boton-guardar { padding: 0.3em; border: 0px; background:  #99D177 url("/resources/admin/images/document-save.png") 5px 50% no-repeat; padding-left: 25px; color: white; margin-left: 0.5em;}
+input.boton-imprimir { padding: 0.3em; border: 0px; background:  #d18277 url("/resources/admin/images/document-print.png") 5px 50% no-repeat; padding-left: 25px; color: white; margin-left: 0.5em;}
 
 h2 {  padding-bottom: 0.2em; border-bottom: 1px solid #c0c0c0; margin-bottom: 1em; clear: both;}
 
