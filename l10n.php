@@ -63,10 +63,10 @@ class l10n {
 		if(!$row) {
 			$sta = web::instance()->database->query("
 			INSERT INTO l10n (lang, model, field, data, row)
-			 VALUES('$lang', '', '".mysql_escape_string($id)."', '$value', 0)");
+			 VALUES('$lang', '', '".mysql_escape_string($id)."', '".mysql_escape_string($value)."', 0)");
 		} else {
 			$sta = web::instance()->database->query("
-			UPDATE l10n set data='$value' where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
+			UPDATE l10n set data='".mysql_escape_string($value)."' where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
 		}
 
 /*		$sta = web::instance()->database->query("
