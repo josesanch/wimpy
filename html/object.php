@@ -55,7 +55,7 @@ class html_object
 	{
 		if (!is_array($this->attrs)) return "";
 		if(!$this->attrs['id']) $this->attrs['id'] =  $this->attrs['name'];
-		if(!is_array($except)) $except = split(" ?, ?", $except);
+		if(!is_array($except)) $except = preg_split("/\s*,\s*/", $except);
 		foreach($this->attrs  as $item => $value) {
 			if(!in_array($item, $except))
 				$strAttr .= isset($value) ? strtolower($item)."=\"$value\" " : "$item ";

@@ -2,10 +2,11 @@
 
 class js {
 
-	public function fancybox() {
+	public function fancybox($easing  = false) {
 		return 	js_once("jquery")."\n	".
-				js_once("jquery/fancybox/jquery.fancybox-1.2.5.pack")."\n	".
-				css_once("jquery/fancybox/jquery.fancybox-1.2.5")."\n";
+				js_once("jquery/fancybox/jquery.fancybox-1.3.0.pack")."\n	".
+				($easing ? js_once("jquery/fancybox/jquery.easing-1.3.pack") : "").
+				css_once("jquery/fancybox/jquery.fancybox-1.3.0")."\n";
 	}
 
 	public function validate() {

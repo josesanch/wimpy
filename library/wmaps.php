@@ -121,7 +121,7 @@ class WMaps
 		}
 
 		// Esto es para clustermarker
-       	if($this->clustered)  {
+       	if($this->clustered || $this->fitMapToMarkers)  {
        		$str .= "var {$this->id}_cluster = new ClusterMarker({$this->id}, { markers : {$this->id}_markersArray, clusterMarkerTitle : '$this->clustered_title' } );";
 	       	$str .= "{$this->id}_cluster.fitMapToMarkers();";
 	    }
@@ -173,7 +173,7 @@ class MapsPoint {
 			$options = "{ ".implode(", ", $options)." }";
 
 			$str = "\nvar {$map_id}_marker{$this->count} = new GMarker(new GLatLng($this->latitude, $this->longitude), ".($options).");{$map_id}_markersArray.push({$map_id}_marker{$this->count});";
-			if(!$map->clustered) $str .= "{$map_id}.addOverlay({$map_id}_marker{$this->count});";
+			if(!$map->clustered && !$map->fitMapToMarkers) $str .= "{$map_id}.addOverlay({$map_id}_marker{$this->count});";
 
 			// Mostramos el mensaje al pulsar
 			if($this->message) $events .= "\nGEvent.addListener({$map_id}_marker{$this->count}, 'click', function() { ".$this->getMessage($map_id)." } );";

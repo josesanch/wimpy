@@ -55,20 +55,21 @@ class html_form_select extends html_form_input
 
     public function select($values)
     {
-        if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+        if (is_string($values)) $values = array_map(trim, explode(",", $values));
+
         $this->selectedValues = $values;
         return $this;
     }
 
 	public function disabled($values)
 	{
-		if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+		if (is_string($values)) $values = array_map(trim, explode(",", $values));
         $this->disabledValues = $values;
         return $this;
 	}
 
 	public function remove($values) {
-		if (is_string($values)) $values = split("[ ]?,[ ]?", $values);
+		if (is_string($values)) $values = array_map(trim, explode(",", $values));
 		foreach ($values as $value) {
 			if (isset($this->attrs['options'][$value]))
 				unset($this->attrs['options'][$value]);

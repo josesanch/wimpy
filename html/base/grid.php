@@ -47,7 +47,7 @@ class html_base_grid extends html_object
             $sql = $sql ? $sql." and ".$search : $search;
         }
 
-        $columns = $columns ? split(" ?, ?", $columns) : $fields;
+        $columns = $columns ? preg_split("/\s*,\s*/", $columns) : $fields;
         $sqlcolumns = array();
 
         foreach ($columns as $column) {

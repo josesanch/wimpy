@@ -37,7 +37,7 @@ class helpers_paginate {
 			$html.= $texto == "Páginas: " ? _("Páginas").": " : $texto;
 
 			$url = "?".query_string($no);
-			$url = eregi_replace("&?$varPages=[0-9]*", "", $url);
+			$url = preg_replace("/&\?$varPages=[0-9]*/", "", $url);
 			$max = $mostrar_paginas  < $total_pages ? $mostrar_paginas  : $total_pages;
 			if($desde > 1) $html.= "<a href='$url&$varPages=".($desde - 1)."' class='$arrowStyle'>$previousPages</a>&nbsp;";
 

@@ -140,7 +140,7 @@ class html_template extends html_object
 					$curr_item[] = $item;
 
 					// Si es un bloque añadimos al bloque
-					list($command) = split(":", $arr[0]);
+					list($command) = explode(":", $arr[0]);
 					if($this->isBlockCommand($command))  $blocks[] = $command;
 					break;
 
@@ -275,7 +275,7 @@ class html_template extends html_object
 		}
 
 		// Vemos si es un bloque o no
-		list($command) = split(":", $function);
+		list($command) = explode(":", $function);
 		if($this->isBlockCommand($command))
 		{
 		 	 $blockContent = array_slice($block, 3, count($block) - 6);
@@ -393,8 +393,8 @@ class html_template extends html_object
 				$t = new html_template();
 				$t->__vars = &$vars;
 				$t->__blocks = &$this->__blocks;
-				list($array, $item) = split(" as ", $expresion);
-				$vals = split(" => ", $item);
+				list($array, $item) = explode(" as ", $expresion);
+				$vals = explode(" => ", $item);
 //				$array = preg_replace("/^\\$/", "", $array);
 				$key = preg_replace("/^\\$/", "", $vals[0]);
 				if(isset($vals[1])) $val = preg_replace("/^\\$/", "", $vals[1]);
@@ -479,7 +479,7 @@ class html_template extends html_object
 	{
 		$openers = 0;
 		$pos = -1;
-		while($pos = array_ereg("^(if:*|else|/if)", $block, $pos + 1))
+		while($pos = array_ereg("/^(if:*|else|\/if)/", $block, $pos + 1))
 		{
 			$var = $block[$pos-1].$block[$pos].$block[$pos+1];
 			switch($var)
@@ -504,7 +504,7 @@ class html_template extends html_object
 		$pos = -1;
 		$cases = array();
 		$result = array();
-		while($pos = array_ereg("^(case:*|default:)", $block, $pos + 1))
+		while($pos = array_ereg("/^(case:*|default:)/", $block, $pos + 1))
 		{
 			$var = $block[$pos-1].$block[$pos].$block[$pos+1];
 
@@ -585,7 +585,7 @@ class html_template extends html_object
 				preg_match("/([^\(]*)(\(([^\(]*)\))?/", $filter, $regs);
 				$filter = $regs[1];
 				$params = array();
-				if(isset($regs[3])) $params = array_filter(split("[ ]?,[ ]?", $regs[3]), create_function('$a', "return \$a != '';"));
+				if(isset($regs[3])) $params = array_filter(preg_split("/\s*,\s*/", $regs[3]), create_function('$a', "return \$a != '';"));
 				array_unshift($params, $txt);
 
 				if (is_callable(array('html_template_filters', $filter))) {
@@ -666,7 +666,7 @@ function array_ereg($pattern, $haystack, $from = 0)
 {
    	for($i = $from; $i < count($haystack); $i++)
    	{
-       		if (ereg($pattern, $haystack[$i])) return $i;
+       		if (preg_match($pattern, $haystack[$i])) return $i;
    	}
    	return false;
 }

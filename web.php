@@ -286,7 +286,7 @@ class Web
     {
         list($controller, $action) = $this->_getController($view);
         if (!$render) $controller->layout = '';
-        call_user_method_array($action."Action", $controller, $this->params);
+        call_user_func_array(array($controller, $action."Action"), $this->params);
 
         if ($render) {
             $controller->render($this->action);
@@ -295,7 +295,7 @@ class Web
         }
 
         if (method_exists($controller, "afterFilter")) {
-            call_user_method_array("afterFilter", $controller, $this->params);
+            call_user_func_array(array($controller, "afterFilter"), $this->params);
         }
 
         return $value;
@@ -341,7 +341,7 @@ class Web
         $action = array_shift($this->params);
         $model = new $controllerName();
         $ajax = new helpers_model_ajax($model);
-        call_user_method_array($action, $ajax, $this->params);
+        call_user_func_array(array($ajax, $action), $this->params);
     }
 
     private function _callhelpersDispatcher()

@@ -32,8 +32,7 @@ class l10n {
 		if(!$id || $id == '') return $id;
 		if(!$lang) $lang = $this->selected_language;
 		if($this->cached_data[$lang][$id]) return $this->cached_data[$lang][$id];
-
-		$sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='$id' and lang='$lang'");
+		$sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
 		if($sta) $row = $sta->fetch();
 		if($row && $row['data'] != '') {
 			$this->cached_data[$lang][$id] = $row['data'];
@@ -59,15 +58,15 @@ class l10n {
 	public function set($id, $value, $lang = null) {
 		if(!$lang) $lang = $this->selected_language;
 		$this->cached_data[$lang][$id] = $value;
-		$sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='$id' and lang='$lang'");
+		$sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
 		if($sta) $row = $sta->fetch();
 		if(!$row) {
 			$sta = web::instance()->database->query("
 			INSERT INTO l10n (lang, model, field, data, row)
-			 VALUES('$lang', '', '$id', '$value', 0)");
+			 VALUES('$lang', '', '".mysql_escape_string($id)."', '$value', 0)");
 		} else {
 			$sta = web::instance()->database->query("
-			UPDATE l10n set data='$value' where model='' and row=0 and field='$id' and lang='$lang'");
+			UPDATE l10n set data='$value' where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
 		}
 
 /*		$sta = web::instance()->database->query("
@@ -108,7 +107,7 @@ class l10n {
 	public function getDefaultLanguage() { 	return $this->default_language;  }
 
 	public function autoSelectLanguage() {
-		foreach(split(",",  $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $i => $value) $ask_lang[$i]=trim(array_shift(split(';', $value)));
+		foreach(explode(",",  $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $i => $value) $ask_lang[$i]=trim(array_shift(split(';', $value)));
 		$accept_lang = $this->languages;
     	foreach($ask_lang as $lang) {
 			if (in_array($lang, $accept_lang))  { $this->setLanguage($lang); return true; }

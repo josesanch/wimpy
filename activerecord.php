@@ -47,7 +47,7 @@ class ActiveRecord
     public function select($args = '')
     {
         $args = func_get_args();
-        $this->results = call_user_method_array("selectSql", $this, $args);
+        $this->results = call_user_func_array(array($this, "selectSql"), $args);
         $this->dumpValues();
         if (count($this->results) == 0) return array();
         if (isset($args[0]) && is_numeric($args[0])) return $this->results[0];
@@ -58,7 +58,7 @@ class ActiveRecord
     {
         $params = func_get_args();
         array_push($params, "limit: 1");
-        call_user_method_array("select", $this, $params);
+        call_user_func_array(array($this, "select"), $params);
         if (count($this->results) == 0) return False;
         return $this->results[0];
     }
@@ -308,7 +308,7 @@ class ActiveRecord
 
     private function readMetadata()
     {
-        if (!array_key_exists($this->database_table, ActiveRecord::$metadata))    {
+        if (!array_key_exists($this->database_table, ActiveRecord::$metadata)) {
             if ($this->fields) {
                 $metadata[$this->database_table]= array("fields" => array(), "primary_keys" => array());
                 foreach ($this->fields as $name => $attrs) {
@@ -317,19 +317,18 @@ class ActiveRecord
                     ActiveRecord::$metadata[$this->database_table]["AllFields"][$name] = array();
                     $field = &ActiveRecord::$metadata[$this->database_table]["AllFields"][$name];
                     if (substr($name, -3) == "_id") {
-                        $fk_field = ereg_replace('_id$', '', $name);
+                        $fk_field = preg_replace('/_id$/', '', $name);
                         if (in_array($fk_field, $this->belongs_to)) {
                             $field["belongs_to"] = $fk_field;
                         }
                     }
 
-                    $attrs = eregi_replace("^(integer)", "int", $attrs);
-                    $attrs = eregi_replace("^(string)", "varchar", $attrs);
-
-                    eregi("^(int|varchar|enum|text|decimal|datetime|time|date|bool|image|html|file|files)(\(([^\)]+)\))?", $attrs, $egs);
-                    eregi("(default)='(.*)'", $attrs, $defaultegs);
-                    eregi("(label)='([^']*)'", $attrs, $labelregs);
-                    $field["type"] = $egs[1];
+                    $attrs = preg_replace("/^(integer)/i", "int", $attrs);
+                    $attrs = preg_replace("/^(string)/i", "varchar", $attrs);
+                    preg_match("/^(int|varchar|enum|text|decimal|datetime|time|date|bool|image|html|files|file)(\(([^\)]+)\))?/i", $attrs, $egs);
+                    preg_match("/(default)='(.*)'/", $attrs, $defaultegs);
+                    preg_match("/(label)='([^']*)'/", $attrs, $labelregs);
+		            $field["type"] = $egs[1];
                     $field["size"] = $egs[3];
                     if ($defaultegs[2]) $field["default_value"] = $defaultegs[2];
                     $field["label"] = $labelregs[2] ? ucfirst($labelregs[2]) : ucfirst($name);
@@ -595,9 +594,9 @@ class ActiveRecord
     }
 
 
-    protected function __call($method, $args=array())
+    public function __call($method, $args=array())
     {
-        $model = strtolower(ereg_replace("^get", "", $method));
+        $model = strtolower(preg_replace("/^get/", "", $method));
 
         if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
             $fk_field = $model."_id";
@@ -652,6 +651,8 @@ class ActiveRecord
     {
         return $this->fields;
     }
+
+
 
 }
 

@@ -22,6 +22,7 @@ class WMaps3
     private $points = array();
     private $id = "map";
 	private $map_type = "G_NORMAL_MAP";
+	private $_js;
 	public $icons = array();
 
 
@@ -46,7 +47,7 @@ class WMaps3
 
 		return $this;
 	}
-	public function center($lat, $long) { $this->centerMap = array($lat, $long); return $this; }
+	public function setCenter($lat, $long) { $this->centerMap = array($lat, $long); return $this; }
 
 	public function setClustered($set, $title =  'Pulsa para ver %count marcas' )
 	{
@@ -78,14 +79,22 @@ class WMaps3
 	{
 		$optionsLines = array();
 		$options["zoom"] = $this->zoom;
-		$options["center"] = "new google.maps.LatLng(".$this->centerMap[0].", ".$this->centerMap[1].")";
+		if ($this->centerMap) $options["center"] = "new google.maps.LatLng(".$this->centerMap[0].", ".$this->centerMap[1].")";
 		$options["mapTypeId"] = "google.maps.MapTypeId.ROADMAP";
+
     	foreach ($options as $item => $value) {
 			$optionsLines[]= "$item : $value";
 		}
 		return "{".implode(",\n", $optionsLines)."}";
 
 	}
+
+	public function fitBounds($minLat, $minLong, $maxLat, $maxLong)
+	{
+		$this->_js .= "{$this->id}.fitBounds(new google.maps.LatLngBounds(new google.maps.LatLng($minLat, $minLong), google.maps.LatLng($maxLat, $maxLong)));";
+	}
+
+
 	public function initialize($run = true)
 	{
 
@@ -145,6 +154,7 @@ class WMaps3
 	    */
 	    // Ponemos los eventos al final para que los puntos se cargen antes.
 	    $str .= $events;
+	    $str .= $this->_js;
 		$str .= "</script>";
 		return $str;
 	}
@@ -233,7 +243,7 @@ class MapsPoint3
 			$str.= "{$map_id}_marker".$this->count.".openInfoWindowTabsHtml([".implode(",", $tabs)."]);\n";
 		} else {
 			$message = str_replace(array('"'), '\"', str_replace(array("\n","\r","\n\r","\r\n","\n\g", "\g"), "", $this->message));
-			$str = "{$map_id}_marker".$this->count.".openInfoWindowHtml(\"".$message."\");\n";
+			$str = "new google.maps.InfoWindow({ content : \"$message\" }).open({$map_id}, {$map_id}_marker{$this->count});";
 		}
 		return $str;
 

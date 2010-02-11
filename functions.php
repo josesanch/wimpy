@@ -203,9 +203,13 @@ function query_string($no = array()) {
 	return substr($postString, 0,strlen($postString) - 1);
 }
 
-function isIE() {
+function isIE($version = null) {
 	$browser = strtolower($_SERVER['HTTP_USER_AGENT']);
-	return(strpos($browser, "msie") > 0);
+	if(preg_match("/msie\s*(\d+)/", $browser, $regs)) {
+		if ($version) return $version == $regs[1];
+		return true;
+	}
+	return false;
 }
 
 function isBOT() {
