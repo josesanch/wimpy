@@ -13,16 +13,6 @@ function mouseOverResults() {
 }
 
 
-function delete_image(e) {
-	arr = this.id.split("-");
-	iditem = arr[0]; model = arr[1]; field = arr[2]; id = arr[3]; tmp_upload = arr[4];
-
-	$("#loader").load("/ajax/" + model + '/files/destroy/' + id + "/" + field + "?tmp_upload=" + tmp_upload, function() {
-		$('#container-files-' + field).load('/ajax/' + model + '/files/read/' + iditem + '/'  + field + '/?tmp_upload=' + tmp_upload);
-	});
-	return false;
-}
-
 /*****************************************************************************************************************
 *    GEOLOCATION
 *****************************************************************************************************************/
@@ -287,4 +277,73 @@ Message.show = function (msg) {
 
 Message.hide = function () {
 	$("#alert-messages").hide();
+}
+
+/*****************************************************************************************************************
+* GRID DE FICHEROS
+*****************************************************************************************************************/
+
+
+var GridFiles =  {
+	fieldName : "",
+	modelName : "",
+	id : "",
+	tmp_upload : "",
+
+	init : function(fieldName, modelName, id, tmp_upload) {
+
+		this.fieldName = fieldName
+		this.modelName = modelName
+		this.id = id
+		this.tmp_upload = tmp_upload
+
+		$("#uploadify_" + this.fieldName).uploadify({
+			'uploader'      : '/resources/uploadify/uploadify.swf',
+			'script'        : "/ajax/" + this.modelName + "/files/save/" + this.id +"/" + this.fieldName,
+			'scriptData'  	: { 'tmp_upload' : this.tmp_upload },
+			'cancelImg'     : '/resources/uploadify/cancel.png',
+			'folder'        : 'uploads',
+			'queueID'       : 'fileQueue_' + this.fieldName,
+			'auto'          : true,
+			'multi'         : true,
+			'fileDataName' 	: this.fieldName,
+			'onComplete' 	: function () {
+				this.load();
+			}
+		});
+
+		this.load();
+		return this
+	},
+
+	load : function() {
+		var fieldName = this.fieldName;
+		var modelName = this.modelName
+		var obj = this
+
+		$('#container-files-' + this.fieldName).load("/ajax/" + this.modelName + "/files/read/" + this.id + "/" + this.fieldName + "/?tmp_upload=" + this.tmp_upload,
+			function(data) {
+
+				$('a.images-delete').bind('click', function (e) {
+					arr = this.id.split("-");
+					iditem = arr[0]; model = arr[1]; field = arr[2]; id = arr[3]; tmp_upload = arr[4];
+					if (confirm('¿Está seguro de querer realizar esta operación?')) {
+						$.get("/ajax/" + model + '/files/destroy/' + id + "/" + field + "?tmp_upload=" + tmp_upload, function() {
+							obj.load();
+						});
+					}
+					return false;
+				});
+
+	            $('.editable').editable('/ajax/secciones/files/update');
+
+				$("#container-files-" + fieldName + " ul").sortable({
+					update: function(e, ui) {
+						orden = $(this).sortable('toArray').toString()
+						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
+					}
+				});
+			}
+		);
+	}
 }

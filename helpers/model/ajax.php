@@ -53,19 +53,14 @@ class helpers_model_ajax  {
 								<li id='images-$item->id'>
 									<div>
 										<img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>
-										<a href='#' class='images-delete' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>
+										<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>
+										<a href='".$item->url()."' class='images-download' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."' target='_blank' title='Descargar documento'><img src='/resources/admin/images/document-save.png' border='0'/></a>
 									</div>
 									<p class='editable' id='file-$item->id'>$item->nombre</p>
 
 								</li>";
 				}
-				$str .= "</ul>
-				<script type='text/javascript'>
-					$('a.images-delete').bind('click', delete_image);
-					$('.editable').editable('/ajax/".get_class($this->model)."/files/update');
-
-				</script>
-				";
+				$str .= "</ul>";
 				echo $str;
 				exit;
 			break;
@@ -164,25 +159,16 @@ class helpers_model_ajax  {
 		exit;
 	}
 
-	public function reorderImages($idimagen, $mode = 'up') {
-		$imagen = new helpers_images();
-		$imagen->select($idimagen);
-		$iditem = $imagen->iditem;
-		$images = new helpers_images();
-		$images = $images->select("module='".$this->model->image_label."' and iditem='$iditem'", "order:orden");
-		$pos = 1;
-		$previous_image = null;
-		foreach($images as $image) {
-			$image->orden = $pos++;
-			if(($image->id == $idimagen && $mode == "up") || (isset($previous_image) && $previous_image->id == $idimagen && $mode == "down")) {
-				$previous_image->orden++;
-				$image->orden--;
-				$previous_image->save();
-			}
-			$image->save();
-			$previous_image = $image;
+	public function reorderImages()
+	{
+		$orden = web::request("orden");
+		$images = explode(",", $orden);
+		$ids = array();
+		$count = 0;
+		foreach ($images as $img) {
+			$id = array_pop(explode("-", $img));
+			web::database()->query("UPDATE images SET orden='".($count++)."' WHERE id='$id'");
 		}
-		exit;
 	}
 
 

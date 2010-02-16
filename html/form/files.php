@@ -50,33 +50,13 @@ class html_form_files extends html_form_input {
 			<input type='file' name='uploadify_$field' id='uploadify_$field'/>
 		</div>";
 
-		$javascript = "
-				function load_images_$field() {
-					$('#container-files-$field').load('/ajax/$model_name/files/read/$iditem/$field/?tmp_upload=$tmp_upload');
-				}
+		$javascript = "GridFiles.init('$field', '$model_name', '$iditem', '$tmp_upload');";
 
-				$(document).ready(function() {
-					$('#uploadify_$field').uploadify({
-						'uploader'       : '/resources/uploadify/uploadify.swf',
-						'script'         : '/ajax/$model_name/files/save/$iditem/$field',
-						 'scriptData'  	: { 'tmp_upload' : '$tmp_upload' },
-						'cancelImg'      : '/resources/uploadify/cancel.png',
-						'folder'         : 'uploads',
-						'queueID'        : 'fileQueue_$field',
-						'auto'           : true,
-						'multi'          : true,
-						'fileDataName' 	: '$fileDataName',
-						'onComplete' : function () {
-							load_images_$field();
-						}
-					});
-					load_images_$field();
-				});
-		";
 		if($this->form) {
-            $this->form->addJS($javascript);
+            $this->form->addJS($javascript, true);
 		} else {
-		    $str .= "<script type='text/javascript'>$javascript</script>";
+		    $str .= "<script type='text/javascript'>
+						$(document).ready(function() {$javascript});</script>";
 		}
 
 
