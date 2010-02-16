@@ -296,7 +296,7 @@ var GridFiles =  {
 		this.modelName = modelName
 		this.id = id
 		this.tmp_upload = tmp_upload
-
+		obj = this
 		$("#uploadify_" + this.fieldName).uploadify({
 			'uploader'      : '/resources/uploadify/uploadify.swf',
 			'script'        : "/ajax/" + this.modelName + "/files/save/" + this.id +"/" + this.fieldName,
@@ -308,7 +308,7 @@ var GridFiles =  {
 			'multi'         : true,
 			'fileDataName' 	: this.fieldName,
 			'onComplete' 	: function () {
-				this.load();
+				obj.load();
 			}
 		});
 
