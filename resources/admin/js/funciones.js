@@ -2,15 +2,6 @@ $(document).ready(function() {
 
 });
 
-function mouseOverResults() {
-	$('tr.grid_row').bind('mouseover', function() {
-		$(this).addClass('grid_row_hover');
-	});
-
-	$('tr.grid_row').bind('mouseout', function() {
-		$(this).removeClass('grid_row_hover');
-	});
-}
 
 
 /*****************************************************************************************************************
@@ -279,6 +270,34 @@ Message.hide = function () {
 	$("#alert-messages").hide();
 }
 
+
+/*****************************************************************************************************************
+* GRID DE RESULTADOS
+*****************************************************************************************************************/
+
+var GridResults = {
+	id : "",
+	modelName : "",
+
+	init : function(modelName, sortable) {
+		this.modelName = modelName
+		$('tr.grid_row').bind('mouseover', function() {	$(this).addClass('grid_row_hover');	});
+		$('tr.grid_row').bind('mouseout', function() {	$(this).removeClass('grid_row_hover'); });
+
+		if (sortable) {
+			$('#table_body').sortable({
+				containment: 'parent',
+				axis:	'y',
+				update:
+					function(e, ui) {
+						orden = $(this).sortable('toArray').toString()
+						$.get("/ajax/" + modelName  + "/reorderList/", { "orden" : orden});
+					}
+			});
+		}
+	}
+
+}
 /*****************************************************************************************************************
 * GRID DE FICHEROS
 *****************************************************************************************************************/

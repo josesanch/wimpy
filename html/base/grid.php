@@ -186,7 +186,7 @@ class html_base_grid extends html_object
                 $trEvent = "onclick=openUrl('$url')";
             }
             $formData .=
-                "<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' $trEvent>
+                "<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' $trEvent id='id-".$row->get("id")."'>
                     <td class='value' style='display: none;'>
                     ".$row->get("id")."
                     </td>";
@@ -204,7 +204,8 @@ class html_base_grid extends html_object
 							$value = "";
 					break;
 				}
-                $formData .= "<td class=grid_cell>$value</td>\n";
+                $formData .= "
+                <td class=grid_cell>$value</td>";
             }
 
             // Si hemos especificado un callback de borrado
@@ -240,33 +241,12 @@ class html_base_grid extends html_object
              <script>
                 $bindLinks
                 $ajaxForm
-                mouseOverResults();
                 function openUrl(url) {
                     $openUrl
                 }";
 
-        if($ordenation) {
-                $formData .=
-                    "$(document).ready(function () {
-                        $('#table_body').sortable({
-                            containment: 'parent',
-                            axis:	'y',
-                            update:
-                                function(e, ui) {
-                                    prev = ui.item.prev().children('.value').html();
-                                    id = ui.item.children('.value').html()
-                                    $('#mensajes').html('Realizando cambios').load('/ajax/".get_class($model)."/reorderList/' + id + '/' + prev);
-                                }
-                        });
-                    });";
-        }
 
-        $formData .=
-            "</script>
-            <div id='mensajes'
-            style='display: none; border: 1px solid gray; padding: 1em;'>
-            </div>";
-
+		$formData .= "GridResults.init('$modelName', ".($ordenation ? "true" : "false").");</script>";
 
 		$form->action(web::uri(null, null, array("page")));
 		if (!$this->_instance || $this->showSearch) {

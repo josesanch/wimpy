@@ -108,30 +108,7 @@ class helpers_model_ajax  {
 		exit;
 	}
 
-	/* Reordenar las listas de administración.
-	 *
-	 */
-	public function reorderList($id, $pre)
-	{
-		$rows = web::database()->query("SELECT id FROM ".$this->model->getDatabaseTable()." ORDER BY ".$this->model->field_used_for_ordenation.", id")->fetchAll();
-		$count = 0;
 
-		if($pre == 'null')
-			web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET ".$this->model->field_used_for_ordenation."=".($count++)." WHERE id=$id");
-
-		foreach($rows as $row) {
-
-			if($row['id'] != $id)
-				web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET ".$this->model->field_used_for_ordenation."=".($count++)." WHERE id=".$row[id]);
-
-			if($row['id'] == $pre)
-				web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET ".$this->model->field_used_for_ordenation."=".($count++)." WHERE id=$id");
-
-		}
-
-		exit;
-
-	}
 
 	public function autocomplete($valor)
 	{
@@ -171,6 +148,32 @@ class helpers_model_ajax  {
 		}
 	}
 
+	/*
+	 * Reordenar las listas de administración.
+	 */
+
+	public function reorderList()
+	{
+		$orden = web::request("orden");
+		$rows = explode(",", $orden);
+		$ids = array();
+
+		// Obtenemos el mínimo
+		foreach ($rows as $row)
+			$ids[]= array_pop(explode("-", $row));
+
+		$result = web::database()->query("SELECT min(orden) as minimo FROM ".$this->model->getDatabaseTable()." where id in (".implode(",", $ids).")")->fetch();
+		$count = $result["minimo"];
+
+		// Ordenamos lo demás
+		foreach ($rows as $row) {
+			$id = array_pop(explode("-", $row));
+			web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET orden='".($count++)."' WHERE id='$id'");
+		}
+
+		exit;
+
+	}
 
 	public function delete() {
 		$this->model->delete($_REQUEST["id"]);
