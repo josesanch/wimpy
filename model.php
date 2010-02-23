@@ -124,6 +124,11 @@ class Model extends ActiveRecord
 			    module='".$this->image_label."'
 			    WHERE module='".web::request("tmp_upload")."'"
 			 );
+			 $this->database->exec("UPDATE files set
+			    iditem='$item->id',
+			    module='".$this->image_label."'
+			    WHERE module='".web::request("tmp_upload")."'"
+			 );
 		}
 	}
 
