@@ -158,5 +158,20 @@ class Model extends ActiveRecord
 		}
         exit;
 	}
+
+	protected function _deleteAsociatedFiles()
+	{
+		$primary_key = array_shift($this->getPrimaryKeys());
+
+		$images = new helpers_images();
+		$images =  $images->select("module='".$this->image_label."' and iditem='".$this->$primary_key."'", "order:orden");
+		foreach ($images as $image)
+			$image->delete();
+
+		$files = new helpers_files();
+		$files =  $files->select("module='".$this->image_label."' and iditem='".$this->$primary_key."'", "order:orden");
+		foreach ($files as $file)
+			$file->delete();
+	}
 }
 ?>

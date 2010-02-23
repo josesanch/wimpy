@@ -484,18 +484,6 @@ class ActiveRecord
         return ActiveRecord::$metadata[$this->database_table]["AllFields"];
     }
 
-    //TODO: Tenemos que borrar archivos si tiene, fotos si tiene y las tablas relaccionadas.
-    protected function deleteItem()
-    {
-        $conditions = array();
-        $this->setWherePK();
-        $sql = "delete from $this->database_table where ".$this->where_primary_keys;
-
-//        web::debug(__FILE__, __LINE__, $sql);
-
-        if (is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$this->id] DELETED", log::WARNING, $sql);
-        $this->database->exec($sql);
-    }
 
     public function deleteAll()
     {
@@ -515,6 +503,21 @@ class ActiveRecord
         }
     }
 
+  //TODO: Tenemos que borrar archivos si tiene, fotos si tiene y las tablas relaccionadas.
+    protected function deleteItem()
+    {
+        $conditions = array();
+        $this->setWherePK();
+        $sql = "delete from $this->database_table where ".$this->where_primary_keys;
+//        web::debug(__FILE__, __LINE__, $sql);
+
+        if (is_a($this, "Model")) {
+			$this->_deleteAsociatedFiles();
+			log::add(web::auth()->get("user"), $this->getTitle()." [$this->id] DELETED", log::WARNING, $sql);
+		}
+		$this->database->exec($sql);
+    }
+
     public function saveFromRequest()
     {
         $images = array();
@@ -522,9 +525,11 @@ class ActiveRecord
         foreach ($this->getAllFields() as $field => $attrs) {
             if (array_key_exists($field, $_REQUEST) || array_key_exists($field, $_FILES) ) {
                 switch($attrs['type']) {
+
                     case 'image':
                         $images[]= $field;
                         break;
+
                     case "file":
                         $files[] = $field;
                         break;
