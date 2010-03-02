@@ -61,17 +61,18 @@ class Model extends ActiveRecord
 		if($ajax) $file = $_FILES['file'];
 		else $file = $field ? $_FILES[$field] : $_FILES['file'];
 
-//		log::to_file("Upload $field, tipo: $type");
-//		log::to_file("vardump ".var_export($_FILES, true));
 		if (is_uploaded_file($file['tmp_name']) && checkFileSafety($file)) {
-//			log::to_file("El fichero existe ".$file['tmp_name']);
+
 			$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
+
 			$primary_key = array_shift($this->getPrimaryKeys());
+
 			$p = pathinfo($file["name"]); $extension = strtolower($p["extension"]);
 			$items = $type == 'image' ? new helpers_images() : new helpers_files();
-			$orden = $items->count("module='$module' and iditem='".$this->$primary_key."'");
 			$item = $type == 'image' ? new helpers_images() : new helpers_files();
+
 			$mime_type = mime_content_type($file['tmp_name']);
+			$orden = $items->count("module='$module' and iditem='".$this->$primary_key."'");
 			$values = array(
 							"iditem" => $this->id,
 						//	"descripcion" => $descripcion,
@@ -89,7 +90,6 @@ class Model extends ActiveRecord
 			$item->saveUploadedFile($file["tmp_name"], $id, $extension);
 			return true;
 		}
-//		log::to_file("no existe fichero ".$file['tmp_name']);
 		return false;
 	}
 

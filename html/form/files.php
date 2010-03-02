@@ -50,7 +50,7 @@ class html_form_files extends html_form_input {
 			<input type='file' name='uploadify_$field' id='uploadify_$field'/>
 		</div>";
 
-		$javascript = "GridFiles.init('$field', '$model_name', '$iditem', '$tmp_upload');";
+		$javascript = "new GridFiles('$field', '$model_name', '$iditem', '$tmp_upload');";
 
 		if($this->form) {
             $this->form->addJS($javascript, true);

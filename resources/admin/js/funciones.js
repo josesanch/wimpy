@@ -302,59 +302,30 @@ var GridResults = {
 * GRID DE FICHEROS
 *****************************************************************************************************************/
 
+function GridFiles(field, model, vid, vtmp_upload) {
+	var self = this;
+	var fieldName = field
+	var modelName = model
+	var id = vid
+	var tmp_upload = vtmp_upload
 
-var GridFiles =  {
-	fieldName : "",
-	modelName : "",
-	id : "",
-	tmp_upload : "",
 
-	init : function(fieldName, modelName, id, tmp_upload) {
 
-		this.fieldName = fieldName
-		this.modelName = modelName
-		this.id = id
-		this.tmp_upload = tmp_upload
-		obj = this
-		$("#uploadify_" + this.fieldName).uploadify({
-			'uploader'      : '/resources/uploadify/uploadify.swf',
-			'script'        : "/ajax/" + this.modelName + "/files/save/" + this.id +"/" + this.fieldName,
-			'scriptData'  	: { 'tmp_upload' : this.tmp_upload },
-			'cancelImg'     : '/resources/uploadify/cancel.png',
-			'folder'        : 'uploads',
-			'queueID'       : 'fileQueue_' + this.fieldName,
-			'auto'          : true,
-			'multi'         : true,
-			'fileDataName' 	: this.fieldName,
-			'onComplete' 	: function () {
-				obj.load();
-			}
-		});
-
-		this.load();
-		return this
-	},
-
-	load : function() {
-		var fieldName = this.fieldName;
-		var modelName = this.modelName
-		var obj = this
-
-		$('#container-files-' + this.fieldName).load("/ajax/" + this.modelName + "/files/read/" + this.id + "/" + this.fieldName + "/?tmp_upload=" + this.tmp_upload,
-			function(data) {
-
-				$('a.images-delete').bind('click', function (e) {
-					arr = this.id.split("-");
-					iditem = arr[0]; model = arr[1]; field = arr[2]; id = arr[3]; tmp_upload = arr[4];
+	this.load = function() {
+		var self = this;
+		$('#container-files-' + fieldName).load("/ajax/" + modelName + "/files/read/" + id + "/" + fieldName + "/?tmp_upload=" + tmp_upload, function(data) {
+				$('#container-files-' + fieldName +' a.images-delete').bind('click', function (e) {
+					arr = $(this).attr("id").split("-");
+					tiditem = arr[0]; tmodel = arr[1]; tfield = arr[2]; tid = arr[3]; ttmp_upload = arr[4];
 					if (confirm('¿Está seguro de querer realizar esta operación?')) {
-						$.get("/ajax/" + model + '/files/destroy/' + id + "/" + field + "?tmp_upload=" + tmp_upload, function() {
-							obj.load();
+						$.get("/ajax/" + tmodel + '/files/destroy/' + tid + "/" + tfield + "?tmp_upload=" + ttmp_upload, function() {
+							self.load();
 						});
 					}
 					return false;
 				});
 
-	            $('.editable').editable('/ajax/secciones/files/update');
+	            $('#container-files-' + fieldName + ' .editable').editable('/ajax/secciones/files/update');
 
 				$("#container-files-" + fieldName + " ul").sortable({
 					update: function(e, ui) {
@@ -365,4 +336,24 @@ var GridFiles =  {
 			}
 		);
 	}
+
+	self.load();
+
+
+	$("#uploadify_" + fieldName).uploadify({
+		'uploader'      : '/resources/uploadify/uploadify.swf',
+		'script'        : "/ajax/" + modelName + "/files/save/" + id + "/" + fieldName,
+		'scriptData'  	: { 'tmp_upload' : tmp_upload },
+		'cancelImg'     : '/resources/uploadify/cancel.png',
+		'folder'        : 'uploads',
+		'queueID'       : 'fileQueue_' + fieldName,
+		'auto'          : true,
+		'multi'         : true,
+		'fileDataName' 	: fieldName,
+		'onComplete' 	: function () {
+			self.load();
+		}
+	});
+
+	return this
 }
