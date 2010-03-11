@@ -56,7 +56,7 @@ class html_form_files extends html_form_input {
             $this->form->addJS($javascript, true);
 		} else {
 		    $str .= "<script type='text/javascript'>
-						$(document).ready(function() {$javascript});</script>";
+						$(document).ready(function() { $javascript });</script>";
 		}
 
 

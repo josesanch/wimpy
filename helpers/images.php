@@ -10,12 +10,11 @@ class helpers_images extends helpers_files {
 	public function setQuality($quality) { $this->quality = $quality; }
 
 
-	public function url()
+	public function url($full = false)
 	{
-		return $this->path."/".$this->id.".".$this->extension;
-        //$info = pathinfo($this->nombre);
-//        return "/images/$this->id/".$info["filename"].".".$this->extension;
+		if (!$full) return $this->path."/".$this->id.".".$this->extension;
+        $info = pathinfo($this->nombre);
+        return "/images/$this->id/".$info["filename"].".".$this->extension;
 	}
 
 }
-?>
