@@ -32,6 +32,7 @@ function __autoload($class)
 
 function js($module)
 {
+
 	// Google hosted scripts
 	switch ($module) {
 		case "jquery":

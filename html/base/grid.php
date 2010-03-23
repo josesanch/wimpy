@@ -35,7 +35,7 @@ class html_base_grid extends html_object
 
 		// Hacemos el or de los campos para ponerlo en el where
         if (web::request("search")) {
-            if ($columns) $c = split(" ?, ?", $columns);
+            if ($columns) $c = preg_split("/\s*,\s*/", $columns);
             else $c = array_keys($model->getFields());
             $search = array();
 

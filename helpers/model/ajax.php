@@ -51,9 +51,13 @@ class helpers_model_ajax  {
 				foreach($data as $item) {
 					$str .="
 								<li id='images-$item->id'>
-									<div>
-										<img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>
-										<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>
+									<div>";
+					if ($item->isImage()) {
+						$str .= "<a href='".$item->url()."' class='dataview-image' rel='images-{$module}'><img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/></a>";
+					} else {
+						$str .= "<img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>";
+					}
+					$str .="			<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>
 										<a href='".$item->url()."' class='images-download' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."' target='_blank' title='Descargar documento'><img src='/resources/admin/images/document-save.png' border='0'/></a>
 									</div>
 									<p class='editable' id='file-$item->id'>$item->nombre</p>

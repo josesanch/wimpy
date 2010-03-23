@@ -67,7 +67,10 @@ class ActiveRecord
     {
         $args = func_get_args();
         array_push($args, "columns: count(*) as total");
-        $results = call_user_method_array("selectSql", $this, $args);
+        $results = call_user_func_array(
+			array($this, "selectSql"),
+			$args
+		);
         return $results[0]->total;
     }
 
@@ -588,12 +591,18 @@ class ActiveRecord
     public function exists($args = '')
     {
         $args = func_get_args();
-
         if (func_num_args() == 0) {
             if (!$this->where_primary_keys) return False;
-            $results = call_user_method_array("count", $this, $this->where_primary_keys);
+            $results = call_user_func_array(
+				array($this, "count"),
+				array($this->where_primary_keys)
+			);
+
         } else {
-            $results = call_user_method_array("count", $this, $args);
+            $results = call_user_func_array(
+				array($this, "count"),
+				$args
+			);
         }
         return $results[0];
     }

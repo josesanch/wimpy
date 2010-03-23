@@ -90,7 +90,7 @@ class html_autoform extends html_form
 
 	private function _getButton($type)
 	{
-
+		$isDialog = web::request("dialog");
 		switch ($type) {
 
 			case "back":

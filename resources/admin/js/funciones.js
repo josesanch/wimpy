@@ -270,6 +270,15 @@ Message.hide = function () {
 	$("#alert-messages").hide();
 }
 
+/*****************************************************************************************************************
+* FORMULARIOS
+*****************************************************************************************************************/
+var ModelForms = {
+	init : function(form_id) {
+		$('.datepicker').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);
+
+	}
+}
 
 /*****************************************************************************************************************
 * GRID DE RESULTADOS
@@ -328,11 +337,20 @@ function GridFiles(field, model, vid, vtmp_upload) {
 	            $('#container-files-' + fieldName + ' .editable').editable('/ajax/secciones/files/update');
 
 				$("#container-files-" + fieldName + " ul").sortable({
+					start: function(event, ui) {
+						$('a.dataview-image').unbind('click');
+					},
+
+					stop : function(event, ui) {
+						setTimeout(function(){ $("a.dataview-image").fancybox({ "hideOnContentClick" : true}); }, 250);
+					},
+
 					update: function(e, ui) {
 						orden = $(this).sortable('toArray').toString()
 						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
 					}
 				});
+				$("a.dataview-image").fancybox({ "hideOnContentClick" : true});
 			}
 		);
 	}
