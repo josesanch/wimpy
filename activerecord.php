@@ -379,17 +379,20 @@ class ActiveRecord
         // We can see if is a photo or an file.
         if (array_key_exists($property, $this->getAllFields()) || array_key_exists($property, $this->row_data)) {
              $field = $this->getFields($property);
+
              if ($field['type'] == 'image') {
                  $primary_key = array_shift($this->getPrimaryKeys());
                 $this->$property = new helpers_images();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 $item = $this->$property;
                 return $this->$property;
+
             } elseif ($field['type'] == 'file') {
                  $primary_key = array_shift($this->getPrimaryKeys());
                 $this->$property = new helpers_files();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 return $this->$property;
+
             } elseif ($field['type'] == 'files') {
                  $primary_key = array_shift($this->getPrimaryKeys());
                 $item = new helpers_images();
@@ -614,8 +617,10 @@ class ActiveRecord
 
         if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
             $fk_field = $model."_id";
-            $model = new $model();
-            return $model->selectFirst($this->$fk_field);
+            $model = new $model($this->$fk_field);
+
+            return $model;
+            //return $model->selectFirst($this->$fk_field);
         }
 
         if (isset($this->has_many) && in_array($model, $this->has_many)){

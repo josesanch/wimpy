@@ -72,7 +72,9 @@ class html_autoform extends html_form
 
         $this->addJS("
 			jQuery.validator.addMethod('cif', function(value, element) { return this.optional(element) || check_cif(value); }, 'Dni no válido');
-			$validate",
+			$validate
+			ModelForms.init('$modelName', '$parent', '$field');
+			",
 			true
 		);
 

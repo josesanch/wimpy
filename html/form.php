@@ -167,6 +167,7 @@ class html_form extends html_object
                             });
                     ", true);
                     $input->labelFor($field."_autocomplete");
+                    if($attrs['not null']) $input->class($input->class()." required");
 					$input->setData($inputAutocomplete);
 
                 }
@@ -183,14 +184,15 @@ class html_form extends html_object
                         $input = new html_form_textarea($lang ? $field."|".$lang : $field);
                         $input->rows(10)->cols(60);
                     }
-
+					if($attrs['not null']) $input->class($input->class()." required");
                     $input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()), false));
                 break;
 
                 case 'date':
                     $input = new html_form_input($field);
-                    $this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n", true);
+                    //$this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n", true);
                     $input->size(10);
+                    $input->class("textbox datepicker");
                     if($this->model->$field != '0000-00-00' and $this->model->$field != '')
                         $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
 

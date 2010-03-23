@@ -46,11 +46,13 @@ class Model extends ActiveRecord
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$files = new helpers_files();
 			return $files->select("module='".$this->image_label."' and iditem='".$this->$primary_key."'", "order:orden");
+
 		} elseif ($this->has_images && $item == "images") {
 			$primary_key = array_shift($this->getPrimaryKeys());
 			$images = new helpers_images();
 			return $images->select("module='".$this->image_label."' and iditem='".$this->$primary_key."' and field=''", "order:orden");
 		}
+
 		return parent::__get($item);
 	}
 

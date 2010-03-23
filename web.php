@@ -15,7 +15,7 @@ require dirname(__FILE__)."/library/log.php";
 */
 class Web
 {
-	const NOTIFY_BY_EMAIL = "jose@o2w.es";
+	const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
     public $laguages = array("es");
     public $database;
     public $defaultHtmlEditor = "ckeditor";
@@ -40,7 +40,9 @@ class Web
         session_start();
         if (isset($_SESSION['initialized'])) $this->initialized = true;
         error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
+        //error_reporting(E_ALL);
         //error_reporting(E_STRICT);
+
 		if ($database) $this->setDatabase($database);
 
         if (!web::$_defaultInstance) {
@@ -490,7 +492,7 @@ class Web
         exit;
     }
 
-    public static function debug($texto, $file, $linea)
+    public static function debug($texto, $file = null, $linea = null)
     {
 //        log::to_file("EXEC $texto<hr>");
 
@@ -502,7 +504,7 @@ class Web
         }
     }
 
-    public static function error($texto, $file, $linea, $notify = null)
+    public static function error($texto, $file = null, $linea = null, $notify = null)
     {
 
 
