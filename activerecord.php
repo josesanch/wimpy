@@ -96,7 +96,7 @@ class ActiveRecord
             $fields_to_update = array();
             foreach ($this->getFields() as $name => $attrs) {
 
-                if (is_null($this->row_data[$name]) || (!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal')))) {
+                if (is_null($this->row_data[$name]) || ($this->row_data[$name] == "" && in_array($attrs['type'], array('int', 'decimal')))) {
                     $fields_to_update[] = $name."=Null";
                 } else {
                     $fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
@@ -558,12 +558,10 @@ class ActiveRecord
                             $this->set($field, $_REQUEST[$field]);
                         }
                         foreach (l10n::instance()->getNotDefaultLanguages() as $lang) {
-//                            echo $field."|$lang";
                             if ($_REQUEST[$field."|$lang"]) $this->set($field, $_REQUEST[$field."|$lang"], $lang);
                         }
 
                 }
-
 
             }
         }

@@ -117,7 +117,11 @@ class helpers_model_ajax  {
 	public function autocomplete($valor)
 	{
 
-		if (!$valor) exit;
+		//if (web::request("term")) $valor = web::request("term");
+		//if (!$valor) exit;
+		$limit = web::request("limit");
+		if (!$limit) $limit = 25;
+		if ($limit) $limit = "limit: $limit";
         if(web::request("field")) {
             $attrs = $this->model->getFields(web::request("field"));
             if($attrs["show"]) $name = $attrs["show"];
@@ -125,17 +129,31 @@ class helpers_model_ajax  {
 
         if(!$name) $name = $this->model->getTitleField();
 
-		$q = strtolower($_GET["q"]);
+
+		if (web::request("term"))
+			$q = strtolower(web::request("term"));
+		else
+			$q = strtolower($_GET["q"]);
+
 		$primaryKey = array_shift($this->model->getPrimaryKeys());
+
 
 		$results = $this->model->select(
 		    "columns: $primaryKey as id, $name as text",
-		    "where: $name like '%$q%'", "order: $name", "limit: ".web::request("limit")
+		    "where: $name like '%$q%'", "order: $name", $limit
 		);
 
+		if (web::request("q")) {
+			foreach($results as $row) {
+				echo $row->text."|".$row->id."\n";
+			}
+		} else {
+			$json = array();
+			foreach($results as $row) {
+				$json[]= array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+			}
 
-		foreach($results as $row) {
-			echo $row->text."|".$row->id."\n";
+			echo json_encode($json);
 		}
 		exit;
 	}

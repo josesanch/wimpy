@@ -1,5 +1,5 @@
 $(document).ready(function() {
-
+	Autocomplete.init();
 });
 
 
@@ -65,32 +65,28 @@ function actualizarFormulario(campo1, campo2) {
 
 function showModelDialog(model, field, parent)
 {
+	wid = $("#" + field + "_dialog").dialog("widget");
+
+	if(wid.attr("id")) {
+		$("#" + field + "_dialog").dialog({
+				width: '80%',
+				position: ['', 20],
+				title: model,
+				resizable: true,
+				bgiframe: true,
+				modal: true,
+				autoOpen: false,
+				zIndex: 1
+		});
+	}
+
 	$("#" + field + "_dialog").load("/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent, function() {
-			$("#" + field + "_dialog").dialog('open');
+		$("#" + field + "_dialog").dialog('open');
 			//$("#usuarios").ajaxForm({ target: "#resultados" })
-	}).dialog({
-			width: '80%',
-			position: ['', 20],
-			title: model,
-			resizable: true,
-			bgiframe: true,
-			modal: true,
-			autoOpen: true,
-			zIndex: 1
 	});
+
 }
 
-function updateModelValueDialog(model, field, parent, value)
-{
-	$("#" + parent + " #" + field).val(value)
-    $.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
-    	$("#" + parent + " #" + field + "_autocomplete").val(data);
-
-    	if(typeof(autocompleteCallback) != "undefined")
-    	    autocompleteCallback(model, field, parent, value);
-    	$("#" + field + "_dialog").dialog("close")
-    });
-}
 
 /*****************************************************************************************************************
 *    SMS
@@ -233,29 +229,16 @@ function check_cif(valor)
          return false || check_nif(valor);
 }
 
-//la funcion "IsNIF(YourNIF)" chequea si "YourNIF" es un DNI valido
-//La variable "YourNIF" es una cadena de caracteres
-function check_nif(YourNIF)
+function check_nif(dni)
 {
-	YourNIF = YourNIF.replace(/-/g, "");
-	if (YourNIF.length != 9) return false //Si la longitud de "YourNIF" es menor que 9 devuelve falso
-	else if (!IsUnsignedInteger(YourNIF.substring(0, 8))) return false //Si los ocho primeros digitos no forman un numero entero sin signo valido devuelve falso
-	else if (!IsChar(YourNIF.substring(8, 9))) return false //Si el ultimo digito no es una letra valida devuelve falso
-	else {
-		var ControlValue = 0 //Control de calculos segun el criterio de correccion
-		var NIFCharIndex = 0 //Almacenara la posicion de la letra correpondiente a la parte numerica del DNI con respecto al array "NIFChars"
-		//El siguiente array "NIFChars" contiene las letras de DNI ordenadas segun el criterio de correccion
-		var NIFChars = new Array('T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E')
-		var NIFNumber = YourNIF.substring(0, 8) //Almacenanos la parte numerica del DNI en "NIFNumber"
-		var NIFChar = YourNIF.substring(8, 9) //Almacenamos la letra del DNI en "NIFChar"
-		NIFChar = NIFChar.toUpperCase() //Pasamos la letra del DNI a mayusculas por si acaso estaba en minusculas
-		//Los siguientes 4 calculos sirven para calcular la posicion de la letra correspondiente al la parte numerica del DNI "NIFNumber" en en array "NIFChars"
-		ControlValue = NIFNumber / NIFChars.length
-		ControlValue = Math.floor(ControlValue);
-		ControlValue = ControlValue * NIFChars.length
-		NIFCharIndex = NIFNumber - ControlValue
-		return (NIFChar == NIFChars[NIFCharIndex]); //Si la letra coincide con la letra dada devuelve verdadero si no devuelve falso
-	}
+	numero = dni.substr(0,dni.length-1);
+	let = dni.substr(dni.length-1,1);
+	numero = numero % 23;
+	letra='TRWAGMYFPDXBNJZSQVHLCKET';
+	letra=letra.substring(numero,numero+1);
+	if (letra!=let)
+		return false;
+	return true;
 }
 
 
@@ -374,4 +357,57 @@ function GridFiles(field, model, vid, vtmp_upload) {
 	});
 
 	return this
+}
+
+var Autocomplete = {
+	init : function() {
+		$(".autocomplete").live("keyup", function(event) {
+			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
+			id = $(this).attr("id").split("_")[0] + "_id";
+			$("#" + id).val("")
+		});
+
+		$(".autocomplete.nonew").live("blur", function() {
+			id = $(this).attr("id").split("_")[0] + "_id";
+			if ($("#" + id).val() == "") $(this).val("");
+		})
+	}
+}
+
+var Dialog = {
+	init : function () {
+	},
+
+	open : function (model, field, parent) {
+		widget = $("#" + field + "_dialog").dialog("widget");
+
+		if(widget.attr("id")) {
+			$("#" + field + "_dialog").dialog({
+				width: '80%',
+				position: ['', 20],
+				title: model,
+				resizable: true,
+				bgiframe: true,
+				modal: true,
+				autoOpen: false
+			});
+		}
+
+		$("#" + field + "_dialog").load("/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent, function() {
+			$("#" + field + "_dialog").dialog('open');
+				//$("#usuarios").ajaxForm({ target: "#resultados" })
+		});
+
+	},
+
+	click : function (model, field, parent, value) {
+		$("#" + parent + " #" + field).val(value)
+		$.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
+			$("#" + parent + " #" + field + "_autocomplete").val(data);
+
+			if(typeof(autocompleteCallback) != "undefined")
+				autocompleteCallback(model, field, parent, value);
+			$("#" + field + "_dialog").dialog("close")
+		});
+	}
 }

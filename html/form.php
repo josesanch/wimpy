@@ -108,8 +108,8 @@ class html_form extends html_object
                     // Autocomplete
 					$value = $this->model->$field;
 					$relatedModel = new $relatedModelName($value);
-                    if ($attrs["show"]) {
 
+                    if ($attrs["show"]) {
                         $primaryKey = array_shift($relatedModel->getPrimaryKeys());
                         $data = $relatedModel->selectFirst(
                				"columns: ".$attrs["show"]." as text",
@@ -141,15 +141,34 @@ class html_form extends html_object
 
 						$inputAutocomplete->add("
 							<input type='button' value='' class='dialog'
-							onclick='showModelDialog(\"$relatedModelName\",\"$field\",\"".
-							$this->attrs["name"]."\")'/>"
+							onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\")'/>"
 						);
 
 						$this->addToEnd("<div id='{$field}_dialog'></div>");
 					}
 					$options = array();
-                    if(!$attrs["newvalues"]) $options[]= "mustMatch : true";
+                    if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
+					$options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
+					$options[]= "
+							select: function(event, ui) {
+								$('#$field').val(ui.item.id);
+								if(typeof(autocompleteCallback) != 'undefined')
+									autocompleteCallback('$relatedModelName', '$field', '', data[1]);
+                            },
 
+
+					";
+
+                    $this->addJS("
+                        $('#{$field}_autocomplete').autocomplete({
+                            ".implode(",", $options)."
+
+                        });
+                    ");
+/*
+search: function(event, ui) {
+								$('#$field').val('');
+                            }
                     $this->addJS("
                         $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field', {
                             ".implode(",", $options)."
@@ -166,6 +185,7 @@ class html_form extends html_object
                                 $(this).search();
                             });
                     ", true);
+                    */
                     $input->labelFor($field."_autocomplete");
                     if($attrs['not null']) $input->class($input->class()." required");
 					$input->setData($inputAutocomplete);
