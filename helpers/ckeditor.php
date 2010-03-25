@@ -11,7 +11,8 @@ class helpers_ckeditor
 			$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
        		if(!is_dir($dir)) mkdir($dir, 0755);
 	   	   	move_uploaded_file($file['tmp_name'], $dir."/".$file['name']);
-			echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction(1, \''.$this->path."/".$file['name'].'\', \'\');</script>';
+	   	   	$num = web::request("CKEditorFuncNum");
+			echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction('.$num.', \''.$this->path."/".$file['name'].'\', \'\');</script>';
 		} else {
 
 		}
@@ -83,7 +84,7 @@ EOF;
 		$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
 		$files = glob($dir."/*");
 		echo "<h5 class='images'>".count($files)." archivos</h5>
-				<ul id='files' class='images-dataview clearfix' style='width: 80%; margin: auto; height: 70%; overflow: auto;'>";
+				<ul id='files' class='images-dataview clearfix' style='width: 90%; margin: auto; height: 450px; overflow: auto;'>";
 
 		foreach($files as $name) {
 			$item = new helpers_files($name);

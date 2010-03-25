@@ -52,31 +52,9 @@ class html_autoform extends html_form
         if(web::auth()->hasPermission($this->model, auth::MODIFY))
     	$isDialog = web::request("dialog");
     	$modelName = get_class($this->model);
-
-        if ($isDialog) {
-			$parent = web::request("parent");
-			$field = web::request("field");
-			$validate = "
-			$('#$modelName').validate({
-				submitHandler: function(form) {
-					$(form).ajaxSubmit({
-						target: '#{$field}_dialog'
-					});
-				}
-			});";
-
-
-		} else {
-			$validate = "$('#$modelName').validate();";
-		}
-
-        $this->addJS("
-			jQuery.validator.addMethod('cif', function(value, element) { return (this.optional(element) || check_cif(value));}, 'Dni no válido');
-			$validate
-			ModelForms.init('$modelName', '$parent', '$field');
-			",
-			true
-		);
+		$parent = web::request("parent");
+		$field = web::request("field");
+        $this->addJS("Wimpy.init('$modelName', '$parent', '$field');", true);
 
 		$this->add("<div class='form-buttons'>");
 		foreach ($this->buttons as $button) {

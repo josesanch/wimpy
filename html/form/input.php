@@ -37,7 +37,7 @@ class html_form_input extends html_object {
 	protected function _getLabelFor()
 	{
 		if ($this->_labelFor) return $this->_labelFor;
-		return ($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] );
+		//return ($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] );
 	}
 
     public function __call($method, $args)
@@ -75,11 +75,11 @@ class html_form_input extends html_object {
     public function toHtml()
     {
         $str = "";
-        if($this->attrs['label'])
-            $str .= "\n<label for='".$this->_getLabelFor().
-                    "' class='autoform'>\n
+        if($this->attrs['label']) {
+			if ($this->_getLabelFor()) $for = " for='".$this->_getLabelFor()."'";
+            $str .= "\n<label$for class='autoform'>\n
                         <span>".$this->attrs['label']."</span>\n";
-
+		}
         $str .= "     <input ".$this->getAttributes()."/>";
         if($this->data) $str .= "\n".$this->data;
         if($this->attrs['label']) $str.= "\n</label>";

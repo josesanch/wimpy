@@ -12,7 +12,7 @@ class js {
 	public function validate() {
 		return 	js_once("jquery")."\n	".
 				js_once("jquery/validate")."\n	".
-				js_once("jquery/validate/localization/messages_es")."\n	".
+				js_once("jquery/validate/messages_es")."\n	".
 				js_once("jquery/metadata");
 	}
 }

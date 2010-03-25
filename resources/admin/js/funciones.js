@@ -1,8 +1,56 @@
-$(document).ready(function() {
-	Autocomplete.init();
-});
+var Wimpy = {
+	init : function (form_id, parent, field) {
+		ModelForms.init(form_id, parent, field);
+	}
+}
 
 
+
+/*****************************************************************************************************************
+* FORMULARIOS
+*****************************************************************************************************************/
+var ModelForms = {
+
+	init : function(form_id, parent, field) {
+		$('.datepicker').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);
+		jQuery.validator.addMethod('cif', function(value, element) { return (this.optional(element) || check_cif(value));}, 'Dni no válido');
+
+		ModelForms._validate(form_id, parent, field);
+
+		Autocomplete.init();
+	},
+
+	_validate : function (form_id, parent, field) {
+		if (parent) {
+			$('#' + form_id).validate({
+				submitHandler: function(form) {
+					$(form).ajaxSubmit({
+						target: '#' + field + '_dialog'
+					});
+				}
+			})
+		} else {
+			$('#' + form_id).validate();
+		}
+
+	}
+}
+
+
+var Autocomplete = {
+	init : function() {
+		$(".autocomplete").live("keyup", function(event) {
+			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
+			id = $(this).attr("id").split("_")[0] + "_id";
+			$("#" + id).val("")
+		});
+
+		$(".autocomplete.nonew").live("blur", function() {
+			id = $(this).attr("id").split("_")[0] + "_id";
+			if ($("#" + id).val() == "") $(this).val("");
+		})
+	}
+}
 
 /*****************************************************************************************************************
 *    GEOLOCATION
@@ -254,16 +302,6 @@ Message.hide = function () {
 }
 
 /*****************************************************************************************************************
-* FORMULARIOS
-*****************************************************************************************************************/
-var ModelForms = {
-	init : function(form_id) {
-		$('.datepicker').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);
-
-	}
-}
-
-/*****************************************************************************************************************
 * GRID DE RESULTADOS
 *****************************************************************************************************************/
 
@@ -357,21 +395,6 @@ function GridFiles(field, model, vid, vtmp_upload) {
 	});
 
 	return this
-}
-
-var Autocomplete = {
-	init : function() {
-		$(".autocomplete").live("keyup", function(event) {
-			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
-			id = $(this).attr("id").split("_")[0] + "_id";
-			$("#" + id).val("")
-		});
-
-		$(".autocomplete.nonew").live("blur", function() {
-			id = $(this).attr("id").split("_")[0] + "_id";
-			if ($("#" + id).val() == "") $(this).val("");
-		})
-	}
 }
 
 var Dialog = {

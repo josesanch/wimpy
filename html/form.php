@@ -149,15 +149,11 @@ class html_form extends html_object
 					$options = array();
                     if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
 					$options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
-					$options[]= "
-							select: function(event, ui) {
-								$('#$field').val(ui.item.id);
-								if(typeof(autocompleteCallback) != 'undefined')
-									autocompleteCallback('$relatedModelName', '$field', '', data[1]);
-                            },
-
-
-					";
+					$options[]= "select: function(event, ui) {
+						$('#$field').val(ui.item.id);
+						if(typeof(autocompleteCallback) != 'undefined')
+							autocompleteCallback('$relatedModelName', '$field', '', data[1]);
+                            }";
 
                     $this->addJS("
                         $('#{$field}_autocomplete').autocomplete({
@@ -165,27 +161,7 @@ class html_form extends html_object
 
                         });
                     ");
-/*
-search: function(event, ui) {
-								$('#$field').val('');
-                            }
-                    $this->addJS("
-                        $('#{$field}_autocomplete').autocomplete('/ajax/$relatedModelName/autocomplete/field=$field', {
-                            ".implode(",", $options)."
-                        });
-                        $('#{$field}_autocomplete').result(function(event, data, formatted) {
-                                if (data) {
-                                    $('#$field').val(data[1]);
-                                    if(typeof(autocompleteCallback) != 'undefined')
-                                        autocompleteCallback('$relatedModelName', '$field', '', data[1]);
-                                } else {
-                                    $('#$field').val('');
-                                }
-                            }).blur(function(){
-                                $(this).search();
-                            });
-                    ", true);
-                    */
+
                     $input->labelFor($field."_autocomplete");
                     if($attrs['not null']) $input->class($input->class()." required");
 					$input->setData($inputAutocomplete);
@@ -210,7 +186,6 @@ search: function(event, ui) {
 
                 case 'date':
                     $input = new html_form_input($field);
-                    //$this->addJS("$('#$field').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);\n", true);
                     $input->size(10);
                     $input->class("textbox datepicker");
                     if($this->model->$field != '0000-00-00' and $this->model->$field != '')
