@@ -6,7 +6,10 @@ class auth
     public $table = 'users';
     public $user_field = 'user';
     public $password_field = 'password';
+    public $type = "form";
 
+	const FORM = 100;
+	const REALM = 101;
     const VIEW = 1;
     const ADD = 2;
     const MODIFY = 3;
@@ -28,10 +31,13 @@ class auth
         }
 
         $this->usuario = $user;
+
+		$password_field = $this->getPasswordField($this->password_field);
+
         $statement = web::instance()->database->query(
             "SELECT * FROM
             $this->table WHERE
-            $this->user_field='$user' and $this->password_field='$pass'"
+            $this->user_field='$user' and $password_field='$pass'"
         );
         if ($statement) {
             $result = $statement->fetch();
@@ -51,6 +57,11 @@ class auth
         return false;
     }
 
+    public function getPasswordField($field)
+    {
+		return web::instance()->authMethod == Auth::FORM ? "md5(CONCAT($field, '".$_SESSION["auth_number"]."'))" : $field;
+	}
+
     public function isLogged()
     {
         return ($_SESSION["auth_session_".$this->table]);
@@ -69,7 +80,29 @@ class auth
         return $_SESSION["auth_session_".$this->table][$item];
     }
 
-    public function requestAuth()
+
+	public function _requestAuthForm()
+	{
+		if (!$_SESSION["auth_number"]) $_SESSION["auth_number"] = rand(0, 99999);
+		$view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
+
+		if ($_POST["login_user"] && $_POST["password_user"]) {
+			$usuario = mysql_escape_string($_POST["login_user"]);
+            $clave = mysql_escape_string($_POST["password_user"]);
+            if ($this->login($usuario, $clave, true) == true) {
+                return true; unset($_SESSION['logout']);
+            }
+            $view->error = __("Error de autentificación");
+		}
+
+
+		$view->numero = $_SESSION["auth_number"];
+		echo $view->display();
+
+	}
+
+
+    public function _requestAuthRealm()
     {
 		if (isset($_SERVER['PHP_AUTH_USER'])
             && !$_SESSION["auth_module"]["logout"]
@@ -88,6 +121,19 @@ class auth
         header('HTTP/1.0 401 Unauthorized');
         exit;
     }
+
+    public public function requestAuth()
+    {
+		switch (web::instance()->authMethod) {
+			case Auth::REALM:
+				return $this->_requestAuthRealm();
+			break;
+			case Auth::FORM:
+				return $this->_requestAuthForm();
+			break;
+
+		}
+	}
 
     public function hasPermission($perm, $model)
     {

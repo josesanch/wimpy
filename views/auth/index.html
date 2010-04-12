@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+            "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="author" content="O2W (www.o2w.es)">
+  <title>{if:$titulo}{$titulo} | {/if}Administración web</title>
+  {eval:return js("jquery")}
+  <link href="/resources/admin/css/admin.css" rel="stylesheet" type="text/css" />
+	<script src="/resources/admin/js/funciones.js" type="text/javascript"></script>
+	<script src="/resources/js/md5.js" type="text/javascript"></script>
+	{$css_files}
+	{$js_files}
+<body>
+
+<input id='numero' type='hidden' value='{$numero}'/>
+{if:$error}
+<div class='error-auth'>{$error}</div>
+{/if}
+<div id='auth_form'>
+	<h2>{t:Área de cliente}</h2>
+	<form method='post' onSubmit="return AuthForm.submit(this)">
+	<input type='hidden' name='password_user' value=''/>
+	<div >
+		<label><span>{t:Usuario}:</span>
+			<input type='text' name='login_user' class='text'/>
+		</label>
+		<label><span>{t:Contraseña}:</span>
+			<input type='password' name='password_temp' class='text'/>
+		</label>
+		<input type='submit' value='{t:Entrar}' class='submit'/>
+	</div>
+	</form>
+</div>
+<p class='auth_form'>
+{t:Si tiene algún problema puede contactar con nuestro soporte por e-mail en soporte@o2w.es o por teléfono llamando al 968 19 29 05}
+</p>
+</body>
+</html>

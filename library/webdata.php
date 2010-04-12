@@ -17,7 +17,7 @@ class webdata extends Model
                             "email" => "varchar(125)",
 
                             "Descripción de la empresa" => "---",
-                            "texto" => "text not_null l10n",
+                            "texto" => "text l10n",
                             "Geolocalización" => "---",
                            	'latitud' => 'varchar(10)',
 							'longitud' => 'varchar(10)',

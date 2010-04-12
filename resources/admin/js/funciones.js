@@ -434,3 +434,11 @@ var Dialog = {
 		});
 	}
 }
+
+
+var AuthForm = {
+	submit : function(form) {
+		form.elements["password_user"].value = calcMD5(form.elements["password_temp"].value  + $("#numero").val()).toLowerCase();
+		return true;
+	}
+}

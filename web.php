@@ -16,6 +16,7 @@ require dirname(__FILE__)."/library/log.php";
 class Web
 {
 	const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
+
     public $laguages = array("es");
     public $database;
     public $defaultHtmlEditor = "ckeditor";
@@ -25,6 +26,7 @@ class Web
     public $bench;
     public $auth;
     public $enableTidy = false;
+    public $authMethod = Auth::FORM;
 
     private $_imagesMaxSize = array(1024, 1024);
     private $_htmlTemplateDir = "/templates";

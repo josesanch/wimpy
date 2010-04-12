@@ -151,6 +151,7 @@ class html_form extends html_object
 					$options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
 					$options[]= "select: function(event, ui) {
 						$('#$field').val(ui.item.id);
+
 						if(typeof(autocompleteCallback) != 'undefined')
 							autocompleteCallback('$relatedModelName', '$field', '', data[1]);
                             }";
@@ -160,7 +161,7 @@ class html_form extends html_object
                             ".implode(",", $options)."
 
                         });
-                    ");
+                    ", true);
 
                     $input->labelFor($field."_autocomplete");
                     if($attrs['not null']) $input->class($input->class()." required");

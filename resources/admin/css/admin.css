@@ -351,3 +351,17 @@ input.dialog { margin-left: 0.4em; background: #96AABF url("/resources/admin/ima
 #listado-usuarios.envio { list-style: none; }
 #listado-usuarios.envio li { padding: 0.4em; }
 #listado-usuarios.envio li a { margin-left: 5em; }
+
+
+/*****************************************************************************************************************
+* LOGIN FORM
+*****************************************************************************************************************/
+#auth_form { border: 1px solid #999; width: 25em; margin: 12em auto 2em auto; background: white; color: #666; }
+#auth_form h2 { background: #CC0000 url("/resources/icons/logo.gif") 95% 50% no-repeat; margin: 0; padding: 0.3em 1em;  color: white; }
+#auth_form form { padding: 2em; overflow: hidden; }
+#auth_form input.text { width: 10em; float: right; border: 1px solid #666; }
+#auth_form label { overflow: hidden; clear: both; padding-bottom: 1em;  display: block; }
+#auth_form span { width: 8em; text-align: right; display: block; float: left; padding-top: 0.3em; font-weight: bold;}
+#auth_form input.submit  { margin: 0em auto 0 auto; clear: both; display: block; }
+p.auth_form { width: 40em; margin: 3em auto; text-align: center; color: #999; }
+.error-auth  {  background: #cc6666; color: white; text-align :center; font-size: 1.3em; padding: 1em; font-weight: bold; border: 1px solid #FFA600;  z-index: 100;}
