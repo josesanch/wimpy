@@ -26,7 +26,8 @@ class Web
     public $bench;
     public $auth;
     public $enableTidy = false;
-    public $authMethod = Auth::FORM;
+    //public $authMethod = Auth::FORM;
+    public $authMethod = Auth::REALM;
 
     private $_imagesMaxSize = array(1024, 1024);
     private $_htmlTemplateDir = "/templates";
