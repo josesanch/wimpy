@@ -8,6 +8,7 @@ class html_base_grid extends html_object
     public $showSearch = true;
     public $onSubmit;
     public $pageSize = 25;
+
     public $onDelete;
 
     //'return do_search(this);';
@@ -15,7 +16,10 @@ class html_base_grid extends html_object
 
     public function toHtml($model, $sql = null, $columns = null, $order = null)
     {
+
         $modelName = get_class($model);
+        $orderField = "order-$modelName";
+        $descField = "desc-$modelName";
         $table = $model->getDatabaseTable();
         $fields = array_keys($model->getFields());
 
@@ -61,10 +65,10 @@ class html_base_grid extends html_object
         if($primaryKey && !in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]= "$table.$primaryKey";
 
         if($order) $order = "order: $order";
-        if(web::request("order")) {
-            $order = "order: ".web::request("order");
-            $desc = web::request("desc") == 'true' ? "false" : "true";
-            if(web::request("desc") == 'true') $order .= " desc";
+        if(web::request($orderField)) {
+            $order = "order: ".web::request($orderField);
+            $desc = web::request($descField) == 'true' ? "false" : "true";
+            if(web::request($descField) == 'true') $order .= " desc";
         } else {
             $desc = "false";
         }
@@ -141,8 +145,8 @@ class html_base_grid extends html_object
             <tr >\n";
 
         foreach($columns as $column) {
-            if(web::request('order') == $column) {
-                $arrow = web::request('desc') == 'true' ? "&uarr;" : "&darr;";
+            if(web::request($orderField) == $column) {
+                $arrow = web::request($descField) == 'true' ? "&uarr;" : "&darr;";
             } else {
                 $arrow = '';
             }
@@ -150,7 +154,7 @@ class html_base_grid extends html_object
             $label = $attrs['label'] ? $attrs['label'] : $column;
             $formData .= "
 				<th class=grid_header>
-					<a href='".web::uri("/order=$column/desc=$desc")."' class='header $dialog'>$label</a>
+					<a href='".web::uri("/$orderField=$column/$descField=$desc")."' class='header $dialog'>$label</a>
 					$arrow
 				</th>\n";
         }
