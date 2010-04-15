@@ -10,6 +10,8 @@ class auth
 
 	const FORM = 100;
 	const REALM = 101;
+	const FORM_MD5 = 102;
+
     const VIEW = 1;
     const ADD = 2;
     const MODIFY = 3;
@@ -31,7 +33,6 @@ class auth
         }
 
         $this->usuario = $user;
-
 		$password_field = $this->getPasswordField($this->password_field);
 
         $statement = web::instance()->database->query(
@@ -59,7 +60,7 @@ class auth
 
     public function getPasswordField($field)
     {
-		return web::instance()->authMethod == Auth::FORM ? "md5(CONCAT($field, '".$_SESSION["auth_number"]."'))" : $field;
+		return web::instance()->authMethod == Auth::FORM_MD5 ? "md5(CONCAT($field, '".$_SESSION["auth_number"]."'))" : $field;
 	}
 
     public function isLogged()
@@ -81,13 +82,13 @@ class auth
     }
 
 
-	public function _requestAuthForm()
+	public function _requestAuthFormMd5()
 	{
 		if (!$_SESSION["auth_number"]) $_SESSION["auth_number"] = rand(0, 99999);
-		$view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
+		$view = new html_template(dirname(__FILE__)."/../views/auth/md5.html");
 
-		if ($_POST["login_user"] && $_POST["password_user"]) {
-			$usuario = mysql_escape_string($_POST["login_user"]);
+		if ($_POST["username"] && $_POST["password_user"]) {
+			$usuario = mysql_escape_string($_POST["username"]);
             $clave = mysql_escape_string($_POST["password_user"]);
             if ($this->login($usuario, $clave, true) == true) {
                 return true; unset($_SESSION['logout']);
@@ -99,6 +100,21 @@ class auth
 		$view->numero = $_SESSION["auth_number"];
 		echo $view->display();
 
+	}
+
+	public function _requestAuthForm()
+	{
+		$view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
+		if ($_POST["username"] && $_POST["password"]) {
+			$usuario = mysql_escape_string($_POST["username"]);
+            $clave = mysql_escape_string($_POST["password"]);
+            if ($this->login($usuario, $clave) == true) {
+                return true; unset($_SESSION['logout']);
+            }
+            $view->error = __("Error de autentificación");
+		}
+
+		echo $view->display();
 	}
 
 
@@ -130,6 +146,9 @@ class auth
 			break;
 			case Auth::FORM:
 				return $this->_requestAuthForm();
+			break;
+			case Auth::FORM_MD5:
+				return $this->_requestAuthFormMd5();
 			break;
 
 		}

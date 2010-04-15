@@ -45,11 +45,13 @@ class html_form_files extends html_form_input {
 		    ".$this->attrs['label']."
         </label>
 		<div id='container-files-$field'></div>
-		<div id='fileQueue_$field'></div>
+		<div id='fileQueue_$field'></div>";
+		if (web::auth()->hasPermission($this->model, auth::MODIFY)) {
+			$str .= "
 		<div class='contenedor-boton-upload'>
 			<input type='file' name='uploadify_$field' id='uploadify_$field'/>
 		</div>";
-
+		}
 		$javascript = "new GridFiles('$field', '$model_name', '$iditem', '$tmp_upload');";
 
 		if($this->form) {

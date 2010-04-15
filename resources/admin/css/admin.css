@@ -286,8 +286,8 @@ a.query_page {
 .images-dataview li div img { padding: 0px; display: block; margin: auto; float: left; }
 
 .images-dataview li div a img { border: 1px solid gray; }
-.images-dataview li div a.images-delete { float: right; }
-.images-dataview li div a.images-download { margin-top: 25px; float: right; clear: right;  }
+.images-dataview li div a.images-delete { float: right; margin-bottom: 25px;}
+.images-dataview li div a.images-download { float: right; clear: right;  }
 
 h5.images { border-bottom: 0px; clear: both; 	background: url("/resources/admin/images/menu.gif"); color: white; font-weight: bold; font-size: 1.1em; padding: 3px 0px 1px 3em;  margin: 0;}
 div.contenedor-boton-upload object  { float: right; }

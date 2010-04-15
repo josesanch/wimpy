@@ -45,9 +45,11 @@ class helpers_model_ajax  {
 				if(!web::request("tmp_upload")) $cond = " and iditem='$id' ";
 
 				$data =  $images->select("module='$module' $cond and field='$field' ", "order:orden", "columns: id, nombre, extension, tipo");
+				if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY))
+					$sortable= " sortable";
 				$str = "
 				<h5 class='images'>".count($data)." archivos</h5>
-				<ul id='files_$field' class='images-dataview clearfix'>";
+				<ul id='files_$field' class='images-dataview clearfix$sortable'>";
 				foreach($data as $item) {
 					$str .="
 								<li id='images-$item->id'>
@@ -57,11 +59,16 @@ class helpers_model_ajax  {
 					} else {
 						$str .= "<img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>";
 					}
-					$str .="			<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>
+					$editable = "";
+					if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY)) {
+						$str .="			<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>";
+
+						$editable = "class='editable'";
+					}
+					$str .= "
 										<a href='".$item->url()."' class='images-download' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."' target='_blank' title='Descargar documento'><img src='/resources/admin/images/document-save.png' border='0'/></a>
 									</div>
-									<p class='editable' id='file-$item->id'>$item->nombre</p>
-
+									<p $editable id='file-$item->id'>$item->nombre</p>
 								</li>";
 				}
 				$str .= "</ul>";

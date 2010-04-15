@@ -13,7 +13,7 @@ var ModelForms = {
 
 	init : function(form_id, parent, field) {
 		$('.datepicker').datepicker({changeMonth: true, changeYear: true}, $.datepicker.regional['es']);
-		jQuery.validator.addMethod('cif', function(value, element) { return (this.optional(element) || check_cif(value));}, 'Dni no válido');
+		jQuery.validator.addMethod('cif', function(value, element) { return ( this.optional(element) || isValid.cif(value, element));}, 'Dni, NIE o CIF no válido');
 
 		ModelForms._validate(form_id, parent, field);
 
@@ -234,62 +234,6 @@ function confirmGoUrl(url, field, modelName)
 }
 
 
-/*****************************************************************************************************************
-* FUNCIONES DE VALIDACIÓN
-*****************************************************************************************************************/
-
-function check_cif(valor)
-{
-	if(!valor) return true;
-	texto = valor.replace(/-/g, "");
-
-    var pares = 0;
-    var impares = 0;
-    var suma;
-    var ultima;
-    var unumero;
-    var uletra = new Array("J", "A", "B", "C", "D", "E", "F", "G", "H", "I");
-    var xxx;
-
-    texto = texto.toUpperCase();
-
-    var regular = new RegExp(/^[ABCDEFGHKLMNPQS]\d\d\d\d\d\d\d[0-9,A-J]$/g);
-     if (!regular.exec(texto)) return false || check_nif(valor);
-
-     ultima = texto.substr(8,1);
-
-     for (var cont = 1 ; cont < 7 ; cont ++) {
-         xxx = (2 * parseInt(texto.substr(cont++,1))).toString() + "0";
-         impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1));
-         pares += parseInt(texto.substr(cont,1));
-     }
-     xxx = (2 * parseInt(texto.substr(cont,1))).toString() + "0";
-     impares += parseInt(xxx.substr(0,1)) + parseInt(xxx.substr(1,1));
-
-     suma = (pares + impares).toString();
-     unumero = parseInt(suma.substr(suma.length - 1, 1));
-     unumero = (10 - unumero).toString();
-     if(unumero == 10) unumero = 0;
-
-     if ((ultima == unumero) || (ultima == uletra[unumero]))
-         return true;
-     else
-         return false || check_nif(valor);
-}
-
-function check_nif(dni)
-{
-	numero = dni.substr(0,dni.length-1);
-	let = dni.substr(dni.length-1,1);
-	numero = numero % 23;
-	letra='TRWAGMYFPDXBNJZSQVHLCKET';
-	letra=letra.substring(numero,numero+1);
-	if (letra!=let)
-		return false;
-	return true;
-}
-
-
 function Message() { }
 
 Message.show = function (msg) {
@@ -357,7 +301,7 @@ function GridFiles(field, model, vid, vtmp_upload) {
 
 	            $('#container-files-' + fieldName + ' .editable').editable('/ajax/secciones/files/update');
 
-				$("#container-files-" + fieldName + " ul").sortable({
+				$("#container-files-" + fieldName + " ul.sortable").sortable({
 					start: function(event, ui) {
 						$('a.dataview-image').unbind('click');
 					},
@@ -438,7 +382,100 @@ var Dialog = {
 
 var AuthForm = {
 	submit : function(form) {
-		form.elements["password_user"].value = calcMD5(form.elements["password_temp"].value  + $("#numero").val()).toLowerCase();
+		form.elements["password_user"].value = calcMD5(form.elements["password"].value  + $("#numero").val()).toLowerCase();
 		return true;
 	}
+}
+
+/*****************************************************************************************************************
+* FUNCIONES DE VALIDACIÓN
+*****************************************************************************************************************/
+var isValid = {
+
+		cif : function(cif, element) {
+			valid = isValid.checkCif(cif);
+			if (valid == 0) {
+				cifConLetra = cif + isValid._letraDNI(cif);
+				valid = isValid.checkCif(cifConLetra);
+				if (valid) $(element).val(cifConLetra);
+			}
+			return valid > 0;
+		},
+
+		checkCif : function (cif) {
+			// Based on php function of David Vidal Serra.
+			//Returns: 1 = NIF ok, 2 = CIF ok, 3 = NIE ok, -1 = NIF bad, -2 = CIF bad, -3 = NIE bad, 0 = ??? bad
+			num = new Array();
+			cif = cif.toUpperCase();
+			for (i = 0; i < 9; i ++) {
+				num[i] = cif.substr(i, 1);
+			}
+			//si no tiene un formato valido devuelve error
+			if (!cif.match('((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)')) {
+				return 0;
+			}
+			//comprobacion de NIFs estandar
+			if (cif.match('(^[0-9]{8}[A-Z]{1}$)')){
+				if (num[8] == 'TRWAGMYFPDXBNJZSQVHLCKE'.substr(cif.substr(0, 8) % 23, 1)){
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+			//algoritmo para comprobacion de codigos tipo CIF
+			suma = num[2] + num[4] + num[6];
+			for (i = 1; i < 8; i += 2) {
+				suma += toString((2 * num[i])).substr(0,1) + toString((2 * num[i])).substr(1,1);
+			}
+			n = 10 - suma.substr( suma.length - 1, 1);
+			//comprobacion de NIFs especiales (se calculan como CIFs)
+			if (cif.match('^[KLM]{1}')) {
+				if (num[8] == String.fromCharCode(64 + n)){
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+			//comprobacion de CIFs
+			if (cif.match('^[ABCDEFGHJNPQRSUVW]{1}')) {
+				if (num[8] == String.fromCharCode(64 + n) || num[8] == n.substr(n.length - 1, 1)) {
+					return 2;
+				} else {
+					return -2;
+				}
+			}
+			//comprobacion de NIEs
+			//T
+			if (cif.match('^[T]{1}')) {
+				if (num[8] == cif.match('^[T]{1}[A-Z0-9]{8}$')) {
+					return 3;
+				} else {
+					return -3;
+				}
+			}
+			//XYZ
+			if (cif.match('^[XYZ]{1}')) {
+				tmpstr = cif.replace('X', '0');
+				tmpstr = tmpstr.replace('Y', '1');
+				tmpstr = tmpstr.replace('Z', '2');
+				if (num[8] == 'TRWAGMYFPDXBNJZSQVHLCKE'.substr( tmpstr.substr(0, 8) % 23, 1)) {
+					return 3;
+				} else {
+					return -3;
+				}
+			}
+			//si todavia no se ha verificado devuelve error
+			return 0;
+		},
+
+		_letraDNI : function(numero) {
+			if (!numero.match(/\d+/)) return;
+			mLetras='TRWAGMYFPDXBNJZSQVHLCKE'
+			var d=(numero/23)
+			d=Math.floor(d)
+			var e=d*23
+			var r=numero-e
+			return mLetras.charAt(r)
+		}
+
 }
