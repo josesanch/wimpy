@@ -357,7 +357,8 @@ input.dialog { margin-left: 0.4em; background: #96AABF url("/resources/admin/ima
 * LOGIN FORM
 *****************************************************************************************************************/
 #auth_form { border: 1px solid #999; width: 25em; margin: 12em auto 2em auto; background: white; color: #666; }
-#auth_form h2 { background: #CC0000 url("/resources/icons/logo.gif") 95% 50% no-repeat; margin: 0; padding: 0.3em 1em;  color: white; }
+#auth_form h2 { background: #CC0000; margin: 0; padding: 0.3em 1em;  color: white; }
+#auth_form h2.logo { background: #CC0000 url("/resources/icons/logo.gif") 95% 50% no-repeat;}
 #auth_form form { padding: 2em; overflow: hidden; }
 #auth_form input.text { width: 10em; float: right; border: 1px solid #666; }
 #auth_form label { overflow: hidden; clear: both; padding-bottom: 1em;  display: block; }

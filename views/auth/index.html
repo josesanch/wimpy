@@ -16,7 +16,7 @@
 <div class='error-auth'>{$error}</div>
 {/if}
 <div id='auth_form'>
-	<h2>{t:Área de cliente}</h2>
+	<h2{if:$showLogo} class='logo'{/if}>{$title}</h2>
 	<form method='post' action='{eval:return web::uri()}'>
 	<div >
 		<label><span>{t:Usuario}:</span>
@@ -30,7 +30,7 @@
 	</form>
 </div>
 <p class='auth_form'>
-{t:Si tiene algún problema puede contactar con nuestro soporte por e-mail en soporte@o2w.es o por teléfono llamando al 968 19 29 05}
+	{$message}
 </p>
 </body>
 </html>

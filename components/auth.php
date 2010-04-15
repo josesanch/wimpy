@@ -7,6 +7,9 @@ class auth
     public $user_field = 'user';
     public $password_field = 'password';
     public $type = "form";
+    public $title = "Área de cliente";
+    public $showLogo = true;
+    public $message = "Si tiene algún problema puede contactar con nuestro soporte por e-mail en soporte@o2w.es o por teléfono llamando al 968 19 29 05";
 
 	const FORM = 100;
 	const REALM = 101;
@@ -86,6 +89,9 @@ class auth
 	{
 		if (!$_SESSION["auth_number"]) $_SESSION["auth_number"] = rand(0, 99999);
 		$view = new html_template(dirname(__FILE__)."/../views/auth/md5.html");
+		$view->title = $this->title;
+		$view->showLogo = $this->showLogo;
+		$view->message = $this->message;
 
 		if ($_POST["username"] && $_POST["password_user"]) {
 			$usuario = mysql_escape_string($_POST["username"]);
@@ -105,6 +111,9 @@ class auth
 	public function _requestAuthForm()
 	{
 		$view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
+		$view->title = $this->title;
+		$view->showLogo = $this->showLogo;
+		$view->message = $this->message;
 		if ($_POST["username"] && $_POST["password"]) {
 			$usuario = mysql_escape_string($_POST["username"]);
             $clave = mysql_escape_string($_POST["password"]);
