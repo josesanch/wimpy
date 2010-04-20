@@ -21,7 +21,7 @@ class html_form_files extends html_form_input {
 		if(!html_form_files::$default_instance)  {
 			html_form_files::$default_instance = $this;
 			$this->prepend = "
-				<script type='text/javascript' src='/resources/uploadify/jquery.uploadify.v2.0.3.min.js'></script>
+				<script type='text/javascript' src='/resources/uploadify/jquery.uploadify.v2.1.0.min.js'></script>
 				<script type='text/javascript' src='/resources/uploadify/swfobject.js'></script>
 				".js("jquery/jeditable")."
 				<link href='/resources/uploadify/uploadify.css' rel='stylesheet' type='text/css' />

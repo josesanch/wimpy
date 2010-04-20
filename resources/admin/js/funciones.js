@@ -282,6 +282,8 @@ function GridFiles(field, model, vid, vtmp_upload) {
 	var modelName = model
 	var id = vid
 	var tmp_upload = vtmp_upload
+	var fileDataName = field;
+	if (!fileDataName) fileDataName = "file";
 
 
 
@@ -332,7 +334,7 @@ function GridFiles(field, model, vid, vtmp_upload) {
 		'queueID'       : 'fileQueue_' + fieldName,
 		'auto'          : true,
 		'multi'         : true,
-		'fileDataName' 	: fieldName,
+		'fileDataName' 	: fileDataName,
 		'onComplete' 	: function () {
 			self.load();
 		}
