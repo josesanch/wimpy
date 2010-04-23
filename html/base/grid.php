@@ -8,7 +8,7 @@ class html_base_grid extends html_object
     public $showSearch = true;
     public $onSubmit;
     public $pageSize = 25;
-
+	public $columnsForSearch = null;
     public $onDelete;
 
     //'return do_search(this);';
@@ -20,6 +20,9 @@ class html_base_grid extends html_object
         $modelName = get_class($model);
         $orderField = "order-$modelName";
         $descField = "desc-$modelName";
+        $searchField = "search-$modelName";
+        $pageField = "page-$modelName";
+
         $table = $model->getDatabaseTable();
         $fields = array_keys($model->getFields());
 
@@ -38,13 +41,15 @@ class html_base_grid extends html_object
 		// Seleccionamos la página
 
 		// Hacemos el or de los campos para ponerlo en el where
-        if (web::request("search")) {
-            if ($columns) $c = preg_split("/\s*,\s*/", $columns);
+        if (web::request($searchField)) {
+			if ($this->columnsForSearch) $c = preg_split("/\s*,\s*/", $this->columnsForSearch);
+			elseif ($columns) $c = preg_split("/\s*,\s*/", $columns);
             else $c = array_keys($model->getFields());
+
             $search = array();
 
             foreach ($c as $field) {
-				$search[]= $model->fields($field)->getSql()." like '%".urldecode(web::request('search'))."%'";
+				$search[]= $model->fields($field)->getSql()." like '%".urldecode(web::request($searchField))."%'";
             }
 
             $search = " (".join(" or ", $search).")";
@@ -83,8 +88,8 @@ class html_base_grid extends html_object
             }
         }
 
-		if (web::request("page"))
-            $model->setCurrentPage(web::request("page"));
+		if (web::request($pageField))
+            $model->setCurrentPage(web::request($pageField));
 		//echo "<pre>$sql</pre>";
 		//var_dump($sqlcolumns);
 		// Hacemos la consulta al modelo
@@ -95,13 +100,24 @@ class html_base_grid extends html_object
 			ActiveRecord::INNER
 		);
 
+		// La página es una página fuera del ámbito del resultado.
+		if(((web::request($pageField) - 1) * $model->page_size) >= $model->total_results) {
+			$model->setCurrentPage(1);
+			$results = $model->select(
+				$sql,
+				"columns: ".implode(", ", array_filter($sqlcolumns)),
+				$order,
+				ActiveRecord::INNER
+			);
+		}
+
 
         $de = ($model->current_page - 1) * $model->page_size + 1;
         $hasta = $de + $model->page_size - 1;
 		$hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
         if($de > $hasta) $de = $hasta;
         $paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
-        $paginacion = html_base_grid::_getPaginate($results);
+        $paginacion = html_base_grid::_getPaginate($results, $pageField);
 
         if($paginacion) $paginas[]= $paginacion;
 
@@ -118,9 +134,9 @@ class html_base_grid extends html_object
         if(!$this->_instance || $this->showSearch) {
             $formData =
                     "<div class='listado-resultados'>Buscar:
-                        <input type='text' name='search'
+                        <input type='text' name='$searchField'
                         class='texto-buscar' id='search'
-                        value='".urldecode(web::request('search'))."'
+                        value='".urldecode(web::request($searchField))."'
                         size=20/>";
 
             if($botonBuscar && web::auth()->hasPermission($model, auth::VIEW))
@@ -252,7 +268,7 @@ class html_base_grid extends html_object
 
 		$formData .= "GridResults.init('$modelName', ".($ordenation ? "true" : "false").");</script>";
 
-		$form->action(web::uri(null, null, array("page")));
+		$form->action(web::uri(null, null, array($searchField)));
 		if (!$this->_instance || $this->showSearch) {
 			$form->add($formData);
 			return $form->toHtml();
@@ -260,11 +276,11 @@ class html_base_grid extends html_object
 		return $formData;
     }
 
-	private static function _getPaginate($results)
+	private static function _getPaginate($results, $pageField)
 	{
 
 		if (web::request("dialog")) {
-            $arr = helpers_paginate::toArray($results);
+            $arr = helpers_paginate::toArray($results, 10, $pageField);
             $paginas = "";
             foreach ($arr as $pagina) {
 				switch ($pagina[0]) {
@@ -284,7 +300,7 @@ class html_base_grid extends html_object
 				}
 			}
 		} else {
-			$paginas = helpers_paginate::toHtml($results);
+			$paginas = helpers_paginate::toHtml($results, array(),  __("Páginas").": ", 10, "&nbsp;", $pageField);
 		}
 		return $paginas;
 	}

@@ -83,7 +83,7 @@ class AdministrationController extends ApplicationController
 		$modelName = web::instance()->model;
 		if(!$modelName) $selectFirst = true;
 
-		$params = web::params(null, null, false, array("page","order-$modelName","desc-$modelName"));
+		$params = web::params(null, null, false, array("page-$modelName","order-$modelName","desc-$modelName"));
 
 
 		if (web::instance()->action == "edit") {

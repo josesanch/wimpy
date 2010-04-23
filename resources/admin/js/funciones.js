@@ -396,7 +396,7 @@ var isValid = {
 
 		cif : function(cif, element) {
 			valid = isValid.checkCif(cif);
-			if (valid == 0) {
+			if (valid == 0 && $(element).hasClass("auto")) {
 				cifConLetra = cif + isValid._letraDNI(cif);
 				valid = isValid.checkCif(cifConLetra);
 				if (valid) $(element).val(cifConLetra);

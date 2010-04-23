@@ -8,7 +8,6 @@ require dirname(__FILE__)."/html/object.php";
 require dirname(__FILE__)."/html/template.php";
 require dirname(__FILE__)."/model.php";
 require dirname(__FILE__)."/library/log.php";
-
 /**
 *
 * Base class of the framework
@@ -502,7 +501,8 @@ class Web
         if (web::request("debug") == "true" || $_SESSION['debug'] == "true") {
             echo "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
-            var_dump($texto);
+            //var_dump($texto);
+            echo $texto;
             echo "</pre>";
         }
     }
