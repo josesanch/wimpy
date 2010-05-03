@@ -49,4 +49,61 @@ class format {
 		}
 	}
 }
-?>
+
+
+
+class text
+{
+
+	// Deprecated
+	public function wordCut($text, $size)
+	{
+		return text::cut($text, $size);
+	}
+	public function cut($text, $size)
+	{
+		$str = wordwrap( $text, $size, "||@||", 1);
+		$str = explode("||@||", $str);
+		$str = $str[0];
+		$str .= strlen($str) != strlen($text) ? " ..." : "";
+		return $str;
+	}
+
+	function txtToHtml($text)
+	{	// Usamos \040 para denotar espacios que no contengan \n, ya que  \s = [\n\040\t]
+		preg_match_all("/(^\040*)(.*)?$/m", $text, $match);
+		for($i = 0; $i < count($match[0]); $i++)
+		{
+			$espacios = preg_replace("/\s/", "&nbsp;", $match[1][$i]);
+			$texto =  nl2br($match[2][$i]);
+			$txt .= $espacios.$texto;
+		}
+		return $txt;
+	}
+
+	/** @desc  a=b ..etc. a array */
+	function pairStringToArray($attr)
+	{
+
+		if(is_array($attr)) return $attr;
+		$arr = array();
+		if(preg_match_all("{(['][^']*[']|[\"][^\"]*[\"]|[^,=\s]*)\s*(=\s*(['][^']*[']|[\"][^\"]*[\"]|[^,=\s]*))?}i", $attr, $regs))
+		{
+			for($i = 0; $i < count($regs[1]); $i++)
+			{
+				$value = preg_replace("{^(['\"])?(.*?)(['\"])?$}", "\\2", $regs[3][$i]);
+				$value = substr($regs[2][$i], 0, 1) == "=" ? $value : null;
+				$arr[trim($regs[1][$i])] = $value;
+			}
+		}
+		return $arr;
+	}
+	public function capitalize($str)
+	{
+		return ucfirst(strtolower($str));
+	}
+
+}
+
+
+
