@@ -69,7 +69,7 @@ class WMaps
 		return $icon;
 	}
 
-	public function jsapi() { return "<script src='http://maps.google.com/maps?file=api&amp;v=2.x&amp;key=".$this->key."' type='text/javascript'></script>"; }
+	public function jsapi() { return "<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=".$this->key."' type='text/javascript'></script>"; }
 	public function initialize($run = true) {
 		$str = "
 <div id='{$this->id}' style='width: $this->width; height: $this->height;'></div>

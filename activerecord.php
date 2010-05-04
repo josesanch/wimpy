@@ -131,7 +131,7 @@ class ActiveRecord
         if (!$insert) $id = $this->row_data['id'];
         $this->savel10n($id);
         $this->id = $id;
-
+		$this->setWherePK();
         // Save the changes in the log.
         if (is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
 
@@ -381,20 +381,20 @@ class ActiveRecord
              $field = $this->getFields($property);
 
              if ($field['type'] == 'image') {
-                 $primary_key = array_shift($this->getPrimaryKeys());
+                $primary_key = array_shift($this->getPrimaryKeys());
                 $this->$property = new helpers_images();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 $item = $this->$property;
                 return $this->$property;
 
             } elseif ($field['type'] == 'file') {
-                 $primary_key = array_shift($this->getPrimaryKeys());
+                $primary_key = array_shift($this->getPrimaryKeys());
                 $this->$property = new helpers_files();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 return $this->$property;
 
             } elseif ($field['type'] == 'files') {
-                 $primary_key = array_shift($this->getPrimaryKeys());
+                $primary_key = array_shift($this->getPrimaryKeys());
                 $item = new helpers_images();
                 $item = $item->select("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 $this->$property = $item;
@@ -669,8 +669,10 @@ class ActiveRecord
         return $this->fields;
     }
 
-
-
+	public function forceCreation()
+	{
+		unset($this->where_primary_keys);
+	}
 }
 
 class fields
