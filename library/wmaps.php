@@ -62,6 +62,25 @@ class WMaps
     }
 
 
+
+	private function _searchCoordinates($xml) {
+		foreach ($xml as $item => $subxml) {
+			if ($result = $this->_searchCoordinates($subxml)) return $result;
+			if (strtolower($item) == "point") return explode(",", $subxml->coordinates);
+		}
+	}
+
+	public function getCoordinatesFromAddress($address)
+	{
+		if (!is_string($address)) die("All Addresses must be passed as a string");
+
+		$apiURL = "http://maps.google.com/maps/geo?&output=xml&key=".$this->apiKey."&q=";
+		$xml = simplexml_load_string(file_get_contents($apiURL.urlencode($address)));
+		list($longitude, $latitude) = $this->_searchCoordinates($xml);
+		return array($latitude, $longitude);
+	}
+
+
 	public function addIcon($name, $url) {
 		$icon = new MapsIcon($name, $url);
 		if($url) $icon->image = "\"$url\"";
