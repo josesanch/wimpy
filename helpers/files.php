@@ -34,9 +34,10 @@ class helpers_files extends ActiveRecord
 		}
 	}
 
-	public function url()
+
+	public function url($short = false)
 	{
-//		return $this->path."/".$this->id.".".$this->extension;
+		if ($short) return $this->path."/".$this->id.".".$this->extension;
         $info = pathinfo($this->nombre);
         return "/files/$this->id/".$info["filename"].".".$this->extension;
 	}

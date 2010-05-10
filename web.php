@@ -32,6 +32,7 @@ class Web
     private $_htmlTemplateDir = "/templates";
     private $_debug = false;
     private $_inProduction = true;
+    private $_reportErrors = false;
     private static $_defaultInstance;    // La primera clase que se crea
     private $_defaultController = "index";
     private $_applicationPath;
@@ -408,6 +409,12 @@ class Web
         return $this->_inProduction;
     }
 
+    public function reportErrors($error = null)
+    {
+		if ($error) $this->_reportErrors = $error;
+        return $this->_reportErrors;
+    }
+
     public function redirect($uri)
     {
         $this->run($uri, null, True);
@@ -514,7 +521,7 @@ class Web
         $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'> * Se ha producido un error </h3>";
 
-		if (!web::instance()->isInProduction())
+		if (!web::instance()->isInProduction() || web::instance()->reportErrors())
 			$str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
 
         if ($notify == web::NOTIFY_BY_EMAIL && web::instance()->isInProduction()) {
