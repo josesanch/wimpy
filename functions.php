@@ -304,10 +304,11 @@ function includePdfPlugins()
 
 function getMimeType($file)
 {
-	$mime_type = @system("file -i -b $file");
-	$split = split(";",$mime_type);
-	$mime_type = trim($split[0]);
-	//$mime_type = mime_content_type($file['tmp_name']);
+	//$mime_type = @system("file -i -b $file");
+	//$split = split(";",$mime_type);
+	//$mime_type = trim($split[0]);
+
+	$mime_type = mime_content_type($file);
 	//file_put_contents("debug.log", "MIME TYPE: $mime_type : $file[tmp_name]");
 
 	return $mime_type;
