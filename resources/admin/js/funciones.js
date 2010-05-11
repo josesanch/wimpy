@@ -289,7 +289,10 @@ function GridFiles(field, model, vid, vtmp_upload) {
 
 	this.load = function() {
 		var self = this;
+
 		$('#container-files-' + fieldName).load("/ajax/" + modelName + "/files/read/" + id + "/" + fieldName + "/?tmp_upload=" + tmp_upload, function(data) {
+
+
 				$('#container-files-' + fieldName +' a.images-delete').bind('click', function (e) {
 					arr = $(this).attr("id").split("-");
 					tiditem = arr[0]; tmodel = arr[1]; tfield = arr[2]; tid = arr[3]; ttmp_upload = arr[4];
@@ -317,7 +320,8 @@ function GridFiles(field, model, vid, vtmp_upload) {
 						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
 					}
 				});
-				$("a.dataview-image").fancybox({ "hideOnContentClick" : true});
+				//$("a.dataview-image").fancybox({ "hideOnContentClick" : true});
+
 			}
 		);
 	}
@@ -335,7 +339,8 @@ function GridFiles(field, model, vid, vtmp_upload) {
 		'auto'          : true,
 		'multi'         : true,
 		'fileDataName' 	: fileDataName,
-		'onComplete' 	: function () {
+		'onComplete' 	: function (event, queueID, fileObj, response, data) {
+			//alert(response);
 			self.load();
 		}
 	});

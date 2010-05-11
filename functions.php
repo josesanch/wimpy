@@ -36,9 +36,13 @@ function js($module)
 	// Google hosted scripts
 	switch ($module) {
 		case "jquery":
-			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
+
+			return "<script src=\"/resources/js/jquery-1.4.2.min.js\" type=\"text/javascript\"></script>";
+		//	return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
+
 		case "jquery/ui":
-			return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
+			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.1.custom.min.js\" type=\"text/javascript\"></script>";
+			//return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
 	}
 
 	$file = str_replace("::", "/", $module).".js";
@@ -296,4 +300,15 @@ function includePdfPlugins()
 {
 	include_once(dirname(__FILE__)."/library/tcpdf.php");
 	include_once(dirname(__FILE__)."/library/tcpdf/tcpdf_plugins.php");
+}
+
+function getMimeType($file)
+{
+	$mime_type = @system("file -i -b $file");
+	$split = split(";",$mime_type);
+	$mime_type = trim($split[0]);
+	//$mime_type = mime_content_type($file['tmp_name']);
+	//file_put_contents("debug.log", "MIME TYPE: $mime_type : $file[tmp_name]");
+
+	return $mime_type;
 }
