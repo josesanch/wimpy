@@ -431,13 +431,13 @@ class Web
         $arr = array();
         $arr = web::processParams(web::instance()->params, $arr);
         $arr = array_merge($arr, $_REQUEST);
-        return $arr[$param];
+        if (isset($arr[$param])) return $arr[$param];
 
     }
 
     private function processAction($param)
     {
-        return str_replace("-", "_", convert_to_url($param));
+        return str_replace("-", "_", convert_from_url($param));
     }
 
     public function setDefaultHtmlEditor($editor = "fckeditor")

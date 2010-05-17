@@ -31,7 +31,7 @@ class l10n {
 	public function get($id, $lang = null, $returnDefaultLanguage = true) {
 		if(!$id || $id == '') return $id;
 		if(!$lang) $lang = $this->selected_language;
-		if($this->cached_data[$lang][$id]) return $this->cached_data[$lang][$id];
+		if (isset($this->cached_data[$lang][$id])) return $this->cached_data[$lang][$id];
 		$sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='".mysql_escape_string($id)."' and lang='$lang'");
 		if($sta) $row = $sta->fetch();
 		if($row && $row['data'] != '') {

@@ -320,7 +320,7 @@ function GridFiles(field, model, vid, vtmp_upload) {
 						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
 					}
 				});
-				//$("a.dataview-image").fancybox({ "hideOnContentClick" : true});
+				setTimeout(function(){ $("a.dataview-image").fancybox({ "hideOnContentClick" : true}); }, 250);
 
 			}
 		);
