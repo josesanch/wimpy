@@ -437,7 +437,7 @@ class Web
 
     private function processAction($param)
     {
-        return str_replace("-", "_", convert_from_url($param));
+        return str_replace("-", "_", convert_to_url($param));
     }
 
     public function setDefaultHtmlEditor($editor = "fckeditor")
