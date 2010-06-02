@@ -107,7 +107,7 @@ class l10n {
 	public function getDefaultLanguage() { 	return $this->default_language;  }
 
 	public function autoSelectLanguage() {
-		foreach(explode(",",  $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $i => $value) $ask_lang[$i]=trim(array_shift(split(';', $value)));
+		foreach(explode(",",  $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $i => $value) $ask_lang[$i]=trim(array_shift(explode(';', $value)));
 		$accept_lang = $this->languages;
     	foreach($ask_lang as $lang) {
 			if (in_array($lang, $accept_lang))  { $this->setLanguage($lang); return true; }

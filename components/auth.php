@@ -147,7 +147,7 @@ class auth
         exit;
     }
 
-    public public function requestAuth()
+    public function requestAuth()
     {
 		switch (web::instance()->authMethod) {
 			case Auth::REALM:

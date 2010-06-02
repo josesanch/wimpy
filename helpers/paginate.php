@@ -34,7 +34,7 @@ class helpers_paginate {
 		}
 
 		if ($total_pages > 1) {
-			$html.= $texto == "Páginas: " ? _("Páginas").": " : $texto;
+			$html.= $texto == "Páginas: " ? __("Páginas").": " : $texto;
 
 			$url = "?".query_string($no);
 			$url = preg_replace("/&\?$varPages=[0-9]*/", "", $url);
