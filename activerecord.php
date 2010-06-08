@@ -50,6 +50,7 @@ class ActiveRecord
         $this->results = call_user_func_array(array($this, "selectSql"), $args);
         $this->dumpValues();
         if (count($this->results) == 0) return array();
+        foreach ($this->results as $result) $result->exists = true;
         if (isset($args[0]) && is_numeric($args[0])) return $this->results[0];
         return $this->results;
     }
@@ -60,6 +61,7 @@ class ActiveRecord
         array_push($params, "limit: 1");
         call_user_func_array(array($this, "select"), $params);
         if (count($this->results) == 0) return False;
+        $this->results[0]->setWherePK();
         return $this->results[0];
     }
 
@@ -103,7 +105,7 @@ class ActiveRecord
                 }
             }
             $sql .= join(", ", $fields_to_update)." where ".$this->where_primary_keys;
-        } else {                // INSERT
+        } else {  			// INSERT
             $insert = true;
             $fields = array(); $values = array();
             foreach ($this->getFields() as $name => $attrs) {
@@ -593,6 +595,7 @@ class ActiveRecord
     {
         $args = func_get_args();
         if (func_num_args() == 0) {
+			if ($this->exists) return true;
             if (!$this->where_primary_keys) return False;
             $results = call_user_func_array(
 				array($this, "count"),
