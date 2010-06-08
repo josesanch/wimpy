@@ -2,7 +2,6 @@
 
 class ApplicationController
 {
-
 	public $view;
 	public $layout;
 	protected $_applicationPath;

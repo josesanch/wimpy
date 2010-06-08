@@ -356,7 +356,8 @@ class Web
         $controllerName = "helpers_$this->action";
         $action = array_shift($this->params);
         $model = new $controllerName();
-        call_user_method_array($action, $model, $this->params);
+        //call_user_method_array($action, $model, $this->params);
+        call_user_func_array(array($model, $action), $this->params);
     }
 
 
