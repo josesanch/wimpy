@@ -7,7 +7,7 @@ class html_base_grid extends html_object
     public $search;
     public $showSearch = true;
     public $onSubmit;
-    public $pageSize = 40;
+    public $pageSize = 25;
 	public $columnsForSearch = null;
     public $onDelete;
 
