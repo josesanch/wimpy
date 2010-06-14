@@ -165,7 +165,11 @@ class Web
 			$query = array();
 			foreach ($_GET as $item => $value) {
 				if (!array_key_exists($item, $arr) && !in_array($item, $exclude))
-				$query[]= "$item=".urlencode($value);
+				if (is_array($value)) {
+					foreach ($value as $v) $query[]= $item."[]=".urlencode($v);
+				} else {
+					$query[]= "$item=".urlencode($value);
+				}
 			}
 			$uri .= "?".implode("&", $query);
 		}
