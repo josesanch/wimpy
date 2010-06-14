@@ -7,7 +7,7 @@ class html_base_grid extends html_object
     public $search;
     public $showSearch = true;
     public $onSubmit;
-    public $pageSize = 25;
+    public $pageSize;
 	public $columnsForSearch = null;
     public $onDelete;
 
@@ -33,10 +33,10 @@ class html_base_grid extends html_object
 
         if ($this->_instance) {
             if($this->onSubmit) $form->onsubmit($this->onSubmit);
-			$model->setPageSize($this->pageSize);
+			$model->setPageSize($this->pageSize ? $this->pageSize : (web::instance()->gridSize ? web::instance()->gridSize : 25));
         } else {
             //$form->onsubmit('return do_search(this);');
-            $model->setPageSize(25);
+			$model->setPageSize(web::instance()->gridSize ? web::instance()->gridSize : 25);
         }
 		// Seleccionamos la página
 
