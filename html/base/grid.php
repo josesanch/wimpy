@@ -224,7 +224,7 @@ class html_base_grid extends html_object
 							$value = "";
 					break;
 				}
-				if ($attrs["money"]) $value = format::money($value, 0);
+				if ($attrs["money"]) $value = number_format($value, 0, ',', '.');
 
                 $formData .= "
                 <td class=grid_cell>$value</td>";
