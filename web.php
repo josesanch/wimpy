@@ -506,6 +506,13 @@ class Web
         exit;
     }
 
+    public function forbidden()
+    {
+		header('HTTP/1.1 403 Forbidden');
+		echo "<h1>Acceso denegado</h1>";
+		exit;
+	}
+
     public static function debug($texto, $file = null, $linea = null)
     {
 //        log::to_file("EXEC $texto<hr>");

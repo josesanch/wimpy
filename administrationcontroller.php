@@ -186,6 +186,10 @@ class AdministrationController extends ApplicationController
         switch (strtolower($action)) {
             case "list":
                 $instance = new $modelName();
+
+                // Comprobamos el nivel de acceso a listado del modelo.
+                if (!web::auth()->hasPermission($instance, auth::VIEW)) web::forbidden();
+
                 $this->view->content = "<br/>".html_base_grid::toHtml(
                     $instance, null, $instance->grid_columns
                  );
@@ -193,12 +197,17 @@ class AdministrationController extends ApplicationController
 
             case "edit":
                 $model = new $modelName();
+
+				// Comprobamos el nivel de acceso a listado del modelo.
+                if (!web::auth()->hasPermission($instance, auth::MODIFY) && !web::auth()->hasPermission($instance, auth::VIEW)) web::forbidden();
+
                 if(isset($params[0])) $model->select($params[0]);
                 $edit = new html_autoform($model, $this->css);
                 $this->view->content = "<br>".$edit->toHtml();
                 break;
 
             case "delete":
+				if (!web::auth()->hasPermission($this, auth::DELETE)) web::forbidden();
                 $model = new $modelName();
                 if(isset($params[0])) {
                      $model->select($params[0]);
@@ -208,6 +217,7 @@ class AdministrationController extends ApplicationController
 				$model->adminRedir();
 
             case "save":
+				if (!web::auth()->hasPermission($this, auth::MODIFY)) web::forbidden();
                 $model = new $modelName();
                 $model->saveFromRequest();
 
