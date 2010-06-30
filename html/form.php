@@ -191,6 +191,7 @@ class html_form extends html_object
                     $input->class("textbox datepicker");
                     if($this->model->$field != '0000-00-00' and $this->model->$field != '')
                         $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
+					if($attrs['not null']) $input->class($input->class()." required");
 
                 break;
 

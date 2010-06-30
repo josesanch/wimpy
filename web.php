@@ -329,6 +329,22 @@ class Web
             }
             $params = $this->params;
             array_unshift($params, $model);
+
+            switch ($action) {
+				case "list":
+					if (!web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
+					break;
+				case "edit":
+					if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
+					break;
+				case "save":
+					if (!web::auth()->hasPermission($model, auth::MODIFY)) web::forbidden();
+					break;
+				case "delete":
+					if (!web::auth()->hasPermission($model, auth::DELETE)) web::forbidden();
+					break;
+			}
+
             call_user_func_array(
                 array($controller, $action."Action"),
                 $params

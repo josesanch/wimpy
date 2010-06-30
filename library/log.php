@@ -60,7 +60,7 @@ class log extends Model {
 
 		}
 
-		$columns = $columns ? split(" ?, ?", $columns) :  array_keys($model->getFields());
+		$columns = $columns ? preg_split(" ?, ?", $columns) :  array_keys($model->getFields());
 		$sqlcolumns = array();
 		foreach($columns as $column) {
 			$attrs = $model->getFields($column);
