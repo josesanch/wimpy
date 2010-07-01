@@ -338,7 +338,7 @@ class Web
 					if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
 					break;
 				case "save":
-					if (!web::auth()->hasPermission($model, auth::MODIFY)) web::forbidden();
+					if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::ADD)) web::forbidden();
 					break;
 				case "delete":
 					if (!web::auth()->hasPermission($model, auth::DELETE)) web::forbidden();
