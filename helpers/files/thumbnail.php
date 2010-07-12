@@ -10,6 +10,7 @@ class helpers_files_thumbnail
 {
     private $_img;
     private $_file;
+    private $_fileName;
     private $_imgId;
     private $_rootThumbnails = "/cached";
     private $_output = "jpg";
@@ -17,10 +18,19 @@ class helpers_files_thumbnail
     function __construct ($file)
     {
         $this->_file = $file;
+		if (is_string($file)) {
+			$info = pathinfo($file);
+			$this->_fileName = $file;
+			$this->_imgId = $info["filename"];
+		} else {
+			$this->_fileName = $file->phisical();
+			if($file->id) {
+				$this->_imgId = $file->id;
+			} else {
+				$this->_imgId = md5($file->phisical());
+			}
 
-        if($file->id) $this->_imgId = $file->id;
-        else $this->_imgId = md5($file->phisical());
-
+		}
     }
 
 	public function addFilter($filter)
@@ -30,11 +40,11 @@ class helpers_files_thumbnail
 
     public function getUrl($width, $height, $operation = thumb::NORMAL)
     {
-        $info = pathinfo($this->_file->nombre);
+        $info = pathinfo($this->_fileName);
         $url = $this->_getCachedUrl($width, $height, $operation);
-		if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
+		//if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
 
-        $this->_img = new Imagick($this->_file->phisical().'[0]');
+        $this->_img = new Imagick($this->_fileName.'[0]');
 		$this->_img->setImageFormat($this->_output);
         switch ($operation) {
 
@@ -160,6 +170,7 @@ class helpers_files_thumbnail
 		$str= str_replace(' ', '-', strtr(strtolower($url), $arr));
 		return implode("/", str_replace('%', '-', array_map("rawurlencode", explode("/", $str))));
 	}
+
 
 
 }

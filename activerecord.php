@@ -707,7 +707,7 @@ class fields
                 if (empty($args))
                     $this->_attrs["not null"] = true;
                 else
-                    $this->_attrs[$method] = $args[0];
+                    $this->_attrs["not null"] = $args[0];
                 break;
 
 			case "getSql":
