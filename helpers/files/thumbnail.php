@@ -42,7 +42,7 @@ class helpers_files_thumbnail
     {
         $info = pathinfo($this->_fileName);
         $url = $this->_getCachedUrl($width, $height, $operation);
-		//if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
+		if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
 
         $this->_img = new Imagick($this->_fileName.'[0]');
 		$this->_img->setImageFormat($this->_output);
