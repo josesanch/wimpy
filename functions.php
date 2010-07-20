@@ -180,14 +180,14 @@ function convert_from_url($url)
 }
 
 function url_to_sql($url) {	// for using with regexp
-	$arr = array("_", "-");
-	$url =  preg_replace("/(_|\-)/", '[ _\-]', strtolower($url));
+	$url = strtolower($url);
 
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
 	$url = strtr($url, $arr);
 
 	$arr = array('n' => '[nñ]', 'a' => '[aá]', 'e' => '[eé]', 'i' => '[ií]', 'o' => '[oó]', 'u' => '[uú]');
-	return str_replace(array_keys($arr), array_values($arr), $url);
+	$url = str_replace(array_keys($arr), array_values($arr), $url);
+	return  preg_replace("/(_|\-)/", '([ _\-]|[[.solidus.]])', $url);
 }
 
 function notildes($txt) {
@@ -197,7 +197,7 @@ function notildes($txt) {
 }
 
 function query_string($no = array()) {
-	if(!is_array($no)) $no = split(",", $no);
+	if(!is_array($no)) $no = explode(",", $no);
 	 $variables = $request ? $request : $_REQUEST;
 	$postString  ="";
 	while(list($key, $val) = each($variables)) {
