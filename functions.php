@@ -246,7 +246,8 @@ function sanitize($input) {
 }
 
 function date_to_sql($date) {
-	list($day, $month, $year) = split('[/.-]', $date);
+	list($day, $month, $year) = preg_split('/[\/.-]/', $date);
+
 	return "$year-$month-$day";
 }
 
@@ -272,6 +273,7 @@ function checkFileSafety($file) {
 		  'pps',
 		  'docx',
 		  'xlsx',
+		  'xls',
 		  'pptx',
 		  'ogg',
 		  'flv'
