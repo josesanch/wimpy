@@ -4,6 +4,7 @@ class thumb
 {
     const NORMAL = 1;
     const CROP = 2;
+    const NO_RESIZE_SMALLER = 4;
 }
 
 class helpers_files_thumbnail
@@ -38,6 +39,13 @@ class helpers_files_thumbnail
 		$this->_filters[]= $filter;
 	}
 
+	private function _isSmaller($width, $height)
+	{
+		$imageWidth = $this->_img->getImageWidth();
+		$imageHeight = $this->_img->getImageHeight();
+		return ($imageWidth < $width && $imageHeight < $height );
+	}
+
     public function getUrl($width, $height, $operation = thumb::NORMAL)
     {
         $info = pathinfo($this->_fileName);
@@ -57,7 +65,8 @@ class helpers_files_thumbnail
             case "INABOX":
             case "THUMB":
             default:
-                $this->_img->thumbnailImage($width, $height, true);
+				if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height)))
+					$this->_img->thumbnailImage($width, $height, true);
                 break;
         }
 
@@ -82,6 +91,7 @@ class helpers_files_thumbnail
 				$cachedUrl.= "-crop-";
 				break;
 		}
+		if (($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER) $cachedUrl.= "-noresize-";
 		$strFiltros = array();
 		// Process the filters
 		foreach ($this->_filters as $filtro) {

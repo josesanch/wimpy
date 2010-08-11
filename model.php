@@ -175,5 +175,9 @@ class Model extends ActiveRecord
 		foreach ($files as $file)
 			$file->delete();
 	}
+
+	public function url()
+	{
+		return "/".get_class($this)."/view/$this->id/".convert_to_url($this->nombre);
+	}
 }
-?>
