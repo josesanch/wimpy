@@ -217,12 +217,13 @@ class html_base_grid extends html_object
             foreach ($columns as $column) {
 				$attrs = $row->getFields($column);
 				$value = $row->get($column);
-
+				$style = "";
 				switch ($attrs["type"]) {
 					case "bool":
-						if($value == 1)
+						if($value == 1) {
 							$value = '<img src="/resources/admin/images/check.png"/>';
 							$style = "align='center'";
+						}
 					break;
 					case "date":
 						if($value != "0000-00-00")
