@@ -223,6 +223,8 @@ class html_base_grid extends html_object
 						if($value == 1) {
 							$value = '<img src="/resources/admin/images/check.png"/>';
 							$style = "align='center'";
+						} else {
+							$value = "";
 						}
 					break;
 					case "date":
