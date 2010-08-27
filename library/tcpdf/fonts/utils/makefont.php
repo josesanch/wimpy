@@ -2,26 +2,28 @@
 //============================================================+
 // File name   : makefont.php
 // Begin       : 2004-12-31
-// Last Update : 2008-12-06
-// Version     : 1.2.004
+// Last Update : 2010-08-08
+// Version     : 1.2.006
 // License     : GNU LGPL (http://www.gnu.org/copyleft/lesser.html)
 // 	----------------------------------------------------------------------------
-// 	Copyright (C) 2008  Nicola Asuni - Tecnick.com S.r.l.
+// 	Copyright (C) 2008-2010  Nicola Asuni - Tecnick.com S.r.l.
 // 	
-// 	This program is free software: you can redistribute it and/or modify
-// 	it under the terms of the GNU Lesser General Public License as published by
-// 	the Free Software Foundation, either version 2.1 of the License, or
-// 	(at your option) any later version.
-// 	
-// 	This program is distributed in the hope that it will be useful,
-// 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 	GNU Lesser General Public License for more details.
-// 	
-// 	You should have received a copy of the GNU Lesser General Public License
-// 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 	
-// 	See LICENSE.TXT file for more information.
+// This file is part of TCPDF software library.
+//
+// TCPDF is free software: you can redistribute it and/or modify it
+// under the terms of the GNU Lesser General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// TCPDF is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public License
+// along with TCPDF.  If not, see <http://www.gnu.org/licenses/>.
+//
+// See LICENSE.TXT file for more information.
 //  ----------------------------------------------------------------------------
 //
 // Description : Utility to generate font definition files fot TCPDF
@@ -41,7 +43,7 @@
 /**
  * Utility to generate font definition files fot TCPDF.
  * @author Nicola Asuni, Olivier Plathey, Steven Wittens
- * @copyright 2004-2009 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com) Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
+ * @copyright 2004-2008 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com) Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
  * @package com.tecnick.tcpdf
  * @link http://www.tcpdf.org
  * @license http://www.gnu.org/copyleft/lesser.html LGPL
@@ -199,7 +201,7 @@ function MakeFont($fontfile, $fmfile, $embedded=true, $enc='cp1252', $patch=arra
 		//Not embedded font
 		$s .= '$file='."'';\n";
 	}
-	$s .= "?>";
+	$s .= '// --- EOF ---';
 	SaveToFile($basename.'.php',$s);
 	print "Font definition file generated (".$basename.".php)\n";
 }
@@ -270,7 +272,7 @@ function ReadUFM($file, &$cidtogidmap) {
 				$cidtogidmap{(($cc * 2) + 1)} = chr($glyph & 0xFF);
 			}
 		}
-		if(($gn == '.notdef') AND (!isset($fm['MissingWidth']))) {
+		if((isset($gn) AND ($gn == '.notdef')) AND (!isset($fm['MissingWidth']))) {
 			$fm['MissingWidth'] = $w;
 		}
 		} elseif($code == 'FontName') {
@@ -479,7 +481,7 @@ function MakeFontDescriptor($fm, $symbolic=false) {
 	//StemV
 	if (isset($fm['StdVW'])) {
 		$stemv = $fm['StdVW'];
-	} elseif (isset($fm['Weight']) and eregi('(bold|black)', $fm['Weight'])) {
+	} elseif (isset($fm['Weight']) AND preg_match('/(bold|black)/i', $fm['Weight'])) {
 		$stemv = 120;
 	} else {
 		$stemv = 70;
@@ -607,4 +609,7 @@ if (count($arg) >= 3) {
 } else {
 	print "Usage: makefont.php <ttf/otf/pfb file> <afm/ufm file> <encoding> <patch>\n";
 }
-?>
+
+//============================================================+
+// END OF FILE                                                 
+//============================================================+

@@ -17,13 +17,13 @@ class html_base_grid extends html_object
     public function toHtml($model, $sql = null, $columns = null, $order = null)
     {
 
-        $modelName = get_class($model);
+        $modelName 	= get_class($model);
         $orderField = "order-$modelName";
-        $descField = "desc-$modelName";
+        $descField 	= "desc-$modelName";
         $searchField = "search-$modelName";
-        $pageField = "page-$modelName";
+        $pageField 	= "page-$modelName";
 
-        $table = $model->getDatabaseTable();
+        $table 	= $model->getDatabaseTable();
         $fields = array_keys($model->getFields());
 
         $dialog = web::request("dialog") ? "dialog" : "";
@@ -69,11 +69,11 @@ class html_base_grid extends html_object
 
         if($primaryKey && !in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]= "$table.$primaryKey";
 
-        if($order) $order = "order: $order";
-        if(web::request($orderField)) {
+        if ($order) $order = "order: $order";
+        if (web::request($orderField)) {
             $order = "order: ".web::request($orderField);
             $desc = web::request($descField) == 'true' ? "false" : "true";
-            if(web::request($descField) == 'true') $order .= " desc";
+            if (web::request($descField) == 'true') $order .= " desc";
         } else {
             $desc = "false";
         }
@@ -101,7 +101,7 @@ class html_base_grid extends html_object
 		);
 
 		// La página es una página fuera del ámbito del resultado.
-		if(((web::request($pageField) - 1) * $model->page_size) >= $model->total_results) {
+		if (((web::request($pageField) - 1) * $model->page_size) >= $model->total_results) {
 			$model->setCurrentPage(1);
 			$results = $model->select(
 				$sql,
@@ -149,6 +149,7 @@ class html_base_grid extends html_object
 				else
 					$formData .= "<input type=button value='nuevo' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\", \"".web::request("field")."\",\"".web::request("parent")."\")'>";
 			}
+
 			$formData .=
                 "$data
                  <div id='listado-paginas'>$paginas</div>
@@ -160,8 +161,8 @@ class html_base_grid extends html_object
             align=center width='98%'>
             <tr >\n";
 
-        foreach($columns as $column) {
-            if(web::request($orderField) == $column) {
+        foreach ($columns as $column) {
+            if (web::request($orderField) == $column) {
                 $arrow = web::request($descField) == 'true' ? "&uarr;" : "&darr;";
             } else {
                 $arrow = '';
@@ -205,6 +206,7 @@ class html_base_grid extends html_object
 
                 $trEvent = "onclick=openUrl('$url')";
             }
+
             $formData .=
                 "<tr class='grid_row row_".($i++ % 2 == 0 ? 'even' : 'odd')."' $trEvent id='id-".$row->get("id")."'>
                     <td class='value' style='display: none;'>
@@ -217,6 +219,11 @@ class html_base_grid extends html_object
 				$value = $row->get($column);
 
 				switch ($attrs["type"]) {
+					case "bool":
+						if($value == 1)
+							$value = '<img src="/resources/admin/images/check.png"/>';
+							$style = "align='center'";
+					break;
 					case "date":
 						if($value != "0000-00-00")
 							$value = format::date($value);
@@ -227,7 +234,7 @@ class html_base_grid extends html_object
 				if ($attrs["money"]) $value = number_format($value, 0, ',', '.');
 
                 $formData .= "
-                <td class=grid_cell>$value</td>";
+                <td class='grid_cell'$style>$value</td>";
             }
 
             // Si hemos especificado un callback de borrado
