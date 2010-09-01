@@ -16,6 +16,8 @@ class helpers_files_thumbnail
     private $_rootThumbnails = "/cached";
     private $_output = "jpg";
     private $_filters = array();
+    private $_height;
+    private $_width;
     function __construct ($file)
     {
         $this->_file = $file;
@@ -38,12 +40,15 @@ class helpers_files_thumbnail
 	{
 		$this->_filters[]= $filter;
 	}
+	public function _checkHeight()
+	{
+		$this->_width = $this->_img->getImageWidth();
+		$this->_height = $this->_img->getImageHeight();
+	}
 
 	private function _isSmaller($width, $height)
 	{
-		$imageWidth = $this->_img->getImageWidth();
-		$imageHeight = $this->_img->getImageHeight();
-		return ($imageWidth < $width && $imageHeight < $height );
+		return ($this->_width < $width && $this->_height < $height );
 	}
 
     public function getUrl($width, $height, $operation = thumb::NORMAL)
@@ -53,6 +58,7 @@ class helpers_files_thumbnail
 		if(file_exists($_SERVER["DOCUMENT_ROOT"].$url)) return $url;
 
         $this->_img = new Imagick($this->_fileName.'[0]');
+        $this->_checkHeight();
 		$this->_img->setImageFormat($this->_output);
         switch ($operation) {
 
@@ -65,8 +71,14 @@ class helpers_files_thumbnail
             case "INABOX":
             case "THUMB":
             default:
-				if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height)))
-					$this->_img->thumbnailImage($width, $height, true);
+				if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height))) {
+
+					if ($this->_width > $width)
+						$this->_img->thumbnailImage($width,null,0);
+					else
+						$this->_img->thumbnailImage(null, $height,0);
+				}
+					//$this->_img->thumbnailImage($width, $height, true); // funciona correctamente en la versión 3.0
                 break;
         }
 
