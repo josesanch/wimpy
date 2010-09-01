@@ -78,7 +78,7 @@ class helpers_files_thumbnail
 					else if ($this->_width > $width)
 						$this->_img->thumbnailImage(null, $height,0);
 					else
-						$this->_img->thumbnailImage($width, $height,0);
+						$this->_img->thumbnailImage($width, $height, true);
 				}
 					//$this->_img->thumbnailImage($width, $height, true); // funciona correctamente en la versión 3.0
                 break;
