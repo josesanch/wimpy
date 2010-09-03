@@ -16,7 +16,7 @@ class Indexer
 
 	}
 
-	public function index($model)
+	public function index($model, $fieldContent = "texto")
 	{
 		$this->_indexer = new XapianTermGenerator();
 		$this->_indexer->set_stemmer($this->_stemmer);
@@ -24,7 +24,7 @@ class Indexer
 		foreach($items->select() as $item) {
 			$guid = $model."-".$item->id."-".web::instance()->getLanguage();
 			$title = $item->get($item->getTitleField());
-			$content = notildes(strip_tags(html_entity_decode("$title\n".$item->texto, ENT_COMPAT, "UTF-8")));
+			$content = notildes(strip_tags(html_entity_decode("$title\n".$item->$fieldContent, ENT_COMPAT, "UTF-8")));
 
 			$doc = new XapianDocument();
 			$doc->set_data($content);
