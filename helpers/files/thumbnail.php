@@ -74,9 +74,9 @@ class helpers_files_thumbnail
 				if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height))) {
 
 					if ($width > $height)
-						$this->_img->thumbnailImage($width, null, true);
+						$this->_img->thumbnailImage($width, null, 0);
 					else
-						$this->_img->thumbnailImage(null, $height, true);
+						$this->_img->thumbnailImage(null, $height, 0);
 
 //						$this->_img->thumbnailImage($width, $height, true);
 				}
