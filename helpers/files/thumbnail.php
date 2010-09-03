@@ -73,12 +73,12 @@ class helpers_files_thumbnail
             default:
 				if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height))) {
 
-					if ($this->_width > $width)
-						$this->_img->thumbnailImage($width,null,0);
-					else if ($this->_width > $width)
-						$this->_img->thumbnailImage(null, $height,0);
+					if ($width > $height)
+						$this->_img->thumbnailImage($width, null, true);
 					else
-						$this->_img->thumbnailImage($width, $height, true);
+						$this->_img->thumbnailImage(null, $height, true);
+
+//						$this->_img->thumbnailImage($width, $height, true);
 				}
 					//$this->_img->thumbnailImage($width, $height, true); // funciona correctamente en la versión 3.0
                 break;
