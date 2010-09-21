@@ -57,7 +57,7 @@ class Model extends ActiveRecord
 	}
 
 
-	protected function upload($field, $type = 'file', $ajax = false)
+	protected function upload($field, $type = 'file', $ajax = false, $campoEnElModelo = null)
 	{
 
 		if($ajax) $file = $_FILES['file'];
@@ -85,8 +85,10 @@ class Model extends ActiveRecord
 							"fecha" =>  date("Y-m-d H:i:s"),
 							"module" => $module,
 							"orden" => $orden + 1
-							);
-			if($field) $values['field'] = $field;
+			);
+			
+			if ($campoEnElModelo) $values['field'] = $campoEnElModelo;
+			elseif($field) $values['field'] = $field;
 
 			$id = $item->create($values);
 			$item->saveUploadedFile($file["tmp_name"], $id, $extension);
@@ -95,15 +97,15 @@ class Model extends ActiveRecord
 		return false;
 	}
 
-	public function uploadFile($field = '')
+	public function uploadFile($field = '', $ajax = false, $campoEnElModelo = null)
 	{
-		return $this->upload($field, 'file');
+		return $this->upload($field, 'file', $ajax, $campoEnElModelo);
 
 	}
 
-	public function uploadImage($field = '', $ajax = false)
+	public function uploadImage($field = '', $ajax = false, $campoEnElModelo = null)
 	{
-		return $this->upload($field, 'image', $ajax);
+		return $this->upload($field, 'image', $ajax, $campoEnElModelo);
 	}
 
 	public function hasImages()

@@ -508,11 +508,7 @@ class Web
             $controller->setApplicationPath($this->_applicationPath);
             $controller->view->controller = $this->controller;
             $controller->view->action = $this->action;
-            call_user_method_array(
-                "notfoundAction",
-                $controller,
-                $this->params
-            );
+            call_user_func_array(array($controller, "notfoundAction"), $this->params);
             echo $controller->renderHtml("notfound");
         } else {
 //            echo "<h1>Error 404</h1>";

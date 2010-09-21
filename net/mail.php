@@ -166,11 +166,9 @@ class Net_Mail
 	private function __parseHtml($text)
 	{
 		return  strip_tags($text);
-		//return preg_replace(array("/<[^>]*>/"), array(""), $text);
 	}
 
 	public function setXMailer($xmailer) {
 		$this->xmailer = $xmailer;
 	}
 }
-?>
