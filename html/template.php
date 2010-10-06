@@ -1,7 +1,7 @@
 <?
 /**
  *  @desc Clase para manipular plantillas html.
- *  @author José Sánchez Moreno
+ *  @author Josï¿½ Sï¿½nchez Moreno
  *  @version 1.0.1
  *  \date 27/10/05
  *  \ingroup  html
@@ -139,7 +139,7 @@ class html_template extends html_object
 					$openers++;
 					$curr_item[] = $item;
 
-					// Si es un bloque añadimos al bloque
+					// Si es un bloque aï¿½adimos al bloque
 					list($command) = explode(":", $arr[0]);
 					if($this->isBlockCommand($command))  $blocks[] = $command;
 					break;
@@ -151,7 +151,7 @@ class html_template extends html_object
 					 }
 					if($openers == 0)	// Se ha cerrado la llave
 					{
-						if(count($blocks) == 0)		// Si no estamos dentro de ningún bloque se ha completado el item.
+						if(count($blocks) == 0)		// Si no estamos dentro de ningï¿½n bloque se ha completado el item.
 						{
 							return array($pre_item, $curr_item, $arr);
 						} else {
@@ -249,8 +249,8 @@ class html_template extends html_object
 		// Si no hay nada que procesar, solo son unas llaves pero no tienen funciones.
 		if(!$function && $block[2] != "{" ) return join("", is_array($block) ? $block : array($block));
 
-		//@TODO Optimizar está parte
-		if($function && $block[2] == "{")		// Hay una llave dentro de la actual y es una funcion válida.
+		//@TODO Optimizar esta parte
+		if($function && $block[2] == "{")		// Hay una llave dentro de la actual y es una funcion vï¿½lida.
 		{
 			$arr = $block;
 			array_splice($arr, 0, 1);	// Le quitamos el {  del principio
@@ -267,7 +267,7 @@ class html_template extends html_object
 			return $result;
 
 		}
-		// Aquí no hace falta parsear lo de fuera solo lo de centro, no es una función valida
+		// Aqui no hace falta parsear lo de fuera solo lo de centro, no es una funcion valida
 		// @TODO Error!!!!
 		elseif(!$function && $block[2] == "{")
 		{
@@ -541,9 +541,8 @@ class html_template extends html_object
 	private function __evalVar($var, &$vars)		// Evalua variable o constante para while o if
 	{
 		$txt = preg_replace("/\\\$([^_]\w*)/", "\\\$vars['\\1']", $var);
-
-//		$this->debug("EVAL: $txt");
-		return eval($txt.";");
+		if ($this->_checkCode("$txt;")) 		
+			return eval("$txt;");		
 	}
 
 
@@ -643,6 +642,23 @@ class html_template extends html_object
 		$this->__vars = &$template->__vars;
 		$this->__blocks =  $template->__blocks;
 	}
+	
+	private function _checkCode($code) {
+		if (@eval('return true;' . $code) === true) return true;
+		$error = error_get_last();
+		web::error("<font color=red>ERROR Al evaluar: $code</font> -- ".$error["message"]." --> <br/>".$this->__file);
+		return false;
+	}
+	
+	private function _eval($code) {
+		if (@eval('return true;' . $code) === true) {
+			return eval($code);
+		} else {
+			$error = error_get_last();
+			web::error("ERROR Al evaluar: $code -- <br>$error");
+		}
+		return null;
+	}	
 
 }
 

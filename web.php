@@ -545,7 +545,7 @@ class Web
         $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'> * Se ha producido un error </h3>";
 
-		if (!web::instance()->isInProduction() || web::instance()->reportErrors())
+		if (!web::instance()->isInProduction() || web::instance()->reportErrors() || web::instance()->isDevelopmentServer())
 			$str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
 
         if ($notify == web::NOTIFY_BY_EMAIL && web::instance()->isInProduction()) {
@@ -601,5 +601,14 @@ class Web
         $tidy->cleanRepair();
         return $tidy;
     }
-
+    
+	/**
+	 * Devuelve true si el servidor es un servidor de desarrollo.
+	 * Para que el servidor sea de desarrollo tiene que existir un fichero en .htdocs llamado .development
+	 * @return boolean
+	 */
+	public function isDevelopmentServer() 
+	{
+		return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
+	}
 }
