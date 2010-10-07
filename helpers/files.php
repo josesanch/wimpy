@@ -104,7 +104,13 @@ class helpers_files extends ActiveRecord
 	public function saveUploadedFile($file, $id, $extension) {
 		$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
        	if(!is_dir($dir)) mkdir($dir, 0755);
-   	   	move_uploaded_file($file, $_SERVER['DOCUMENT_ROOT'].$this->path."/".$id.".".$extension);
+   	   	return move_uploaded_file($file, $_SERVER['DOCUMENT_ROOT'].$this->path."/".$id.".".$extension);
+	}
+
+	public function saveFile($file, $id, $extension) {
+		$dir = $_SERVER['DOCUMENT_ROOT'].$this->path;
+       	if(!is_dir($dir)) mkdir($dir, 0755);
+   	   	return rename($file, $_SERVER['DOCUMENT_ROOT'].$this->path."/".$id.".".$extension);
 	}
 
 
