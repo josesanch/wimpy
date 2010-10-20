@@ -37,8 +37,9 @@ class youtube
 
 		public function getPlayer($size = "425x350") {
 			$size = explode("x", $size);
-			return '<object type="application/x-shockwave-flash" style="width:'.$size[0].'px; height:'.$size[1].'px;" data="http://www.youtube.com/v/'.$this->id.'">
-					<param name="movie" value="http://www.youtube.com/v/'.$this->id.'" />
+			return '<object type="application/x-shockwave-flash" style="width:'.$size[0].'px; height:'.$size[1].'px;" data="http://www.youtube.com/v/'.$this->id.'?rel=0" wmode="transparent">
+					<param name="wmode" value="transparent">
+					<param name="movie" value="http://www.youtube.com/v/'.$this->id.'?rel=0" />
 					</object>';
 		}
 
