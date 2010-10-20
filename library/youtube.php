@@ -1,10 +1,15 @@
-<?
+<?php
+
 class youtube
 {
 		public $id;
 		private $info;
 
 		public function __construct($id) {
+			if (substr($id, 0, 8) == "http://") {	// Parse the url to obtain the id
+				preg_match("/v=([^&])/", $id, $arr)
+				$id = $arr[1];
+			}
 			$this->id = $id;
 		}
 
@@ -43,4 +48,3 @@ class youtube
 
 
 }
-?>
