@@ -64,7 +64,7 @@ class Web
     /**
      * Set the available languages in the website.
      *
-     * Pone los idiomas disponibles en la web.     *
+     * Pone los idiomas disponibles en la web
       * \param array $langs Array of languages.<br/>
       * example: $web->setLanguages(array('es', 'en', 'pt'));
      */
@@ -92,10 +92,23 @@ class Web
 
     public function setDatabase($database)
     {
-        if (!$this->database = new Database($database)) {
-            web::error("Error conectando con la base de datos $database[0]");
+		$proto = array_shift(explode(":", $database[0]));
+		switch ($proto) {
+			case "mysql":
+				$dbConector = "database_mysql";
+				break;
+			case "pgsql":
+				$dbConector = "database_pgsql";
+				break;
+		}
+
+        try {
+			$this->database = new $dbConector($database);
+		} catch (Exception $e) {
+            web::error("Error conectando con la base de datos");
             exit;
         }
+
         if (!$this->database->tableExists('images')) {
             create_images_and_files_tables($this->database);
         }
@@ -601,13 +614,13 @@ class Web
         $tidy->cleanRepair();
         return $tidy;
     }
-    
+
 	/**
 	 * Devuelve true si el servidor es un servidor de desarrollo.
 	 * Para que el servidor sea de desarrollo tiene que existir un fichero en .htdocs llamado .development
 	 * @return boolean
 	 */
-	public function isDevelopmentServer() 
+	public function isDevelopmentServer()
 	{
 		return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
 	}

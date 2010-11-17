@@ -86,7 +86,7 @@ class Model extends ActiveRecord
 							"module" => $module,
 							"orden" => $orden + 1
 			);
-			
+
 			if ($campoEnElModelo) $values['field'] = $campoEnElModelo;
 			elseif($field) $values['field'] = $field;
 
@@ -106,6 +106,39 @@ class Model extends ActiveRecord
 	public function uploadImage($field = '', $ajax = false, $campoEnElModelo = null)
 	{
 		return $this->upload($field, 'image', $ajax, $campoEnElModelo);
+	}
+
+	/**
+	* Añade un fichero al model en el campo que hayamos indicado
+	*
+	* @param  string $field nombre del campo en el modelo dónde vamos a añadir el archivo.
+	* @param  string $filename ruta al fichero.
+	* @return helper_files;
+	*/
+	public function addFile($field, $filename, $name = null)
+	{
+		if (!$name) $name = $filename;
+		$fieldData = $this->getFields($property);
+		$type = $fieldData["type"];
+		$items 	= $type == 'file' 	? new helpers_files() : new helpers_images();
+		$item 	= $type == 'file' 	? new helpers_files() : new helpers_images();
+		$module = get_class($this);
+		$p = pathinfo($filename); $extension = strtolower($p["extension"]);
+		$mime_type = getMimeType($filename);
+		$orden = $items->count("module='$module' and iditem='".$this->id."'");
+		$values = array(
+			"iditem" 	=> $this->id,
+			"extension" => $extension,
+			"nombre" 	=> $name,
+			"tipo" 		=> $mime_type,
+			"fecha" 	=> date("Y-m-d H:i:s"),
+			"module" 	=> $module,
+			"orden" 	=> $orden + 1,
+			"field" 	=> $field
+		);
+		$id = $item->create($values);
+		$item->saveFile($filename, $id, $extension);
+		return $item;
 	}
 
 	public function hasImages()
