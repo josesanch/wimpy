@@ -431,6 +431,10 @@ class Web
     public function setDefaultLanguage($lang)
     {
         $this->l10n->setDefaultLanguage($lang);
+
+
+
+
     }
 
     public function setInProduction($p)
