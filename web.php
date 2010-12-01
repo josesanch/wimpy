@@ -628,4 +628,16 @@ class Web
 	{
 		return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
 	}
+
+    public static function isMobile($type = null) 
+    {
+        if (web::request("mobile") || $_SESSION["mobile"]) return true;
+        if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
+            if (isset($type)) {
+                return preg_match("/$type/i",strtolower($_SERVER['HTTP_USER_AGENT'])); 
+            }
+            return true;
+        }
+
+    }
 }

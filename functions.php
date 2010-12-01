@@ -312,3 +312,4 @@ function getMimeType($file)
 	$mime_type = array_shift(explode(";",$mime_type));
 	return $mime_type;
 }
+
