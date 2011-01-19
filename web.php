@@ -36,6 +36,7 @@ class Web
     private static $_defaultInstance;    // La primera clase que se crea
     private $_defaultController = "index";
     private $_applicationPath;
+    public $showErrors = true;
 
 
     public function __construct($database = null, $languages = null)
@@ -53,7 +54,10 @@ class Web
             $this->l10n = new l10n();
             $this->bench = new bench();
             $this->auth = new auth();
-            $this->data = new webdata(1);
+            try {
+                $this->data = new webdata(1);
+            } catch (Exception $e) {
+            }
         }
 //        if ($languages) $this->setLanguages($languages);
 
@@ -431,10 +435,6 @@ class Web
     public function setDefaultLanguage($lang)
     {
         $this->l10n->setDefaultLanguage($lang);
-
-
-
-
     }
 
     public function setInProduction($p)
@@ -580,7 +580,8 @@ class Web
 			$mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
 		}
 
-		echo $str."$notificando</pre>";
+		if (web::instance()->showErrors) 
+            echo $str."$notificando</pre>";
     }
 
     public static function warning($texto, $file, $linea)
@@ -640,4 +641,10 @@ class Web
         }
 
     }
+
+    public static function getView($view)
+    {        
+        return new html_template($_SERVER["DOCUMENT_ROOT"]."/../application/views/{$view}.html");  
+    }
+
 }

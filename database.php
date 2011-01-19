@@ -5,10 +5,12 @@ class Database extends PDO
     public $error;
 
     private $_xdebug = false;
-
+    public $uri;
+    
     public function __construct($database)
     {
         $this->_xdebug = extension_loaded("xdebug");
+        $this->uri = $database[0];
 		parent::__construct(
 			$database[0],
 			isset($database[1]) ? $database[1] : null,
@@ -65,9 +67,9 @@ class Database extends PDO
             web::debug($sql, __METHOD__, __LINE__);
 
         $args =  func_get_args();
-           $return =  call_user_func_array(array('pdo', 'query'), $args);
+        $return =  call_user_func_array(array('pdo', 'query'), $args);
 
-           if ($this->errorCode() != 0) {
+        if ($this->errorCode() != 0) {
             if ($this->_xdebug)
                 web::error(
                     $sql,

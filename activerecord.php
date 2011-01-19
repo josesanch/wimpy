@@ -1,6 +1,6 @@
 <?php
 
-class ActiveRecord
+class ActiveRecord extends signalslot
 {
 	const NORMAL = "SQL_NORMAL";
     const INNER = "SQL_INNER";
@@ -26,9 +26,14 @@ class ActiveRecord
     public function __construct()
     {
         if (!$this->database_table) $this->database_table = strtolower(get_class($this));
-        $this->database = web::database();
+        if (!$this->database) $this->setDatabase(web::database());
         $this->readMetadata();
         $this->setWherePK();
+    }
+
+    public function setDatabase($database) 
+    {
+        $this->database = $database;
     }
 
     private function setWherePK()
@@ -313,14 +318,16 @@ class ActiveRecord
 
     private function readMetadata()
     {
-        if (!array_key_exists($this->database_table, ActiveRecord::$metadata)) {
+        if (!array_key_exists($this->database_table, ActiveRecord::$metadata[$this->database->uri])) {
             if ($this->fields) {
-                $metadata[$this->database_table]= array("fields" => array(), "primary_keys" => array());
+                $metadata = &$this->getMetadata();
+                $metadata = array("fields" => array(), "primary_keys" => array());
+                
                 foreach ($this->fields as $name => $attrs) {
                     if (!$attrs || $attrs == 'separator' || $attrs == '---') continue;
 
-                    ActiveRecord::$metadata[$this->database_table]["AllFields"][$name] = array();
-                    $field = &ActiveRecord::$metadata[$this->database_table]["AllFields"][$name];
+                    $metadata["AllFields"][$name] = array();
+                    $field = &$metadata["AllFields"][$name];
                     if (substr($name, -3) == "_id") {
                         $fk_field = preg_replace('/_id$/', '', $name);
                         if (in_array($fk_field, $this->belongs_to)) {
@@ -340,7 +347,7 @@ class ActiveRecord
 
                     $attrs = explode(" ", $attrs);
                     if (in_array("primary_key", $attrs)) {
-                        ActiveRecord::$metadata[$this->database_table]["primary_keys"][]= $name;
+                        $metadata["primary_keys"][]= $name;
                         $field["primary_key"] = true;
                     }
 
@@ -360,7 +367,7 @@ class ActiveRecord
 					if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
 					if (in_array("hidden", $attrs) || in_array("hidden", $attrs)) $field["hidden"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
-                        ActiveRecord::$metadata[$this->database_table ]["fields"][$name] = &$field;
+                        $metadata["fields"][$name] = &$field;
 
                     unset($defaultegs);
                     unset($labelregs);
@@ -477,25 +484,28 @@ class ActiveRecord
 
     public function getPrimaryKeys()
     {
-        return ActiveRecord::$metadata[$this->database_table]["primary_keys"];
+        $metadata = &$this->getMetadata();
+        return $metadata["primary_keys"];
     }
 
     public function getFields($field = '')
     {
-        if ($field) return ActiveRecord::$metadata[$this->database_table]["AllFields"][$field];
-        return ActiveRecord::$metadata[$this->database_table]["fields"];
+        $metadata = &$this->getMetadata();
+        if ($field) return $metadata["AllFields"][$field];
+        return $metadata["fields"];
     }
 
     // With the special type fields "image" and "file".
     public function getAllFields()
     {
-        return ActiveRecord::$metadata[$this->database_table]["AllFields"];
+        $metadata = &$this->getMetadata();
+        return $metadata["AllFields"];
     }
 
 
     public function deleteAll()
     {
-        $this->database->exec("delete from $this->database_table");
+        $this->database->exec("delete from ".$this->getDatabaseTable());
     }
 
     public function delete($args = '')
@@ -516,12 +526,17 @@ class ActiveRecord
     {
         $conditions = array();
         $this->setWherePK();
-        $sql = "delete from $this->database_table where ".$this->where_primary_keys;
+        $sql = "delete from ".$this->getDatabaseTable()." where ".$this->where_primary_keys;
 //        web::debug(__FILE__, __LINE__, $sql);
 
         if (is_a($this, "Model")) {
 			$this->_deleteAsociatedFiles();
-			log::add(web::auth()->get("user"), $this->getTitle()." [$this->id] DELETED", log::WARNING, $sql);
+			log::add(
+                web::auth()->get("user"), 
+                $this->getTitle()." [$this->id] DELETED", 
+                log::WARNING, 
+                $sql
+            );
 		}
 		$this->database->exec($sql);
     }
@@ -664,7 +679,11 @@ class ActiveRecord
     }
 
     public function &fields($field) {
-        return new fields(&ActiveRecord::$metadata[$this->database_table]["AllFields"][$field], $field, $this->database_table);
+        return new fields(
+            &ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field], 
+            $field, 
+            $this->database_table
+        );
     }
 
     public function getAllFieldsForForm()
@@ -676,6 +695,23 @@ class ActiveRecord
 	{
 		unset($this->where_primary_keys);
 	}
+
+    public function &getMetadata() 
+    {
+        if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
+            ActiveRecord::$metadata[$this->database->uri] = array();
+        }
+
+        if (!array_key_exists($this->getDatabaseTable(), ActiveRecord::$metadata[$this->database->uri])) {
+            ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()] = array(
+                "created" => false
+            );
+        }
+
+        $metadata = &ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()];
+        return $metadata;
+    }
+
 }
 
 class fields

@@ -34,9 +34,14 @@ class Model extends ActiveRecord
 
 	private function createTableIfNecessary()
 	{
-		if(!ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] && $this->fields) {
-			web::instance()->database->createTable($this->getDatabaseTable(), ActiveRecord::$metadata[$this->getDatabaseTable()]["fields"]);
-			ActiveRecord::$metadata['created_tables'][$this->getDatabaseTable()] = true;
+        $metadata = &$this->getMetadata();
+     	if (!$metadata["created"] && $this->fields) {
+
+			$this->database->createTable(
+                $this->getDatabaseTable(), 
+                $metadata["fields"]
+            );
+			$metadata["created"] = true;
 		}
 	}
 

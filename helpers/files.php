@@ -128,14 +128,15 @@ class helpers_files extends ActiveRecord
 	}
 
 
-	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $border = null, $img = null) {
+	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $border = null, $img = null) 
+    {
 		if(isset($border)) $this->setBorder($border);
     	$this->cached_image_url =  $this->generateCachedUrl($width, $height, $ycenter, $xcenter, $op);
     	$cached = $this->isCached($this->cached_image_url);
     	if(!$cached) {
    			$this->init();
 			if(!$img) $img = $this->image;
-			switch($op) {
+			switch ($op) {
 				case "THUMB":
 					if(isset($width) && isset($height)) $img = $img->thumbnail($width, $height);
 					break;
@@ -150,7 +151,7 @@ class helpers_files extends ActiveRecord
 
      		$img = $this->putBorder($img);
 			$img->setQuality($this->quality);
-			if($this->cache_images) {
+			if ($this->cache_images) {
 				$this->cacheImage($this->cached_image_url , $img);
 				return $this->cached_image_url.".".$this->output_type;
 			} else {
