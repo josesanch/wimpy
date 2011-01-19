@@ -1,6 +1,6 @@
 <?php
 
-class ActiveRecord extends signalslot
+class ActiveRecord
 {
 	const NORMAL = "SQL_NORMAL";
     const INNER = "SQL_INNER";
