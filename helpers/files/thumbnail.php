@@ -63,7 +63,7 @@ class helpers_files_thumbnail
 		$this->_img->setImageFormat($this->_output);
 
         if (strtolower($this->_output) == "png") {
-            $this->_img->setImageDepth($this->_pngDepth);
+//            $this->_img->setImageDepth($this->_pngDepth);
         }
         switch ($operation) {
 
@@ -175,6 +175,16 @@ class helpers_files_thumbnail
 	{
 		if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
 		$this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
+        
+        // Arreglamos los pngs de 16 bits para las versiones <= 3.0
+        if (strtolower($this->_output) == "png") {
+            $version = $this->_img->getVersion();
+            if ($version["versionNumber"] < 1632) {
+                $gd = imagecreatefrompng($_SERVER["DOCUMENT_ROOT"].$url);
+                imageSaveAlpha($gd, True);
+                imagepng($gd, $_SERVER["DOCUMENT_ROOT"].$url, 8, PNG_ALL_FILTERS);                
+            }
+        }
 
 	}
 
