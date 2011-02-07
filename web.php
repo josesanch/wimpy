@@ -36,6 +36,7 @@ class Web
     private static $_defaultInstance;    // La primera clase que se crea
     private $_defaultController = "index";
     private $_applicationPath;
+    private $_l10nControllerMaps;
     public $showErrors = true;
 
 
@@ -272,12 +273,21 @@ class Web
             $this->action = array_shift($this->params);
             $this->action = $this->action ? $this->action : 'index';
         }
-
+        
+        $controllerName = $this->controller;
+        
+        if ($this->l10n->isNotDefault()) { // Buscamos en los maps
+            $maps = $this->_l10nControllerMaps[$this->l10n->getLanguage()];
+            if ($orgControllerName = array_search(web::canonize($controllerName), $maps)) {
+                $controllerName = $orgControllerName;                        
+            }
+        }
+            
         $controllerClass =  ucfirst(
             str_replace(
                 '-',
                 '_',
-                web::canonize($this->controller)
+                web::canonize($controllerName)
             )
         )."Controller";
 
@@ -646,5 +656,11 @@ class Web
     {        
         return new html_template($_SERVER["DOCUMENT_ROOT"]."/../application/views/{$view}.html");  
     }
+
+    public function setl10nControllerMaps($maps)
+    {
+        $this->_l10nControllerMaps = $maps;
+    }
+    
 
 }

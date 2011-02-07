@@ -26,9 +26,9 @@ class html_template_filters
 	{
 		return str_replace($replace, $for, $text);
 	}
-	public function money($text, $decimal = 0, $punto = ',', $separador = '.')
+	public function money($text, $decimal = 0, $sepdecimales = ',', $separador = '.')
 	{
-		return number_format($text, $decimal, $punto, $separador);
+		return number_format($text, $decimal, $sepdecimales, $separador);
 	}
 	public function capitalize($str)
 	{

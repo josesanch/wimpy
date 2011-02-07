@@ -512,7 +512,8 @@ class ActiveRecord
     {
         if (func_num_args() > 0) {
             $args = func_get_args();
-            $results = call_user_method_array("selectSql", $this, $args);
+        
+            $results = call_user_func_array(array($this, "selectSql"), $args);
             foreach ($results as $item) {
                 $item->deleteItem();
             }
