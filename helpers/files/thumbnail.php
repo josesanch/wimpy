@@ -62,7 +62,7 @@ class helpers_files_thumbnail
         $this->_checkHeight();
 		$this->_img->setImageFormat($this->_output);
 
-        if ($this->_output == "png") {
+        if (strtolower($this->_output) == "png") {
             $this->_img->setImageDepth($this->_pngDepth);
         }
         switch ($operation) {
