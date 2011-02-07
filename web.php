@@ -109,7 +109,7 @@ class Web
 
         try {
 			$this->database = new $dbConector($database);
-		} catch (Exception $e) {
+		} catch (PDOException $e) {
             web::error("Error conectando con la base de datos");
             exit;
         }
