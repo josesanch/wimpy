@@ -18,6 +18,7 @@ class helpers_files_thumbnail
     private $_filters = array();
     private $_height;
     private $_width;
+    private $_pngDepth = 8;
     function __construct ($file)
     {
         $this->_file = $file;
@@ -60,6 +61,9 @@ class helpers_files_thumbnail
         $this->_img = new Imagick($this->_fileName.'[0]');
         $this->_checkHeight();
 		$this->_img->setImageFormat($this->_output);
+        if ($this->_output == "png") {
+            $this->_img->setImageDepth($this->_pngDepth);
+        }
         switch ($operation) {
 
             case thumb::CROP:
