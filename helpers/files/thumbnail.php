@@ -61,6 +61,7 @@ class helpers_files_thumbnail
         $this->_img = new Imagick($this->_fileName.'[0]');
         $this->_checkHeight();
 		$this->_img->setImageFormat($this->_output);
+
         if ($this->_output == "png") {
             $this->_img->setImageDepth($this->_pngDepth);
         }
