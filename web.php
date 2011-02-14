@@ -65,6 +65,7 @@ class Web
         $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
     }
+    
 
     /**
      * Set the available languages in the website.
@@ -377,6 +378,7 @@ class Web
                 $params
             );
         }
+
 
         if ($render) {
             $controller->render($this->action);

@@ -162,10 +162,12 @@ class AdministrationController extends ApplicationController
         // If the model has "AdminList" method we call the method of the model.
         if (method_exists($model, $adminAction)) {
             $model = new $modelName();
+            $model->layout = $this->layout;
             $this->view->content = call_user_func_array(
                 array($model, $adminAction),
                 $params
             );
+            $this->layout = $model->layout;
             return;
         }
 
@@ -233,7 +235,10 @@ class AdministrationController extends ApplicationController
     }
 
     protected function getLayoutFile() {
-        return dirname(__FILE__)."/views/layouts/".$this->layout.".html";
+        if (file_exists(dirname(__FILE__)."/views/layouts/".$this->layout.".html"))
+            return dirname(__FILE__)."/views/layouts/".$this->layout.".html";
+
+        return web::instance()->getApplicationPath()."/views/layouts/".$this->layout.".html";
     }
 
     public function logoutAction()

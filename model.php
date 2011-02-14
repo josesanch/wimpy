@@ -15,6 +15,7 @@ class Model extends ActiveRecord
 */
 	public $field_used_for_ordenation = "orden";
 	public $image_label;
+    public $layout;
 	protected $label;
 	protected $has_files = False;
 	protected $has_images = False;

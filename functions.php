@@ -41,7 +41,7 @@ function js($module)
 		//	return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
 
 		case "jquery/ui":
-			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.1.custom.min.js\" type=\"text/javascript\"></script>";
+			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.9.custom.min.js\" type=\"text/javascript\"></script>";
 			//return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
 	}
 

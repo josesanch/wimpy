@@ -37,6 +37,11 @@ class helpers_files_thumbnail
 		}
     }
 
+    public function setCachedDir($dir)
+    {
+        $this->_rootThumbnails = $dir;
+    }
+    
 	public function addFilter($filter)
 	{
 		$this->_filters[]= $filter;
