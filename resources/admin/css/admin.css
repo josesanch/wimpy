@@ -366,3 +366,11 @@ input.dialog { margin-left: 0.4em; background: #96AABF url("/resources/admin/ima
 #auth_form input.submit  { margin: 0em auto 0 auto; clear: both; display: block; }
 p.auth_form { width: 40em; margin: 3em auto; text-align: center; color: #999; }
 .error-auth  {  background: #cc6666; color: white; text-align :center; font-size: 1.3em; padding: 1em; font-weight: bold; border: 1px solid #FFA600;  z-index: 100;}
+
+
+/************************************** accordion ***************************************/
+
+div.accordion {  }
+div.accordion h2 { Background: #ccc url("/resources/icons/non-collapsed.png") 0.5em 50% no-repeat; border-radius: 5px; padding: 0.5em 0 0.5em 2em; margin-top: 1em; cursor: pointer; font-size: 1.2em;  }
+div.accordion.collapsed h2 { Background: #ccc  url("/resources/icons/collapsed.png") 1em 50% no-repeat ; }
+div.accordion.collapsed div.accordion-content { display: none; overflow: hidden; padding-bottom: 1em; }

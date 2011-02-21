@@ -7,7 +7,7 @@ class html_form extends html_object
     protected $_javascript = "";
     protected $_javascriptOnload = "";
     protected $_endData;
-
+    protected $openDiv = false;
     protected $attrs = array(
         'method' => 'POST'
     );
@@ -73,15 +73,18 @@ class html_form extends html_object
             $this->data .= $input;
         }
         $this->data .= $this->getJs();
-
     }
 
     public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
-		if ($type == "---" or $type == "separation")
-			$attrs["type"] = $type;
-		else
+		if (substr($type, 0, 3) == "---" or $type == "separation") {        
+			$attrs["type"] = "---";
+            $words = explode(" ", $type);
+            if (in_array("accordion", $words)) $attrs["accordion"] = true;
+            if (in_array("collapsed", $words)) $attrs["accordion"] = "collapsed";
+		} else {
 			$attrs = $this->model->getFields($field);
+        }
 
         if (!isset($attrs["hidden"]) && (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"]))) {
                 $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
@@ -225,9 +228,23 @@ class html_form extends html_object
 
 				case "separator":
 				case "---":
-				    $input = new html_form_html($field);
-                    $input->value("<h2>$field</h2>");
-                    break;
+                    $input = new html_form_html($field);
+
+                if ($this->openDiv) {
+                    $div = "</div></div>";
+                }
+
+                if (isset($attrs["accordion"])) $class = "accordion";
+                if ($attrs["accordion"] === "collapsed") $class = "accordion collapsed";
+                $input->value(
+                    "$div
+                     <div class='$class'>
+                         <h2>$field</h2>
+                         <div class='accordion-content'>
+                     "
+                );
+                $this->openDiv = true;
+                break;
 
                 case 'int':
                     $size = $attrs['size'] ? $attrs['size'] : 11;

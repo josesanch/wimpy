@@ -195,7 +195,7 @@ class Web
         return $uri;
     }
 
-    private static function processParams($params, $arr, &$uri)
+    private static function processParams($params = null, $arr = null, &$uri = null)
     {
         if (!is_array($params)) {
             $params = explode("/", $params);
@@ -558,7 +558,10 @@ class Web
     {
 //        log::to_file("EXEC $texto<hr>");
 
-        if (web::request("debug") == "true" || $_SESSION['debug'] == "true") {
+        if (
+            web::request("debug") == "true"
+            || (array_key_exists("debug", $_SESSION) && $_SESSION['debug'] == "true")
+        ) {
             echo "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
             //var_dump($texto);
@@ -663,6 +666,10 @@ class Web
     {
         $this->_l10nControllerMaps = $maps;
     }
-    
+
+// TODO: Generar contenido de header
+    public static function header()
+    {
+    }
 
 }

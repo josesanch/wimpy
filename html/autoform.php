@@ -32,9 +32,8 @@ class html_autoform extends html_form
             $tmpUpload = get_class($this->model)."_".rand();
              $this->hidden("tmp_upload")->value($tmpUpload);
         }
-
+        
         foreach ($this->model->getAllFieldsForForm() as $field => $type) {
-
 			$attrs = $this->model->getFields($field);
 			$this->auto($field, null, $tmpUpload, $type);
 			if ($this->css) $this->css($this->css);
@@ -55,7 +54,9 @@ class html_autoform extends html_form
 		$parent = web::request("parent");
 		$field = web::request("field");
         $this->addJS("Wimpy.init('$modelName', '$parent', '$field');", true);
-
+        if ($this->openDiv) {
+            $this->add("</div></div>");
+        }
 		$this->add("<div class='form-buttons'>");
 		foreach ($this->buttons as $button) {
 			$this->add($this->_getButton($button));

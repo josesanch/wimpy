@@ -18,6 +18,7 @@ var ModelForms = {
 		ModelForms._validate(form_id, parent, field);
 
 		Autocomplete.init();
+		ModelForms._accordion();
 	},
 
 	_validate : function (form_id, parent, field) {
@@ -33,6 +34,16 @@ var ModelForms = {
 			$('#' + form_id).validate();
 		}
 
+	},
+	_accordion : function() {
+		$("div.accordion h2").bind("click", function() {
+			$(this).parent().find("div.accordion-content").toggle("slow");
+			if ($(this).parent().hasClass("collapsed")) {
+				$(this).parent().removeClass("collapsed");
+			} else {
+				$(this).parent().addClass("collapsed");
+			}			
+		});
 	}
 }
 

@@ -164,6 +164,8 @@ class ActiveRecord
 
     public function selectSql($args = '')
     {
+        $mode = ActiveRecord::NORMAL;
+        $order = $joins = "";
         $this->select_columns = $this->select_order = $this->select_limit = $this->select_conditions = '';
         $args = func_get_args();
 		$table = $this->getDatabaseTable();
@@ -318,13 +320,16 @@ class ActiveRecord
 
     private function readMetadata()
     {
-        if (!array_key_exists($this->database_table, ActiveRecord::$metadata[$this->database->uri])) {
+        if (!array_key_exists(
+                $this->database_table,
+                ActiveRecord::$metadata[$this->database->uri])
+           ) {
             if ($this->fields) {
                 $metadata = &$this->getMetadata();
                 $metadata = array("fields" => array(), "primary_keys" => array());
                 
                 foreach ($this->fields as $name => $attrs) {
-                    if (!$attrs || $attrs == 'separator' || $attrs == '---') continue;
+                    if (!$attrs || $attrs == 'separator' || substr($attrs, 0, 3) == '---') continue;
 
                     $metadata["AllFields"][$name] = array();
                     $field = &$metadata["AllFields"][$name];
@@ -340,10 +345,12 @@ class ActiveRecord
                     preg_match("/^(int|varchar|enum|text|decimal|datetime|time|date|bool|image|html|files|file)(\(([^\)]+)\))?/i", $attrs, $egs);
                     preg_match("/(default)='(.*)'/", $attrs, $defaultegs);
                     preg_match("/(label)='([^']*)'/", $attrs, $labelregs);
-		            $field["type"] = $egs[1];
-                    $field["size"] = $egs[3];
-                    if ($defaultegs[2]) $field["default_value"] = $defaultegs[2];
-                    $field["label"] = $labelregs[2] ? ucfirst($labelregs[2]) : ucfirst($name);
+                    if (array_key_exists(1, $egs)) $field["type"] = $egs[1];
+                    if (array_key_exists(3, $egs)) $field["size"] = $egs[3];
+                    
+                    if (array_key_exists(2, $defaultegs)) $field["default_value"] = $defaultegs[2];
+                    
+                    $field["label"] = array_key_exists(2, $labelregs) ? ucfirst($labelregs[2]) : ucfirst($name);
 
                     $attrs = explode(" ", $attrs);
                     if (in_array("primary_key", $attrs)) {
@@ -412,7 +419,11 @@ class ActiveRecord
             }
 
 
-            if ($field['l10n'] && web::instance()->l10n->isNotDefault($selected_lang)) {
+             if (
+                 array_key_exists("l10n", $field)
+                 && $field['l10n']
+                 && web::instance()->l10n->isNotDefault($selected_lang)
+             ) {
                 if (!$selected_lang)
                     $selected_lang = web::instance()->l10n->getSelectedLang();
 
