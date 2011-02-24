@@ -342,7 +342,7 @@ class ActiveRecord
 
                     $attrs = preg_replace("/^(integer)/i", "int", $attrs);
                     $attrs = preg_replace("/^(string)/i", "varchar", $attrs);
-                    preg_match("/^(int|varchar|enum|text|decimal|datetime|time|date|bool|image|html|files|file)(\(([^\)]+)\))?/i", $attrs, $egs);
+                    preg_match("/^(int|varchar|enum|text|decimal|float|datetime|time|date|bool|image|html|files|file)(\(([^\)]+)\))?/i", $attrs, $egs);
                     preg_match("/(default)='(.*)'/", $attrs, $defaultegs);
                     preg_match("/(label)='([^']*)'/", $attrs, $labelregs);
                     if (array_key_exists(1, $egs)) $field["type"] = $egs[1];
