@@ -38,6 +38,10 @@ class Web
     private $_applicationPath;
     private $_l10nControllerMaps;
     public $showErrors = true;
+    private $_metaTags;
+    public $cssFiles = array("/css/main.css");
+    public $jsFiles = array();
+    public $pageTitle = "";
 
 
     public function __construct($database = null, $languages = null)
@@ -64,6 +68,18 @@ class Web
 
         $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
+        
+        $this->_metaTags = array(
+            "Content-Type" => array("http-equiv", "application/xhtml+xml; charset=UTF-8"),
+            "Cache-Control" => array("http-equiv", "max-age=200"),
+            "Content-Script-Type" => array("name", "text/javascript"),
+            "Content-language" => array("name", web::instance()->getLanguage()),
+            "robots" => array("name", "all"),
+            "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
+            "keywords" => array("name", $pageKeywords),
+            "description" => array("name", $pageDescription),
+            "google-site-verification" => array("name", web::instance()->googleVerification)
+        );
     }
     
 
@@ -667,9 +683,51 @@ class Web
         $this->_l10nControllerMaps = $maps;
     }
 
+    
+    public function setMetaTag($name, $value, $type = "name") {
+        $this->_metaTags[$name] = array($type, $value);
+        return web::instance();
+    }
+    
+    public static function setPageTitle($title) {
+        web::instance()->pageTitle = $title;
+        return web::instance();
+    }
+    public static function setDescription($desc) {
+        web::instance()->setMetaTag("description", $desc);
+        return web::instance();
+    }
+    public static function setKeywords($key) {
+        web::instance()->setMetaTag("keywords", $key);
+        return web::instance();
+    }    
 // TODO: Generar contenido de header
-    public static function header()
-    {
+    public function header()
+    {            
+        $language = $this->getLanguage();
+        $pageTitle = $this->pageTitle;
+        
+        foreach ($this->_metaTags as $meta => $arr) {
+            if ($arr[1]) $metaTags .= "<meta $arr[0]=\"$meta\" content=\"$arr[1]\"/>\n";
+        }
+        
+        foreach ($this->cssFiles as $file) {
+            $cssTags .= "<link media=\"screen\" rel=\"stylesheet\" href=\"$file\" type=\"text/css\" />\n";
+        }
+        
+        if (file_exists($_SERVER["DOCUMENT_ROOT"]."/css/hacks.css")) {
+            $cssHacks .= "<!--[if lt IE 7]><link rel=\"stylesheet\" type=\"text/css\" href=\"/css/hacks.css\" /><![endif]-->";
+        }
+         
+        return <<<EOT
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="$language">
+<head>
+<title>$pageTitle</title>
+$metaTags
+$cssTags
+$cssHacks
+EOT;
     }
 
 }
