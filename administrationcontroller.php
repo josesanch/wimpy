@@ -84,27 +84,32 @@ class AdministrationController extends ApplicationController
 		if(!$modelName) $selectFirst = true;
 
 		$params = web::params(null, null, false, array("page-$modelName","order-$modelName","desc-$modelName"));
+        $action = web::instance()->action;
+        $regExpActions = "edit";
 
-
-		if (web::instance()->action == "edit") {
+		if ($action == "edit") {
+            $regExpActions = "list|edit";
 			// Eliminamos el elemento que estamos editando.
-			$params = "/".implode("/", array_slice(explode("/", $params), 2));
+			$params = "/".implode("/", array_slice(explode("/", $params), 1));
 		}
-		$regExp = "#$modelName/(list|edit)$params.*?#";
 
+		$regExp = "#$modelName/($action|$regExpActions)$params.*?#";
 		$menu = $this->menu;
 		foreach ($menu as $tab) {
 			foreach ($tab["items"] as $submenu) {
-				if ($selectFirst)
+				if ($selectFirst) {
 					return array($tab, $submenu);
+                }
 
 				$link = $submenu["link"];
 				if (!$force) {
-					if (preg_match($regExp, $link))
+					if (preg_match($regExp, $link)) {
 						return array($tab, $submenu);
+                    }
 				} else {
-					if ($link == $modelName)
+					if ($link == $modelName) {
 						return array($tab, $submenu);
+                    }
 				}
 			}
 		}
