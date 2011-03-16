@@ -5,7 +5,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="author" content="O2W (www.o2w.es)">
   <title>{if:$titulo}{$titulo} | {/if}Administración web</title>
-  <link href="/resources/admin/css/admin.css" rel="stylesheet" type="text/css" />
+  <link href="/resources/admin/css/admin.css" rel="stylesheet"
+		type="text/css" />
+    {eval:return js("jquery")}
   	{eval:return js::validate()}
   	{eval:return js::fancybox()}
 	{eval:return js("jquery/ui")}

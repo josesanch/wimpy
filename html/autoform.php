@@ -32,7 +32,7 @@ class html_autoform extends html_form
             $tmpUpload = get_class($this->model)."_".rand();
              $this->hidden("tmp_upload")->value($tmpUpload);
         }
-        
+
         foreach ($this->model->getAllFieldsForForm() as $field => $type) {
 			$attrs = $this->model->getFields($field);
 			$this->auto($field, null, $tmpUpload, $type);

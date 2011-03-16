@@ -68,7 +68,7 @@ class Web
 
         $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
-        
+
         $this->_metaTags = array(
             "Content-Type" => array("http-equiv", "application/xhtml+xml; charset=UTF-8"),
             "Cache-Control" => array("http-equiv", "max-age=200"),
@@ -76,12 +76,10 @@ class Web
             "Content-language" => array("name", web::instance()->getLanguage()),
             "robots" => array("name", "all"),
             "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
-            "keywords" => array("name", $pageKeywords),
-            "description" => array("name", $pageDescription),
             "google-site-verification" => array("name", web::instance()->googleVerification)
         );
     }
-    
+
 
     /**
      * Set the available languages in the website.
@@ -290,16 +288,16 @@ class Web
             $this->action = array_shift($this->params);
             $this->action = $this->action ? $this->action : 'index';
         }
-        
+
         $controllerName = $this->controller;
-        
+
         if ($this->l10n->isNotDefault()) { // Buscamos en los maps
             $maps = $this->_l10nControllerMaps[$this->l10n->getLanguage()];
             if ($orgControllerName = array_search(web::canonize($controllerName), $maps)) {
-                $controllerName = $orgControllerName;                        
+                $controllerName = $orgControllerName;
             }
         }
-            
+
         $controllerClass =  ucfirst(
             str_replace(
                 '-',
@@ -611,7 +609,7 @@ class Web
 			$mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
 		}
 
-		if (web::instance()->showErrors) 
+		if (web::instance()->showErrors)
             echo $str."$notificando</pre>";
     }
 
@@ -661,12 +659,12 @@ class Web
 		return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
 	}
 
-    public static function isMobile($type = null) 
+    public static function isMobile($type = null)
     {
         if (web::request("mobile") || $_SESSION["mobile"]) return true;
         if (preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|phone|android)/i', strtolower($_SERVER['HTTP_USER_AGENT']))) {
             if (isset($type)) {
-                return preg_match("/$type/i",strtolower($_SERVER['HTTP_USER_AGENT'])); 
+                return preg_match("/$type/i",strtolower($_SERVER['HTTP_USER_AGENT']));
             }
             return true;
         }
@@ -674,8 +672,8 @@ class Web
     }
 
     public static function getView($view)
-    {        
-        return new html_template($_SERVER["DOCUMENT_ROOT"]."/../application/views/{$view}.html");  
+    {
+        return new html_template($_SERVER["DOCUMENT_ROOT"]."/../application/views/{$view}.html");
     }
 
     public function setl10nControllerMaps($maps)
@@ -683,12 +681,12 @@ class Web
         $this->_l10nControllerMaps = $maps;
     }
 
-    
+
     public function setMetaTag($name, $value, $type = "name") {
         $this->_metaTags[$name] = array($type, $value);
         return web::instance();
     }
-    
+
     public static function setPageTitle($title) {
         web::instance()->pageTitle = $title;
         return web::instance();
@@ -700,25 +698,32 @@ class Web
     public static function setKeywords($key) {
         web::instance()->setMetaTag("keywords", $key);
         return web::instance();
-    }    
+    }
 // TODO: Generar contenido de header
     public function header()
-    {            
+    {
         $language = $this->getLanguage();
         $pageTitle = $this->pageTitle;
-        
         foreach ($this->_metaTags as $meta => $arr) {
             if ($arr[1]) $metaTags .= "<meta $arr[0]=\"$meta\" content=\"$arr[1]\"/>\n";
         }
-        
+
         foreach ($this->cssFiles as $file) {
             $cssTags .= "<link media=\"screen\" rel=\"stylesheet\" href=\"$file\" type=\"text/css\" />\n";
         }
-        
+
         if (file_exists($_SERVER["DOCUMENT_ROOT"]."/css/hacks.css")) {
             $cssHacks .= "<!--[if lt IE 7]><link rel=\"stylesheet\" type=\"text/css\" href=\"/css/hacks.css\" /><![endif]-->";
         }
-         
+
+
+        foreach ($this->jsFiles as $file) {
+            if (substr(0, 1, $file) != "<")
+                $jsTags .= $file;
+            else
+                $jsTags .= "<script src=\"$file\" type=\"text/javascript\"></script>\n";
+        }
+
         return <<<EOT
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="$language">
@@ -727,6 +732,7 @@ class Web
 $metaTags
 $cssTags
 $cssHacks
+$jsTags
 EOT;
     }
 
