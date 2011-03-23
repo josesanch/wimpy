@@ -6,17 +6,21 @@ class Database extends PDO
 
     private $_xdebug = false;
     public $uri;
-    
+
     public function __construct($database)
     {
         $this->_xdebug = extension_loaded("xdebug");
         $this->uri = $database[0];
-		parent::__construct(
-			$database[0],
-			isset($database[1]) ? $database[1] : null,
-			isset($database[2]) ? $database[2] : null,
-			isset($database[3]) ? $database[3] : null
-		);
+        try {
+            parent::__construct(
+                $database[0],
+                isset($database[1]) ? $database[1] : null,
+                isset($database[2]) ? $database[2] : null,
+                isset($database[3]) ? $database[3] : null
+            );
+        } catch(Exception $e) {
+
+        }
 
     }
 
