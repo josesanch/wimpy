@@ -19,7 +19,8 @@ class Database extends PDO
                 isset($database[3]) ? $database[3] : null
             );
         } catch(Exception $e) {
-
+            echo "<h1 style='color: red'>Error conectar con $database[0]</h1>";
+            exit;
         }
 
     }
