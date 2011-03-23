@@ -1,7 +1,7 @@
 <?php
 class html_autoform extends html_form
 {
-    public $buttons = array("back", "delete", "save");
+    public $buttons = array("back" => "Volver", "delete" => "Eliminar", "save" => "Guardar");
 
     public function __construct($model = null, $css = null)
     {
@@ -58,8 +58,12 @@ class html_autoform extends html_form
             $this->add("</div></div>");
         }
 		$this->add("<div class='form-buttons'>");
-		foreach ($this->buttons as $button) {
-			$this->add($this->_getButton($button));
+		foreach ($this->buttons as $button => $value) {
+            if (is_numeric($button)) {
+                $button = $value;
+                $value = null;
+            }
+			$this->add($this->_getButton($button, $value));
 		}
 
         $this->add($this->_endData);
@@ -69,12 +73,13 @@ class html_autoform extends html_form
         );
     }
 
-	private function _getButton($type)
+    private function _getButton($type, $value = null)
 	{
 		$isDialog = web::request("dialog");
 		switch ($type) {
 
 			case "back":
+                $value = $value ? $value : "volver";
 				if(web::request("redir"))
 					$urlBack = web::request("redir");
 				else
@@ -86,9 +91,10 @@ class html_autoform extends html_form
 				} else {
 					$back = "goUrl('$urlBack');";
 				}
-                return "<input class='submit boton-volver' id='boton-volver' type='button' value=volver onclick=\"$back\">";
+                return "<input class='submit boton-volver' id='boton-volver' type='button' value='$value' onclick=\"$back\">";
 
 			case "delete":
+                $value = $value ? $value : "eliminar";
 				if ($this->model->id && web::auth()->hasPermission($this->model, auth::DELETE)) {
 					$urlDelete = "/admin/".get_class($this->model)."/delete".web::params();
 
@@ -97,17 +103,18 @@ class html_autoform extends html_form
 					} else {
 						$delete = "confirmGoUrl('$urlDelete');";
 					}
-					return "<input class='submit boton-eliminar' id='boton-eliminar' type='button' value='eliminar' onclick=\"$delete\">";
+					return "<input class='submit boton-eliminar' id='boton-eliminar' type='button' value='$value' onclick=\"$delete\">";
 				}
 				break;
 
 			case "save":
+                $value = $value ? $value : "guardar";
 				if (
 					(web::auth()->hasPermission($this->model, auth::ADD) && !$this->model->id)
 						||
 					(web::auth()->hasPermission($this->model, auth::MODIFY) && $this->model->id)
 				) {
-				  return "\n<input class='submit boton-guardar' type='submit' id='boton-guardar' value='guardar'/>";
+				  return "\n<input class='submit boton-guardar' type='submit' id='boton-guardar' value='$value'/>";
 				}
 				break;
 			default:
