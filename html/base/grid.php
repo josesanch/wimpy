@@ -3,7 +3,7 @@ class html_base_grid extends html_object
 {
     public $onClick;
     public $redirectTo;
-    public $buttons = array("search", "new");
+    public $buttons = array("search" => "buscar", "new" => "Nuevo");
     public $search;
     public $showSearch = true;
     public $onSubmit;
@@ -124,11 +124,18 @@ class html_base_grid extends html_object
         $paginas = implode("&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;", $paginas);
 
         if($this->_instance) {
-            $botonNuevo = in_array("new", $this->buttons);
-            $botonBuscar = in_array("search", $this->buttons);
+            $buttons = array();
+            foreach ($this->buttons as $item => $value) {
+                if (is_numeric($item)) {
+                    $buttons[$value] = $value == "new" ? "nuevo" : "buscar";
+                } else {
+                    $buttons[$item] = $value;
+                }
+            }
             $data = $this->search;
         } else {
-            $botonNuevo = $botonBuscar = true;
+            $grid = new html_base_grid();
+            $buttons = $grid->buttons;
         }
 
         if(!$this->_instance || $this->showSearch) {
@@ -139,15 +146,15 @@ class html_base_grid extends html_object
                         value='".urldecode(web::request($searchField))."'
                         size=20/>";
 
-            if($botonBuscar && web::auth()->hasPermission($model, auth::VIEW))
+            if(array_key_exists("search", $buttons) && web::auth()->hasPermission($model, auth::VIEW))
                 $formData .=
-                    "<input type=submit value=buscar class='boton-buscar'/>";
+                    "<input type=submit value='$buttons[search]' class='boton-buscar'/>";
 
-            if($botonNuevo && web::auth()->hasPermission($model, auth::ADD)) {
+            if(array_key_exists("new", $buttons) && web::auth()->hasPermission($model, auth::ADD)) {
 				if (!$dialog)
-					$formData .= "<input type=button value='nuevo' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\")'>";
+					$formData .= "<input type=button value='$buttons[new]' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\")'>";
 				else
-					$formData .= "<input type=button value='nuevo' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\", \"".web::request("field")."\",\"".web::request("parent")."\")'>";
+					$formData .= "<input type=button value='$buttons[new]' class='boton-nuevo' onclick='goUrl(\"/admin/".get_class($model)."/edit/0".web::params()."\", \"".web::request("field")."\",\"".web::request("parent")."\")'>";
 			}
 
 			$formData .=
