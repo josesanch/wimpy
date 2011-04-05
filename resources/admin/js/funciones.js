@@ -52,8 +52,9 @@ var Autocomplete = {
 	init : function() {
 		$(".autocomplete").live("keyup", function(event) {
 			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
+
 			id = $(this).attr("id").split("_id_autocomplete")[0] + "_id";
-			console.log("keydown " + id + " - " + $(this).attr("id") );
+			$("#" + id).val("")
 			return true;
 		});
 
