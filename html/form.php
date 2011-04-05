@@ -77,7 +77,7 @@ class html_form extends html_object
 
     public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
-		if (substr($type, 0, 3) == "---" or $type == "separation") {        
+		if (substr($type, 0, 3) == "---" or $type == "separation") {
 			$attrs["type"] = "---";
             $words = explode(" ", $type);
             if (in_array("accordion", $words)) $attrs["accordion"] = true;
@@ -86,89 +86,92 @@ class html_form extends html_object
 			$attrs = $this->model->getFields($field);
         }
 
-        if (!isset($attrs["hidden"]) && (isset($attrs["belongs_to"]) || isset($attrs["belongsTo"]))) {
-                $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
+        if (!isset($attrs["hidden"])
+            && (isset($attrs["belongs_to"])
+                || isset($attrs["belongsTo"]))) {
+            $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
-                if (!$attrs['autocomplete'] && !$attrs["dialog"]) {
-	                $relatedModel = new $relatedModelName();
-                    if ($attrs["show"])
-                        $name  = $attrs["show"];
-                    else
-    	                $name = $relatedModel->getTitleField();
+            if (!$attrs['autocomplete'] && !$attrs["dialog"]) {
+                $relatedModel = new $relatedModelName();
+                if ($attrs["show"])
+                    $name  = $attrs["show"];
+                else
+                    $name = $relatedModel->getTitleField();
 
-                    $input = new html_form_select($field);
+                $input = new html_form_select($field);
 
-                    $input	->add(
-                    			$relatedModel->select(
-                    				"columns: id as value, $name as text",
-                    				"order: text"
-                    			)
-                    		);
-                    if($this->model->$field)
-                        $input->select($this->model->$field);
+                $input	->add(
+                    $relatedModel->select(
+                        "columns: id as value, $name as text",
+                        "order: text"
+                    )
+                );
+                if($this->model->$field)
+                    $input->select($this->model->$field);
 
+            } else {
+                // Autocomplete
+                $value = $this->model->$field;
+                $relatedModel = new $relatedModelName($value);
+
+                if ($attrs["show"]) {
+                    $primaryKey = array_shift($relatedModel->getPrimaryKeys());
+                    $data = $relatedModel->selectFirst(
+                        "columns: ".$attrs["show"]." as text",
+                        "where: $primaryKey='".$relatedModel->get($primaryKey)."'",
+                        "order: text"
+                    );
+                    $text = $data->text;
                 } else {
-                    // Autocomplete
-					$value = $this->model->$field;
-					$relatedModel = new $relatedModelName($value);
+                    $titleField = $relatedModel->getTitleField();
+                    $text = $relatedModel->$titleField;
+                }
 
-                    if ($attrs["show"]) {
-                        $primaryKey = array_shift($relatedModel->getPrimaryKeys());
-                        $data = $relatedModel->selectFirst(
-               				"columns: ".$attrs["show"]." as text",
-               				"where: $primaryKey='".$relatedModel->get($primaryKey)."'",
-               				"order: text"
-                        );
-                        $text = $data->text;
-                    } else {
-    					$titleField = $relatedModel->getTitleField();
-    					$text = $relatedModel->$titleField;
-    				}
+                // Hidden field that contain the real value
+                $input = new html_form_hidden($field);
+                $input->value($value)->class("");
 
-					// Hidden field that contain the real value
-                    $input = new html_form_hidden($field);
-					$input->value($value)->class("");
-
-					// Text field that contain the name of the field.
-                    $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
-                    $inputAutocomplete = new html_form_input($field."_autocomplete");
-                    $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
-					$input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+                // Text field that contain the name of the field.
+                $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
+                $inputAutocomplete = new html_form_input($field."_autocomplete");
+                $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
+                $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
 
 
-					if(!$attrs['autocomplete'] || $attrs["readonly"])
-						$inputAutocomplete->disabled(true);
+                if(!$attrs['autocomplete'] || $attrs["readonly"])
+                    $inputAutocomplete->disabled(true);
 
 
-					if ($attrs["dialog"] && !$attrs["readonly"]) {
+                if ($attrs["dialog"] && !$attrs["readonly"]) {
 
-						$inputAutocomplete->add("
-							<input type='button' value='' class='dialog'
+                    $inputAutocomplete->add(
+                        "<input type='button' value='' class='dialog'
 							onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\")'/>"
-						);
+                    );
 
-						$this->addToEnd("<div id='{$field}_dialog'></div>");
-					}
-					$options = array();
-                    if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
-					$options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
-					$options[]= "select: function(event, ui) {
+                    $this->addToEnd("<div id='{$field}_dialog'></div>");
+                }
+                $options = array();
+                if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
+                $options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
+                $options[]= "select: function(event, ui) {
 						$('#$field').val(ui.item.id);
 
 						if(typeof(autocompleteCallback) != 'undefined')
 							autocompleteCallback('$relatedModelName', '$field', '', data[1]);
                             }";
 
-                    $this->addJS("
-                        $('#{$field}_autocomplete').autocomplete({
+                $this->addJS(
+                    "$('#{$field}_autocomplete').autocomplete({
                             ".implode(",", $options)."
 
                         });
-                    ", true);
+                    ", true
+                );
 
-                    $input->labelFor($field."_autocomplete");
-                    if($attrs['not null']) $input->class($input->class()." required");
-					$input->setData($inputAutocomplete);
+                $input->labelFor($field."_autocomplete");
+                if($attrs['not null']) $input->class($input->class()." required");
+                $input->setData($inputAutocomplete);
 
                 }
 		} elseif ($attrs['primary_key'] || $attrs["hidden"]) {

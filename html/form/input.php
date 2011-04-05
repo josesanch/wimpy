@@ -59,10 +59,6 @@ class html_form_input extends html_object {
             }
 
             $this->add_rules(explode('|', $rules), $action);
-        }
-        elseif ($method == 'name') {
-            // Do nothing. The name should stay static once it is set.
-            return $this->attrs['name'];
         } else {
             if (empty($args))
                 return $this->attrs[$method];
