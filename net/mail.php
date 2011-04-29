@@ -3,11 +3,37 @@
 /**
 *  net::mail Clase
 * @author   José Sánchez Moreno
-* @version  v 0.0.2
+* @version  v 0.0.3
 * @package net
 * @access   public
 */
+
 class Net_Mail
+{
+    private $_mail;
+    public function __construct($backend = "mail")
+    {
+        $mailComponent = "Net_Mail_".$backend;
+        $this->_mail = new $mailComponent;
+    }
+
+    public function __get($item)
+    {
+        return $this->_mail->$item;
+    }
+
+    public function __set($item, $value)
+    {
+        return $this->_mail->$item = $value;
+    }
+
+    private function __call($method, $args)
+    {
+        return call_user_func_array(array($this->_mail, $method), $args);
+    }
+}
+
+class Net_Mail_mail
 {
 	private $__headers = array();
 	private $__cc = array();
@@ -17,14 +43,26 @@ class Net_Mail
 	private $__html;
 	private $__text;
 	private $xmailer;
+    private $_additionalHeaders = array();
+    private $_from;
+    private $_to;
 
-	function Net_Mail()
+	public function __construct()
 	{
 		$this->xmailer = "Oxigenow eSolutions Net Library 1.1 - ".$_SERVER["HTTP_HOST"]."\n";
 		$this->__boundary = rand();
 	}
 
-//	function to($to, $email)	{  $this->__to = "$to <$email>";	}
+    public function setFrom($address, $name)
+    {
+        $this->from($name, $address);
+    }
+
+    public function setTo($address, $name)
+    {
+        $this->to($name, $address);
+    }
+
 
 	public function to($to = null, $email = null)	{
 	    if($to) {
@@ -43,7 +81,7 @@ class Net_Mail
         }
 	}
 
-	function subject($subject = null) {
+	public function subject($subject = null) {
 	    if($subject) {
     	    $this->__subject = $subject;
 	    } else {
@@ -51,8 +89,8 @@ class Net_Mail
         }
 	}
 
-	function message($subject, $msg)	{  $this->subject($subject); $this->msg($msg);	}
-	function addCC($to, $email) { $this->__cc[] = "$to <$email>"; }
+	public function message($subject, $msg)	{  $this->subject($subject); $this->msg($msg);	}
+	public function addCC($to, $email) { $this->__cc[] = "$to <$email>"; }
 
 	/**
 	 * @desc Envia un correo electrónico
@@ -62,7 +100,7 @@ class Net_Mail
 	 * @param msg Contenido del mensaje
 	 * @return bool
 	 */
-	function send($from = null, $to = null, $subject = null, $msg = null)
+	public function send($from = null, $to = null, $subject = null, $msg = null)
 	{
     	if($from) $this->from($from);
 		if($to) $this->to($to);
@@ -70,7 +108,6 @@ class Net_Mail
 		if(isset($msg)) $this->msg($msg);
 
 		$content = $this->getContent();
-		//$this->debug("Enviando email de $this->__from a $this->__to ($this->__subject)");
 		return mail($this->to(), $this->subject(), $content, $this->__getHeaders());
 	}
 
@@ -142,7 +179,6 @@ class Net_Mail
 
 	}
 
-
 	private function __getHeaders()
 	{
 		$headers = "MIME-Version: 1.0\n";
@@ -159,6 +195,9 @@ class Net_Mail
 			$headers .= "CC: ".join($this->__cc, ",");
 		}
 		$headers .= "X-Mailer: ".$this->xmailer;
+        foreach ($this->_additionalHeaders as $item => $value) {
+            $headers .= "$item: $value\n";
+        }
 
 		return $headers;
 	}
@@ -171,4 +210,96 @@ class Net_Mail
 	public function setXMailer($xmailer) {
 		$this->xmailer = $xmailer;
 	}
+
+    public function addHeader($item, $value)
+    {
+        $this->_additionalHeaders[$item] = $value;
+    }
+
+}
+
+class Net_Mail_phpmailer
+{
+    private $_mail;
+    public function __construct()
+    {
+        include_once("PHPMailer/class.phpmailer.php");
+        $this->_mail = new PHPMailer(true);
+        $this->_mail->CharSet = "utf-8";
+    }
+
+    public function subject($subject = null)
+    {
+        $this->_mail->Subject = $subject;
+    }
+
+    public function addHtml($text)
+    {
+        $this->_mail->MsgHTML($text);
+    }
+
+    public function addText($text)
+    {
+        $this->_mail->AltBody = $text;
+    }
+
+    public function addAttachment($file)
+    {
+        $this->_mail->AddAttachment($file);
+    }
+
+    public function to($name, $address)
+    {
+        $this->_mail->addAddress($address, $name);
+    }
+    public function setTo($address, $name)
+    {
+        $this->to($name, $address);
+    }
+    public function from($name, $address)
+    {
+        $this->_mail->FromName = $name;
+        $this->_mail->From = $address;
+    }
+    public function setFrom($address, $name)
+    {
+        $this->from($name, $address);
+    }
+
+    public function message($subject, $msg)	{  $this->subject($subject); $this->msg($msg);	}
+    public function msg($msg)
+	{
+		$this->addHtml($msg);
+		$this->addText($this->__parseHtml($msg));
+	}
+
+    public function send($from = null, $to = null, $subject = null, $msg = null)
+	{
+    	if($from) $this->from($from);
+		if($to) $this->to($to);
+		if($subject) $this->subject($subject);
+		if($msg) $this->msg($msg);
+
+        return $this->_mail->send();
+	}
+
+    public function addHeader($item, $value)
+    {
+        $this->_mail->addCustomHeader("$item: $value");
+    }
+
+    public function __get($item)
+    {
+        return $this->_mail->$item;
+    }
+
+    public function __set($item, $value)
+    {
+        return $this->_mail->$item = $value;
+    }
+
+    private function __call($method, $args)
+    {
+        return call_user_func_array(array($this->_mail, $method), $args);
+    }
 }

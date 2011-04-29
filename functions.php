@@ -37,11 +37,12 @@ function js($module)
 	switch ($module) {
 		case "jquery":
 
-			return "<script src=\"/resources/js/jquery-1.4.2.min.js\" type=\"text/javascript\"></script>";
+			return "<script src=\"/resources/js/jquery-1.5.2.min.js\" type=\"text/javascript\"></script>";
 		//	return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
 
 		case "jquery/ui":
-			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.9.custom.min.js\" type=\"text/javascript\"></script>";
+			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.11.custom.min.js\" type=\"text/javascript\"></script>
+<link href=\"/resources/js/jquery/ui/smoothness/jquery-ui-1.8.11.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
 			//return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
 	}
 
