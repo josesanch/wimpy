@@ -29,7 +29,7 @@ var ModelForms = {
 						target: '#' + field + '_dialog'
 					});
 				}
-			})
+			});
 		} else {
 			$('#' + form_id).validate();
 		}
@@ -54,7 +54,7 @@ var Autocomplete = {
 			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
 
 			id = $(this).attr("id").split("_id_autocomplete")[0] + "_id";
-			$("#" + id).val("")
+			$("#" + id).val("");
 			return true;
 		});
 
@@ -62,7 +62,7 @@ var Autocomplete = {
 			id = $(this).attr("id").split("_id_autocomplete")[0] + "_id";
 			if ($("#" + id).val() == "") $(this).val("");
 			return true;
-		})
+		});
 	}
 }
 
@@ -82,9 +82,9 @@ function mostrarDireccion(address) {
                     platitud = marker.getPoint().lat();
                     plongitud = marker.getPoint().lng();
 
-                    $("#latitud_hide").val(platitud)
-                    $("#longitud_hide").val(plongitud)
-            		mostrar_popup_direccion(map, point)
+                    $("#latitud_hide").val(platitud);
+                    $("#longitud_hide").val(plongitud);
+            		mostrar_popup_direccion(map, point);
             }
           }
         );
@@ -268,7 +268,7 @@ var GridResults = {
 	modelName : "",
 
 	init : function(modelName, sortable) {
-		this.modelName = modelName
+		this.modelName = modelName;
 		$('tr.grid_row').bind('mouseover', function() {	$(this).addClass('grid_row_hover');	});
 		$('tr.grid_row').bind('mouseout', function() {	$(this).removeClass('grid_row_hover'); });
 
@@ -278,7 +278,7 @@ var GridResults = {
 				axis:	'y',
 				update:
 					function(e, ui) {
-						orden = $(this).sortable('toArray').toString()
+						orden = $(this).sortable('toArray').toString();
 						$.get("/ajax/" + modelName  + "/reorderList/", { "orden" : orden});
 					}
 			});
@@ -292,10 +292,10 @@ var GridResults = {
 
 function GridFiles(field, model, vid, vtmp_upload) {
 	var self = this;
-	var fieldName = field
-	var modelName = model
-	var id = vid
-	var tmp_upload = vtmp_upload
+	var fieldName = field;
+	var modelName = model;
+	var id = vid;
+	var tmp_upload = vtmp_upload;
 	var fileDataName = field;
 	if (!fileDataName) fileDataName = "file";
 
@@ -334,7 +334,11 @@ function GridFiles(field, model, vid, vtmp_upload) {
 						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
 					}
 				});
-				setTimeout(function(){ $("a.dataview-image").fancybox({ "hideOnContentClick" : true}); }, 250);
+				setTimeout(function(){
+                    if ($("a.dataview-image").length > 0) {
+                        $("a.dataview-image").fancybox({ "hideOnContentClick" : true});
+                    }                        
+                }, 250);
 
 			}
 		);
