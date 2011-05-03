@@ -6,12 +6,12 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 CKEDITOR.editorConfig = function( config )
 {
 	// Define changes to default configuration here. For example:
-	// config.language = 'fr';
+//	config.language = 'es;
 	// config.uiColor = '#AADC6E';
 	config.filebrowserBrowseUrl = '/helpers/ckeditor/browse/';
-    config.filebrowserUploadUrl = '/helpers/ckeditor/upload/';
-
-   config.toolbar_Basic =
+	config.filebrowserUploadUrl = '/helpers/ckeditor/upload/';
+	config.extraPlugins = 'youtube'; 	
+	config.toolbar_Basic =
 	[
 		['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']
 	];
@@ -27,7 +27,7 @@ CKEDITOR.editorConfig = function( config )
 		['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
 		['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 		['Link','Unlink','Anchor'],
-		['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
+		['youtube','Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
 		'/',
 		['Styles','Format','Font','FontSize'],
 		['TextColor','BGColor'],
@@ -36,3 +36,5 @@ CKEDITOR.editorConfig = function( config )
 
 
 };
+
+
