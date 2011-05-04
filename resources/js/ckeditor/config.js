@@ -10,7 +10,8 @@ CKEDITOR.editorConfig = function( config )
 	// config.uiColor = '#AADC6E';
 	config.filebrowserBrowseUrl = '/helpers/ckeditor/browse/';
 	config.filebrowserUploadUrl = '/helpers/ckeditor/upload/';
-	config.extraPlugins = 'youtube'; 	
+	config.extraPlugins = 'MediaEmbed';
+	
 	config.toolbar_Basic =
 	[
 		['Bold', 'Italic', '-', 'NumberedList', 'BulletedList', '-', 'Link', 'Unlink','-','About']
@@ -27,7 +28,7 @@ CKEDITOR.editorConfig = function( config )
 		['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'],
 		['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 		['Link','Unlink','Anchor'],
-		['youtube','Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak'],
+		['Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','MediaEmbed'],
 		'/',
 		['Styles','Format','Font','FontSize'],
 		['TextColor','BGColor'],
