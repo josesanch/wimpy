@@ -13,7 +13,7 @@ class js {
 
 	public function validate() {
 		return  js::jquery().
-				js_once("jquery/validate")."\n	".
+				js_once("jquery/validate/jquery.validate.min")."\n	".
 				js_once("jquery/validate/messages_es")."\n	".
 				js_once("jquery/metadata");
 	}

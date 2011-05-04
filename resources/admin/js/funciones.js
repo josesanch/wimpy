@@ -17,7 +17,7 @@ var ModelForms = {
 
 		ModelForms._validate(form_id, parent, field);
 
-		Autocomplete.init();
+		WimpyAutocomplete.init();
 		ModelForms._accordion();
 	},
 
@@ -48,7 +48,7 @@ var ModelForms = {
 }
 
 
-var Autocomplete = {
+var WimpyAutocomplete = {
 	init : function() {
 		$(".autocomplete").live("keyup", function(event) {
 			if ((event.keyCode >= 33 && event.keyCode <= 40) || event.keyCode == 16 || event.keyCode == 9 || event.keyCode == 13) return;
@@ -330,7 +330,7 @@ function GridFiles(field, model, vid, vtmp_upload) {
 					},
 
 					update: function(e, ui) {
-						orden = $(this).sortable('toArray').toString()
+						orden = $(this).sortable('toArray').toString();
 						$.get("/ajax/" + modelName  + "/reorderImages/", { "orden" : orden});
 					}
 				});

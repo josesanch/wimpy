@@ -154,17 +154,16 @@ class html_form extends html_object
                 $options = array();
                 if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
                 $options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
-                $options[]= "select: function(event, ui) {
-						$('#$field').val(ui.item.id);
-
-						if(typeof(autocompleteCallback) != 'undefined')
-							autocompleteCallback('$relatedModelName', '$field', '', data[1]);
+                $options[]= "
+                            select : function(event, ui) {
+                                $('#$field').val(ui.item.id);
+                                if(typeof(autocompleteCallback) != 'undefined')
+                                    autocompleteCallback('$relatedModelName', '$field', '', data[1]);
                             }";
 
                 $this->addJS(
                     "$('#{$field}_autocomplete').autocomplete({
                             ".implode(",", $options)."
-
                         });
                     ", true
                 );

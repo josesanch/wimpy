@@ -98,7 +98,8 @@ class helpers_model_ajax  {
 	}
 
 
-	public function load($id = null) {
+	public function load($id = null)
+    {
 		$item = $this->model->select($id);
 		$arr = array();
 		foreach($this->model->getFields() as $field => $attr) {

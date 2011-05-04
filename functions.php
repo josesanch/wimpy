@@ -41,8 +41,10 @@ function js($module)
 		//	return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
 
 		case "jquery/ui":
-			return "<script src=\"/resources/js/jquery/jquery-ui-1.8.11.custom.min.js\" type=\"text/javascript\"></script>
-<link href=\"/resources/js/jquery/ui/smoothness/jquery-ui-1.8.11.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
+//			return "<script src=\"/resources/js/jquery/ui-1.8.1/jquery-ui-1.8.1.custom.min.js\" type=\"text/javascript\"></script><link href=\"/resources/js/jquery/ui-1.8.1/jquery-ui-1.8.1.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
+
+            return "<script src=\"/resources/js/jquery/jquery-ui-1.8.12.custom.min.js\" type=\"text/javascript\"></script><link href=\"/resources/js/jquery/ui/smoothness/jquery-ui-1.8.12.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
+
 			//return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
 	}
 
@@ -246,8 +248,11 @@ function sanitize($input) {
 	return htmlentities(strip_tags( $input ));
 }
 
-function date_to_sql($date) {
-	list($day, $month, $year) = preg_split('/[\/.-]/', $date);
+function date_to_sql($date, $lang = "es") {
+    if ($lang == "es")
+        list($day, $month, $year) = preg_split('/[\/.-]/', $date);
+    else
+        list($month, $day, $year) = preg_split('/[\/.-]/', $date);
 
 	return "$year-$month-$day";
 }
