@@ -31,7 +31,7 @@ class ActiveRecord
         $this->setWherePK();
     }
 
-    public function setDatabase($database) 
+    public function setDatabase($database)
     {
         $this->database = $database;
     }
@@ -201,10 +201,13 @@ class ActiveRecord
 
                     case 'columns':
                         $this->select_columns = $arguments;
-                    break;
+                        break;
 
-                    case 'where':
-                        $this->select_conditions = $arguments;
+                case 'where':
+                    $this->select_conditions = $arguments;
+                    break;
+                case 'group':
+                    $this->select_group = $arguments;
                     break;
                 }
             } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
@@ -218,6 +221,7 @@ class ActiveRecord
 
         if ($this->select_conditions) 	$where = " WHERE ".$this->select_conditions;
         if ($this->select_order)    	$order = " ORDER BY ".$this->select_order;
+        if ($this->select_group)    	$group = " GROUP BY ".$this->select_group;
         if ($this->select_limit) 		$limit = " LIMIT ".$this->select_limit;
 
 		$sql = "
@@ -228,6 +232,7 @@ class ActiveRecord
 			$joins
 			$where
 			$order
+            $group
 			$limit";
 
 		//echo "<hr><pre>$sql</pre>";
@@ -239,7 +244,8 @@ class ActiveRecord
                 FROM
 					".$this->database_table."
 				$joins
-				$where"
+				$where
+                $group"
             );
 
             if ($statement) {
@@ -327,7 +333,7 @@ class ActiveRecord
             if ($this->fields) {
                 $metadata = &$this->getMetadata();
                 $metadata = array("fields" => array(), "primary_keys" => array());
-                
+
                 foreach ($this->fields as $name => $attrs) {
                     if (!$attrs || $attrs == 'separator' || substr($attrs, 0, 3) == '---') continue;
 
@@ -347,9 +353,9 @@ class ActiveRecord
                     preg_match("/(label)='([^']*)'/", $attrs, $labelregs);
                     if (array_key_exists(1, $egs)) $field["type"] = $egs[1];
                     if (array_key_exists(3, $egs)) $field["size"] = $egs[3];
-                    
+
                     if (array_key_exists(2, $defaultegs)) $field["default_value"] = $defaultegs[2];
-                    
+
                     $field["label"] = array_key_exists(2, $labelregs) ? ucfirst($labelregs[2]) : ucfirst($name);
 
                     $attrs = explode(" ", $attrs);
@@ -523,7 +529,7 @@ class ActiveRecord
     {
         if (func_num_args() > 0) {
             $args = func_get_args();
-        
+
             $results = call_user_func_array(array($this, "selectSql"), $args);
             foreach ($results as $item) {
                 $item->deleteItem();
@@ -544,9 +550,9 @@ class ActiveRecord
         if (is_a($this, "Model")) {
 			$this->_deleteAsociatedFiles();
 			log::add(
-                web::auth()->get("user"), 
-                $this->getTitle()." [$this->id] DELETED", 
-                log::WARNING, 
+                web::auth()->get("user"),
+                $this->getTitle()." [$this->id] DELETED",
+                log::WARNING,
                 $sql
             );
 		}
@@ -692,8 +698,8 @@ class ActiveRecord
 
     public function &fields($field) {
         return new fields(
-            &ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field], 
-            $field, 
+            &ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
+            $field,
             $this->database_table
         );
     }
@@ -708,7 +714,7 @@ class ActiveRecord
 		unset($this->where_primary_keys);
 	}
 
-    public function &getMetadata() 
+    public function &getMetadata()
     {
         if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
             ActiveRecord::$metadata[$this->database->uri] = array();

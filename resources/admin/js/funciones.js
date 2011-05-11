@@ -2,7 +2,7 @@ var Wimpy = {
 	init : function (form_id, parent, field) {
 		ModelForms.init(form_id, parent, field);
 	}
-}
+};
 
 
 
