@@ -7,7 +7,7 @@ class js {
 				js_once("jquery/fancybox/jquery.fancybox-1.3.1.pack")."\n	".
 				($easing ? js_once("jquery/fancybox/jquery.easing-1.3.pack") : "");
 
-		if ($css) $str .=css_once("jquery/fancybox/jquery.fancybox-1.3.1")."\n";
+		if ($css) $str .= css_once("jquery/fancybox/jquery.fancybox-1.3.1")."\n";
 		return $str;
 	}
 

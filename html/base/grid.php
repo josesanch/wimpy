@@ -84,7 +84,7 @@ class html_base_grid extends html_object
                 $order = "order: $table.".$model->field_used_for_ordenation;
                 $ordenation = true;
             } else {
-                $order = "order: $table.id";
+//                $order = "order: $table.id";
             }
         }
 

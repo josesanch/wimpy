@@ -6,7 +6,7 @@ class ApplicationController
 	public $layout;
 	protected $_applicationPath;
 	public $action, $controller;
-
+    public $template = null;
 
 	public function __construct($view = null)
 	{
@@ -62,8 +62,17 @@ class ApplicationController
 
 
 	protected function getLayoutFile() 		{ return $this->_applicationPath."views/layouts/".$this->layout.".html"; }
-	protected function getViewFile($view) 	{ return $this->_applicationPath."views/".$this->getControllerName()."/$view.html"; }
+
 	public function getControllerName() 	{ return strtolower(substr(get_class($this), 0, -10)); }
+
+	protected function getViewFile($view)
+    {
+        if ($this->template) {
+            return $this->template;
+        }
+
+        return $this->_applicationPath."views/".$this->getControllerName()."/$view.html";
+    }
 
 	public function afterFilter($controller, $action)
 	{
@@ -73,6 +82,10 @@ class ApplicationController
 
 	}
 
+    public function setTemplate($file)
+    {
+        $this->template = $this->_applicationPath."views".$file.".html";
+    }
+
 
 }
-?>

@@ -21,6 +21,11 @@ class l10n {
 	public function setLanguage($lang) {
 		$this->selected_language = $lang;
 		$_SESSION["l10n::selected_language"] = $lang;
+        switch ($this->selected_language) {
+        case "es":
+            setlocale(LC_ALL, "es_ES.UTF-8");
+        default:
+        }
 	}
 
 	public function setDefaultLanguage($lang) {

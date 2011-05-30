@@ -1,6 +1,7 @@
 <?php
 
-function __autoload($class)
+spl_autoload_register("__wimpyAutoload");
+function __wimpyAutoload($class)
 {
 
 	$file = str_replace("_", "/", strtolower($class)).".php";
@@ -170,8 +171,9 @@ function create_images_and_files_tables($database)
 
 function convert_to_url($url)
 {
+
 	$arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u', '"' => '-', '.' => '_', 'ñ' => 'n', 'Ñ' => 'n');
-	$str=   str_replace(' ', '-', strtr(strtolower($url), $arr));
+	$str =   str_replace(' ', '-', strtr(strtolower($url), $arr));
 	return implode("/", array_map("rawurlencode", explode("/", $str)));
 }
 

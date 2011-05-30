@@ -279,7 +279,6 @@ class html_form extends html_object
 
 
         $this->inputs[]= $input;
-
         if($attrs['l10n'] && !$lang) {
             foreach(l10n::instance()->getNotDefaultLanguages() as $lang)
             	$this->auto($field, $lang);

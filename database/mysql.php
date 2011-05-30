@@ -51,9 +51,9 @@ class database_mysql extends database
                 $sqlLines[]= $sqlLine;
             }
 
-            $sql .= implode(", \n", $sqlLines).", \n";
-            $sql .= "PRIMARY KEY(".implode(", ", $primaryKeys)."))
-                        DEFAULT CHARSET=utf8;";
+            $sql .= implode(", \n", $sqlLines)."\n";
+            if ($primaryKeys) $sql .= ", PRIMARY KEY(".implode(", ", $primaryKeys).")";
+            $sql .= ") DEFAULT CHARSET=utf8;";
         }
         $exec = $this->exec($sql);
         return $exec;
