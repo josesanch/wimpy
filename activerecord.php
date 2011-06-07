@@ -698,7 +698,7 @@ class ActiveRecord
 
     public function &fields($field) {
         return new fields(
-            &ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
+            ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
             $field,
             $this->database_table
         );

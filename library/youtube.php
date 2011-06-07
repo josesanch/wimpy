@@ -37,10 +37,7 @@ class youtube
 
 		public function getPlayer($size = "425x350") {
 			$size = explode("x", $size);
-			return '<object type="application/x-shockwave-flash" style="width:'.$size[0].'px; height:'.$size[1].'px;" data="http://www.youtube.com/v/'.$this->id.'?rel=0" wmode="transparent">
-					<param name="wmode" value="transparent">
-					<param name="movie" value="http://www.youtube.com/v/'.$this->id.'?rel=0" />
-					</object>';
+            return '<iframe width="'.$size[0].'" height="'.$size[1].'" src="http://www.youtube.com/embed/'.$this->id.'?rel=0" frameborder="0" allowfullscreen></iframe>';
 		}
 
 		private function loadInfo() {
