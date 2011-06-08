@@ -52,7 +52,11 @@ class helpers_files extends ActiveRecord
 	public function getType() { return array_shift(explode('/', $this->tipo));	}
 	public function getSubtype() { return array_pop(explode('/', $this->tipo));	}
 
-	public function isVideo() { return $this->getType() == 'video' or $this->tipo == 'application/x-flash-video';  }
+	public function isVideo() {
+        return $this->getType() == 'video'
+            or $this->tipo == 'application/x-flash-video'
+            or $this->getTypeByExtension() == "video";
+    }
 
 	public function isImage() { return $this->getType() == 'image'; }
 	public function isTiff() { return ($this->getType() == 'image' && $this->getSubType() == 'tiff'); }
@@ -71,7 +75,7 @@ class helpers_files extends ActiveRecord
             , "compress" => array("zip", "rar", "ace" )
             , "text" => array("doc", "txt", 'odt')
             , "pdf" => array("ps", "pdf")
-            , "video" => array("avi", "mpg", "wmv", 'flv')
+              , "video" => array("avi", "mpg", "wmv", 'flv', "webm")
             , "spreadsheet" => array("xls")
             , "presentation" => array("ppt", "pps", 'odp')
             , "executable" => array("exe", "com")
@@ -128,7 +132,7 @@ class helpers_files extends ActiveRecord
 	}
 
 
-	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $border = null, $img = null) 
+	public function getThumbnail($width = null, $height = null, $ycenter = 1, $xcenter = 1, $op = "THUMB", $border = null, $img = null)
     {
 		if(isset($border)) $this->setBorder($border);
     	$this->cached_image_url =  $this->generateCachedUrl($width, $height, $ycenter, $xcenter, $op);

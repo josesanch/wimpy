@@ -261,40 +261,43 @@ function date_to_sql($date, $lang = "es") {
 
 
 function checkFileSafety($file) {
-		$safeExtensions = array(
-		  'html',
-		  'htm',
-		  'gif',
-		  'jpg',
-		  'jpeg',
-		  'png',
-		  'txt',
-		  'avi',
-		  'mp3',
-		  'wav',
-		  'pdf',
-		  'doc',
-		  'exe',
-		  'zip',
-		  'rar',
-		  'ppt',
-		  'pps',
-		  'docx',
-		  'xlsx',
-		  'xls',
-		  'pptx',
-		  'ogg',
-		  'flv'
-		);
+    $safeExtensions = array(
+        'html',
+        'htm',
+        'gif',
+        'jpg',
+        'jpeg',
+        'png',
+        'txt',
+        'avi',
+        'mp3',
+        'wav',
+        'pdf',
+        'doc',
+        'exe',
+        'zip',
+        'rar',
+        'ppt',
+        'pps',
+        'docx',
+        'xlsx',
+        'xls',
+        'pptx',
+        'ogg',
+        "webm",
+        'flv',
+        "ogv",
+        "m4v"
+    );
 
-		$path_parts = pathinfo($file['name']);
-		$extension = $path_parts['extension'];
+    $path_parts = pathinfo($file['name']);
+    $extension = $path_parts['extension'];
 
-		if(!in_array(strtolower($extension), $safeExtensions)) {
-			unlink($file['tmp_name']);
-			return false;
-		}
-		return true;
+    if(!in_array(strtolower($extension), $safeExtensions)) {
+        unlink($file['tmp_name']);
+        return false;
+    }
+    return true;
 }
 
 function tlink($url)
