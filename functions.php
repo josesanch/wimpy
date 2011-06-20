@@ -287,7 +287,8 @@ function checkFileSafety($file) {
         "webm",
         'flv',
         "ogv",
-        "m4v"
+        "m4v",
+        "csv"
     );
 
     $path_parts = pathinfo($file['name']);
