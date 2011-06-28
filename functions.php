@@ -299,7 +299,7 @@ function checkFileSafety($file) {
         unlink($file['tmp_name']);
         return false;
     }
-    error_log("Upload file:".$file['tmp_name']." allowed");
+
     return true;
 }
 

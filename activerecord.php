@@ -175,6 +175,7 @@ class ActiveRecord
             $what = array_shift($args);
         }
 
+
         $this->select_columns = join(", $table.", array_keys($this->getFields()));
         if ($this->select_columns) $this->select_columns = "$table.$this->select_columns";
 
@@ -223,7 +224,8 @@ class ActiveRecord
         if ($this->select_order)    	$order = " ORDER BY ".$this->select_order;
         if ($this->select_group)    	$group = " GROUP BY ".$this->select_group;
         if ($this->select_limit) 		$limit = " LIMIT ".$this->select_limit;
-
+        var_dump($this->select_columns);
+        echo "<hr>";
 		$sql = "
 			SELECT
 				".$this->select_columns."
@@ -233,20 +235,18 @@ class ActiveRecord
 			$where
 			$order
             $group
-			$limit";
+           ";
 
-		//echo "<hr><pre>$sql</pre>";
+
+//		echo "<hr><pre>$sql</pre>";
 
         if ($this->page_size) {
-            $statement = $this->database->query(
-                "SELECT
-					count(*) as total
-                FROM
-					".$this->database_table."
-				$joins
-				$where
-                $group"
-            );
+            $sqlPaginacion = "
+            select count(*) as total from (
+             $sql $limit
+            ) as table2";
+
+            $statement = $this->database->query($sqlPaginacion);
 
             if ($statement) {
                 $total_result = $statement->fetch();
@@ -255,10 +255,13 @@ class ActiveRecord
                 }
                 $this->total_results = $total_result[0];
                 $statement->fetchAll();    // Para soportar unbuferred queryes
-                $sql .= " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
+                // Si son varias páginas hacemos el límite
+                if ($this->total_results > $this->page_size)
+                    $limit = " LIMIT ".(($this->current_page - 1) * $this->page_size).", ".$this->page_size;
             }
         }
 
+		$sql .= $limit;
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -281,7 +284,10 @@ class ActiveRecord
                 $results[] = $current_item;
             }
             return $results;
+        } else {
+
         }
+
     }
 
 	private function _getLeftJoins()

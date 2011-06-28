@@ -67,8 +67,10 @@ class html_base_grid extends html_object
         // We add the primary key to the seleted fields.
         $primaryKey = array_shift($model->getPrimaryKeys());
 
-        if($primaryKey && !in_array($primaryKey, $sqlcolumns)) $sqlcolumns[]= "$table.$primaryKey";
-
+        if($primaryKey
+           && !(in_array($primaryKey, $sqlcolumns) || in_array("$table.$primaryKey", $sqlcolumns))) {
+           $sqlcolumns[]= "$table.$primaryKey";
+            }
         if ($order) $order = "order: $order";
         if (web::request($orderField)) {
             $order = "order: ".web::request($orderField);
