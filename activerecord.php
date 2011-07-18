@@ -192,23 +192,28 @@ class ActiveRecord
             if (strpos($arg, ":")) {
                 list($command, $arguments) = explode(":", $arg);
                 switch ($command) {
-                    case 'order':
-                        $this->select_order = $arguments;
+                case 'order':
+                    $this->select_order = $arguments;
                     break;
 
-                    case 'limit':
-                        $this->select_limit = $arguments;
+                case 'limit':
+                    $this->select_limit = $arguments;
                     break;
 
-                    case 'columns':
-                        $this->select_columns = $arguments;
-                        break;
+                case 'columns':
+                    $this->select_columns = $arguments;
+                    break;
 
                 case 'where':
                     $this->select_conditions = $arguments;
                     break;
+
                 case 'group':
                     $this->select_group = $arguments;
+                    break;
+
+                case 'joins':
+                    $this->select_joins = $arguments;
                     break;
                 }
             } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
@@ -224,8 +229,7 @@ class ActiveRecord
         if ($this->select_order)    	$order = " ORDER BY ".$this->select_order;
         if ($this->select_group)    	$group = " GROUP BY ".$this->select_group;
         if ($this->select_limit) 		$limit = " LIMIT ".$this->select_limit;
-        var_dump($this->select_columns);
-        echo "<hr>";
+        if ($this->select_joins) 		$joins = " ".$this->select_limit;
 		$sql = "
 			SELECT
 				".$this->select_columns."

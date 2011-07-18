@@ -2,30 +2,30 @@
 
 class AdministrationController extends ApplicationController
 {
-    public $layout = "admin";
-    public $name, $menu;
-    public $color = "#4275bb";
-    public $background_color = "#FFFFFF";
-    public $roles;
-    public $url;
-    public $subtitle = "Administración Web";
-    public $logo_valign = "bottom";
-    public $name_color = "black";
-    public $show_webmail = true;
-    public $show_stats = true;
-    public $show_menu = true;
-    public $show_back_to_web = true;
-    public $show_languages = false;
-    public $show_header = true;
-    public $url_webmail;
-    public $url_stats;
-    public $bug_report;
-    public $section;
-    public $menu_width = 190;
-    public $logo = "/images/logo.gif";
-    public $css = array();
-    private $_selectedMenu;
-    private $_selectedSubmenu;
+ public $layout            = "admin";
+ public $name, $menu;
+ public $color             = "#4275bb";
+ public $background_color  = "#FFFFFF";
+ public $roles;
+ public $url;
+ public $subtitle          = "Administración Web";
+ public $logo_valign       = "bottom";
+ public $name_color        = "black";
+ public $show_webmail      = true;
+ public $show_stats        = true;
+ public $show_menu         = true;
+ public $show_back_to_web  = true;
+ public $show_languages    = false;
+ public $show_header       = true;
+ public $url_webmail;
+ public $url_stats;
+ public $bug_report;
+ public $section;
+ public $menu_width        = 190;
+ public $logo              = "/images/logo.gif";
+ public $css               = array();
+ private $_selectedMenu    =  null;
+ private $_selectedSubmenu = null;
 
     protected $auth;
 //    protected $components = array("auth");
@@ -34,6 +34,7 @@ class AdministrationController extends ApplicationController
     {
         parent::__construct();
         $this->view->data = $this;
+        web::instance()->adminController = $this;
     }
 
     public function beforeFilter()
@@ -49,7 +50,8 @@ class AdministrationController extends ApplicationController
     public function getMenu()
     {
         $str = "";
-		list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
+        if (!$this->_selectedMenu && !$this->selectedSubmenu)
+            list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
 
         foreach ($this->menu as $menu => $submenu) {
             if (!$this->_selectedMenu) $this->_selectedMenu = $menu;
@@ -68,7 +70,7 @@ class AdministrationController extends ApplicationController
     {
         $subitems = array();
         foreach ($this->_selectedMenu["items"] as $name => $submenu) {
-            $active = $this->_selectedSubmenu == $submenu ? "class='active'" : "";
+            $active = $this->_selectedSubmenu["link"] == $submenu["link"] ? "class='active'" : "";
             $href = "href='/admin/".$submenu['link']."'";
             $subitems[]= "
                         <li $active>
@@ -117,6 +119,7 @@ class AdministrationController extends ApplicationController
 			return $this->_getItem(true);
 	}
 
+    // Preprocesado antes de hacer nada para organizar los datos.
     private function preprocessMenu($menu_noprocess, $root = true)
     {
         $menu = array();
@@ -261,4 +264,11 @@ class AdministrationController extends ApplicationController
 		web::instance()->location("/admin/".$this->_selectedSubmenu["link"]);
 		exit;
 	}
+
+    public function setSelected($menu, $submenu)
+    {
+        $this->_selectedMenu = $menu;
+        $this->_selectedSubmenu = $submenu;
+    }
+
 }

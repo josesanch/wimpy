@@ -42,6 +42,7 @@ class Web
     public $cssFiles = array("/css/main.css");
     public $jsFiles = array();
     public $pageTitle = "";
+    public $adminController;
 
 
     public function __construct($database = null, $languages = null)
@@ -489,12 +490,14 @@ class Web
         exit;
     }
 
-    public static function request($param)
+    public static function request($param = null)
     {
         $arr = array();
         $arr = web::processParams(web::instance()->params, $arr);
         $arr = array_merge($arr, $_REQUEST);
+        if (!isset($param)) return $arr;
         if (isset($arr[$param])) return $arr[$param];
+
 
     }
 
@@ -699,10 +702,25 @@ class Web
         return web::instance();
     }
 // TODO: Generar contenido de header
-    public function header()
+    public function header($tipo = "xhtml")
     {
         $language = $this->getLanguage();
         $pageTitle = $this->pageTitle;
+        switch ($tipo) {
+        case "html5":
+            $doctype = "<!DOCTYPE html>
+<html lang=\"$language-$language\">\n";
+            $this->_metaTags["Content-Type"] = array("http-equiv", "text/html; charset=UTF-8");
+            unset($this->_metaTags["Cache-Control"]);
+            unset($this->_metaTags["Content-Script-Type"]);
+            unset($this->_metaTags["Content-language"]);
+            break;
+        default:
+            $doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"$language\">";
+        }
+
+
         foreach ($this->_metaTags as $meta => $arr) {
             if ($arr[1]) $metaTags .= "<meta $arr[0]=\"$meta\" content=\"$arr[1]\"/>\n";
         }
@@ -724,8 +742,7 @@ class Web
         }
 
         return <<<EOT
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="$language">
+$doctype
 <head>
 <title>$pageTitle</title>
 $metaTags

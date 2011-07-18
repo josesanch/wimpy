@@ -70,7 +70,10 @@ function css($module)
 	$directories = array("/css/", "/resources/css/", "/resources/js/", "/resources/");
 	foreach($directories as $dir) {
 		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file)) {
-			return "<link href=\"$dir$file\" rel=\"stylesheet\" type=\"text/css\" />";
+//			return "<link href=\"$dir$file\" type=\"text/css\" />";
+            return "<link rel=\"stylesheet\" type=\"text/css\" href=\"$dir$file\"/>";
+
+            // rel=\"stylesheet\"
 		}
 	}
 }
