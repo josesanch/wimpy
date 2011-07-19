@@ -36,9 +36,9 @@ class Model extends ActiveRecord
 	private function createTableIfNecessary()
 	{
         $metadata = &$this->getMetadata();
-     	if (!array_key_exists("created", $metadata) && $this->fields) {
+     	if (!array_key_exists("created", $metadata) && $this->fields && $this->database) {
 			$this->database->createTable(
-                $this->getDatabaseTable(), 
+                $this->getDatabaseTable(),
                 $metadata["fields"]
             );
 			$metadata["created"] = true;

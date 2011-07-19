@@ -61,7 +61,7 @@ class Web
             $this->bench = new bench();
             $this->auth = new auth();
             try {
-                $this->data = new webdata(1);
+                if ($this->database) $this->data = new webdata(1);
             } catch (Exception $e) {
             }
         }
@@ -182,7 +182,6 @@ class Web
         $previousParams = web::instance()->params;
         $arr = web::processParams($previousParams, $arr, $uri);
         $arr = web::processParams($params, $arr, $uri);
-
         foreach ($arr as $item => $value) {
             if (is_numeric($item) && $allParams) {
                 $uri .= "/$value";
@@ -490,15 +489,19 @@ class Web
         exit;
     }
 
-    public static function request($param = null)
+    public static function request($param = null, $notInclude = null)
     {
         $arr = array();
         $arr = web::processParams(web::instance()->params, $arr);
         $arr = array_merge($arr, $_REQUEST);
-        if (!isset($param)) return $arr;
+
+        if (!isset($param)) {
+            if (isset($notInclude)) {
+                return array_diff_key($arr, array_combine($notInclude, $notInclude));
+            }
+            return $arr;
+        }
         if (isset($arr[$param])) return $arr[$param];
-
-
     }
 
     private function processAction($param)

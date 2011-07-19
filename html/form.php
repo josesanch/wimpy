@@ -300,6 +300,7 @@ class html_form extends html_object
 				);'
         	)
         );
+        return $this;
     }
 
     public function &get($field)
