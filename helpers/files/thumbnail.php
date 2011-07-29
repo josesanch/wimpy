@@ -29,7 +29,7 @@ class helpers_files_thumbnail
 			$this->_imgId = $info["filename"];
 		} else {
 			$this->_fileName = $file->phisical();
-            if ($this->_usePhisicalAndSize) {
+            if ($this->_checkFileNameAndSize) {
                 $this->_imgId = md5($file->phisical().filesize($file->phisical()));
             } else {
                 if($file->id) {
