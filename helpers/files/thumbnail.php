@@ -29,14 +29,10 @@ class helpers_files_thumbnail
 			$this->_imgId = $info["filename"];
 		} else {
 			$this->_fileName = $file->phisical();
-            if ($this->_checkFileNameAndSize) {
-                $this->_imgId = md5($file->phisical().filesize($file->phisical()));
+            if($file->id) {
+                $this->_imgId = $file->id;
             } else {
-                if($file->id) {
-                    $this->_imgId = $file->id;
-                } else {
-                    $this->_imgId = md5($file->phisical());
-                }
+                $this->_imgId = md5($file->phisical());
             }
 
 		}
@@ -223,8 +219,9 @@ class helpers_files_thumbnail
     public function setCheckFileSizeAndName($value)
     {
         $this->_checkFileNameAndSize = $value;
+        if ($this->_checkFileNameAndSize) {
+            $this->_imgId = md5($this->_file->phisical().filesize($this->_file->phisical()));
+        }
     }
-
-
 
 }
