@@ -19,6 +19,7 @@ class helpers_files_thumbnail
     private $_height;
     private $_width;
     private $_pngDepth = 8;
+    private $_checkFileNameAndSize = false;
     function __construct ($file)
     {
         $this->_file = $file;
@@ -28,11 +29,15 @@ class helpers_files_thumbnail
 			$this->_imgId = $info["filename"];
 		} else {
 			$this->_fileName = $file->phisical();
-			if($file->id) {
-				$this->_imgId = $file->id;
-			} else {
-				$this->_imgId = md5($file->phisical());
-			}
+            if ($this->_usePhisicalAndSize) {
+                $this->_imgId = md5($file->phisical().filesize($file->phisical()));
+            } else {
+                if($file->id) {
+                    $this->_imgId = $file->id;
+                } else {
+                    $this->_imgId = md5($file->phisical());
+                }
+            }
 
 		}
     }
@@ -41,7 +46,7 @@ class helpers_files_thumbnail
     {
         $this->_rootThumbnails = $dir;
     }
-    
+
 	public function addFilter($filter)
 	{
 		$this->_filters[]= $filter;
@@ -180,14 +185,14 @@ class helpers_files_thumbnail
 	{
 		if(!is_dir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails)) mkdir($_SERVER["DOCUMENT_ROOT"].$this->_rootThumbnails, 0777, true);
 		$this->_img->writeImage($_SERVER["DOCUMENT_ROOT"].$url);
-        
+
         // Arreglamos los pngs de 16 bits para las versiones <= 3.0
         if (strtolower($this->_output) == "png") {
             $version = $this->_img->getVersion();
             if ($version["versionNumber"] < 1632) {
                 $gd = imagecreatefrompng($_SERVER["DOCUMENT_ROOT"].$url);
                 imageSaveAlpha($gd, True);
-                imagepng($gd, $_SERVER["DOCUMENT_ROOT"].$url, 8, PNG_ALL_FILTERS);                
+                imagepng($gd, $_SERVER["DOCUMENT_ROOT"].$url, 8, PNG_ALL_FILTERS);
             }
         }
 
@@ -214,6 +219,11 @@ class helpers_files_thumbnail
 		$str= str_replace(' ', '-', strtr(strtolower($url), $arr));
 		return implode("/", str_replace('%', '-', array_map("rawurlencode", explode("/", $str))));
 	}
+
+    public function setCheckFileSizeAndName($value)
+    {
+        $this->_checkFileNameAndSize = $value;
+    }
 
 
 
