@@ -42,6 +42,8 @@ class Model extends ActiveRecord
                 $metadata["fields"]
             );
 			$metadata["created"] = true;
+            // Llamamos a un método llamado __setup si existe.
+            if (method_exists($this, "__setup")) $this->__setup();
 		}
 	}
 
