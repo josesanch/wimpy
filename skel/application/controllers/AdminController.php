@@ -7,11 +7,11 @@ class AdminController extends AdministrationController {
 
 	public function __construct() {
 		$this->menu = array(
-					"Secciones" => array("noticias"),
-					"Contenidos" => array("documentos", "enlaces"),
-					"Productos" => array("productos", "tipo_productos" => "Tipos", "marcas"),
-					"Centros" => array("centros", "paises", "provincias"),
-					"Otros" => array("modules_translate" => "textos"));
+            "Secciones" => array("noticias"),
+            "Contenidos" => array("documentos", "enlaces"),
+            "Productos" => array("productos", "tipo_productos" => "Tipos", "marcas"),
+            "Centros" => array("centros", "paises", "provincias"),
+            "Otros" => array("modules_translate" => "textos"));
 
 		parent::__construct();
 	}

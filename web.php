@@ -79,6 +79,10 @@ class Web
             "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
             "google-site-verification" => array("name", web::instance()->googleVerification)
         );
+
+        if (array_pop(explode(".", $_SERVER["SERVER_NAME"], 2)) == "o2w.es") {
+            $this->inDevelopment = true;
+        }
     }
 
 
@@ -755,4 +759,27 @@ $jsTags
 EOT;
     }
 
+    public static function js()
+    {
+        $array = func_get_args();
+        if (!web::instance()->inDevelopment
+            && file_exists($_SERVER["DOCUMENT_ROOT"].basename("/")."/js/all.min.js")) {
+            return "<script src=\"/js/all.min.js\" type=\"text/javascript\"></script>";
+        } else {
+            foreach ($array as $file) $str .= js($file);
+        }
+        return $str;
+    }
+
+    public static function css()
+    {
+        $array = func_get_args();
+        if (!web::instance()->inDevelopment
+            && file_exists($_SERVER["DOCUMENT_ROOT"].basename("/")."/css/all.min.css")) {
+            return "<link rel=\"stylesheet\" href=\"/css/all.min.css\" type=\"text/css\" media=\"screen\"/>";
+        } else {
+            foreach ($array as $file) $str .= css($file);
+        }
+        return $str;
+    }
 }

@@ -33,17 +33,17 @@ class Model extends ActiveRecord
 		}
 	}
 
-	private function createTableIfNecessary()
+	protected function createTableIfNecessary()
 	{
         $metadata = &$this->getMetadata();
      	if (!array_key_exists("created", $metadata) && $this->fields && $this->database) {
-			$this->database->createTable(
-                $this->getDatabaseTable(),
-                $metadata["fields"]
-            );
+
+            if ($this->database->createTable($this->getDatabaseTable(), $metadata["fields"])) {
+                if (method_exists($this, "__setup")) {
+                    $this->__setup();
+                }
+            }
 			$metadata["created"] = true;
-            // Llamamos a un método llamado __setup si existe.
-            if (method_exists($this, "__setup")) $this->__setup();
 		}
 	}
 

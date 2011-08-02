@@ -20,7 +20,7 @@ class database_mysql extends database
 
     public function createTable($table, $fields)
     {
-        if($this->tableExists($table)) return;
+        if($this->tableExists($table)) return false;
         $primaryKeys = array();
         $sqlLines = array();
 
@@ -56,7 +56,7 @@ class database_mysql extends database
             $sql .= ") DEFAULT CHARSET=utf8;";
         }
         $exec = $this->exec($sql);
-        return $exec;
+        return $exec !== False;
     }
 
 }
