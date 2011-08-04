@@ -1,3 +1,4 @@
+
 <?php
 
 class ActiveRecord
@@ -266,6 +267,7 @@ class ActiveRecord
         }
 
 		$sql .= $limit;
+//        echo "<pre>".$sql."</pre><hr/>";
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 

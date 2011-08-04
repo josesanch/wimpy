@@ -1,4 +1,4 @@
-<?php
+x<?php
 
 interface ISignalSlot
 {
@@ -18,7 +18,7 @@ class SignalSlot implements ISignalSlot
     {
         $this->setup();
     }
-    
+
     protected function setup()
     {
         $ref   = new \ReflectionClass($this);
@@ -38,19 +38,19 @@ class SignalSlot implements ISignalSlot
             }
         }
     }
-    
+
 
     public function connect($signal, $context, $slot, $config = array())
     {
         if (!isset($this->signals[$signal]))  {
             throw new \Exception ($signal . ' is not declared');
-        }      
+        }
 
         $this->signals[$signal][] = array('context' => $context,
                                           'slot'    => $slot,
                                           'config'  => $config);
     }
-   
+
     public function disconnect($signal, $context, $slot)
     {
         if (!isset($this->signals[$signal]) || empty($this->signals[$signal]))  {
