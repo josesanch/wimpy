@@ -33,26 +33,25 @@ function __wimpyAutoload($class)
 
 function js($module)
 {
-
-	// Google hosted scripts
-	switch ($module) {
-		case "jquery":
-			return "<script src=\"/resources/js/jquery-1.5.2.min.js\" type=\"text/javascript\"></script>";
-		//	return "<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js\" type=\"text/javascript\"></script>";
-
-		case "jquery/ui":
-//			return "<script src=\"/resources/js/jquery/ui-1.8.1/jquery-ui-1.8.1.custom.min.js\" type=\"text/javascript\"></script><link href=\"/resources/js/jquery/ui-1.8.1/jquery-ui-1.8.1.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
-
-            return "<script src=\"/resources/js/jquery/jquery-ui-1.8.12.custom.min.js\" type=\"text/javascript\"></script><link href=\"/resources/js/jquery/ui/smoothness/jquery-ui-1.8.12.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
-
-			//return "<script src=\"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js\" type=\"text/javascript\"></script>";
-	}
-
 	$file = str_replace("::", "/", $module).".js";
 	$directories = array("/js/", "/resources/js/");
-	foreach($directories as $dir)
+
+	switch ($module) {
+		case "jquery/ui":
+            return "<script src=\"/resources/js/jquery/jquery-ui-1.8.12.custom.min.js\" type=\"text/javascript\"></script><link href=\"/resources/js/jquery/ui/smoothness/jquery-ui-1.8.12.custom.css\" rel=\"stylesheet\" type=\"text/css\" />";
+	}
+
+
+    foreach($directories as $dir)
 		if(file_exists($_SERVER["DOCUMENT_ROOT"].basename("/").$dir.$file) || file_exists(dirname(__file__)."/".$dir.$file) )
 			return  "<script src=\"$dir$file\" type=\"text/javascript\"></script>";
+
+
+    switch ($module) {
+    case "jquery":
+        return "<script src=\"/resources/js/jquery-1.5.2.min.js\" type=\"text/javascript\"></script>";
+    }
+
 }
 
 function js_once($module)

@@ -83,6 +83,7 @@ class Web
         if (array_pop(explode(".", $_SERVER["SERVER_NAME"], 2)) == "o2w.es") {
             $this->inDevelopment = true;
         }
+        if(ini_get('display_errors')) $this->reportErrors(true);
     }
 
 
@@ -595,8 +596,6 @@ class Web
 
     public static function error($texto, $file = null, $linea = null, $notify = null)
     {
-
-
         $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'> * Se ha producido un error </h3>";
 
@@ -714,14 +713,18 @@ class Web
         $language = $this->getLanguage();
         $pageTitle = $this->pageTitle;
         switch ($tipo) {
+
         case "html5":
             $doctype = "<!DOCTYPE html>
 <html lang=\"$language-$language\">\n";
-            $this->_metaTags["Content-Type"] = array("http-equiv", "text/html; charset=UTF-8");
+            $this->_metaTags["charset"] = array("name", "charset=UTF-8");
+            $this->_metaTags["viewport"] = array("name", "width=device-width,initial-scale=1");
+            unset($this->_metaTags["http-equiv"]);
             unset($this->_metaTags["Cache-Control"]);
             unset($this->_metaTags["Content-Script-Type"]);
             unset($this->_metaTags["Content-language"]);
             break;
+
         default:
             $doctype = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
 <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"$language\">";
