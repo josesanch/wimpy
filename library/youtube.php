@@ -37,7 +37,7 @@ class youtube
 
 		public function getPlayer($size = "425x350") {
 			$size = explode("x", $size);
-            return '<iframe width="'.$size[0].'" height="'.$size[1].'" src="http://www.youtube.com/embed/'.$this->id.'?rel=0" frameborder="0" allowfullscreen></iframe>';
+            return '<iframe width="'.$size[0].'" height="'.$size[1].'" src="http://www.youtube.com/embed/'.$this->id.'?rel=0&amp;wmode=Opaque" frameborder="0" allowfullscreen></iframe>';
 		}
 
 		private function loadInfo() {

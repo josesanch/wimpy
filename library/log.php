@@ -49,15 +49,14 @@ class log extends Model {
 		if(web::request("page")) $model->setCurrentPage(web::request("page"));
 
 		if(web::request("search")) {
-				if($columns) $c = split(" ?, ?", $columns);
-				else $c = array_keys($model->getFields());
-				$search = array();
-				foreach($c as $field) {
-					$search[]= "$field like '%".urldecode(web::request('search'))."%'";
-				}
-				$search = " (".join(" or ", $search).")";
-				$sql = $sql ? $sql." and ".$search : $search;
-
+            if($columns) $c = array_map(trim, explode(",", $columns));
+            else $c = array_keys($model->getFields());
+            $search = array();
+            foreach($c as $field) {
+                $search[]= "$field like '%".urldecode(web::request('search'))."%'";
+            }
+            $search = " (".join(" or ", $search).")";
+            $sql = $sql ? $sql." and ".$search : $search;
 		}
 
 		$columns = $columns ? preg_split(" ?, ?", $columns) :  array_keys($model->getFields());

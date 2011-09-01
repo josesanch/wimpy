@@ -79,10 +79,11 @@ class Web
             "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
             "google-site-verification" => array("name", web::instance()->googleVerification)
         );
-
+/*
         if (array_pop(explode(".", $_SERVER["SERVER_NAME"], 2)) == "o2w.es") {
             $this->inDevelopment = true;
         }
+*/
         if(ini_get('display_errors')) $this->reportErrors(true);
     }
 
@@ -599,10 +600,14 @@ class Web
         $str = "<pre style='padding: 1em; border: 1px dashed #666;'>
                     <h3 style='color: red;'> * Se ha producido un error </h3>";
 
-		if (!web::instance()->isInProduction() || web::instance()->reportErrors() || web::instance()->isDevelopmentServer())
+        if (!web::instance()->isInProduction()
+            || web::instance()->reportErrors()
+            || web::instance()->isDevelopmentServer())
 			$str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
 
-        if ($notify == web::NOTIFY_BY_EMAIL && web::instance()->isInProduction()) {
+        if ($notify == web::NOTIFY_BY_EMAIL
+            && web::instance()->isInProduction()
+            && !web::instance()->reportErrors()) {
 			$mailMsg = "<pre style='padding: 1em; border: 1px dashed #666;'>
 						<h3 style='color: red;'> * Se ha producido un error </h3>
 						<span style='font-size: 0.6em;'>$file ($linea)</span>:\n
