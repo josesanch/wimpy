@@ -243,9 +243,9 @@ class Net_Mail_phpmailer
         $this->_mail->AltBody = $text;
     }
 
-    public function addAttachment($file)
+    public function addAttachment($file, $name= "")
     {
-        $this->_mail->AddAttachment($file);
+        $this->_mail->AddAttachment($file, $name);
     }
 
     public function to($name, $address)

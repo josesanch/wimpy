@@ -1,4 +1,4 @@
-<?
+<?php
 class Model extends ActiveRecord
 {
 /*	protected  $fields = array(

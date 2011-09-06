@@ -3,7 +3,6 @@
 spl_autoload_register("__wimpyAutoload");
 function __wimpyAutoload($class)
 {
-
 	$file = str_replace("_", "/", strtolower($class)).".php";
 //	$file = strtolower($class).".php";
 //
@@ -23,7 +22,7 @@ function __wimpyAutoload($class)
 	foreach($dirs as $file)	{
 		if(file_exists($file))	{
 			include_once($file);
-#			echo("Autoloading: $file");
+//			echo("* Autoloading: $file\n");
 
 			break;
 		}

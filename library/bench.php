@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * Clase para controlar el tiempo consumido
@@ -63,4 +63,3 @@ class bench
 }
 
 //$GLOBALS["__bench"] = new bench();
-?>
