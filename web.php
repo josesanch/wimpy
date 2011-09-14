@@ -642,6 +642,17 @@ class Web
         if (!web::instance()->isInProduction() || $force)
             return web::instance()->bench->toHtml($force);
     }
+    public static function clock($desde = null, $msg = null) {
+        if (!$desde) return microtime();
+        $time =  web::getmicrotime(microtime()) - web::getmicrotime($desde);
+        return "TIEMPO(".getmypid().") $msg: $time";
+    }
+
+    public static function getmicrotime($t)
+    {
+        list($usec, $sec) = explode(" ",$t);
+        return ((float)$usec + (float)$sec);
+    }
 
     public static function &auth()
     {

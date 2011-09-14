@@ -60,6 +60,11 @@ class ActiveRecord
         return $this->results;
     }
 
+    public function sql($args)
+    {
+        return new Database_Select($this->database_table, $args);
+    }
+
     public function selectFirst($what = null)
     {
         $params = func_get_args();
@@ -164,6 +169,7 @@ class ActiveRecord
 
     public function selectSql($args = '')
     {
+        $where = $order = $limit = $group = $joins = "";
         $mode = ActiveRecord::NORMAL;
         $order = $joins = "";
         $this->select_columns = $this->select_order = $this->select_limit = $this->select_conditions = '';
@@ -220,6 +226,7 @@ class ActiveRecord
 				$mode = $arg;
 			}
         }
+
 
 		if ($mode == ActiveRecord::INNER) {
 			$joins = $this->_getLeftJoins();
