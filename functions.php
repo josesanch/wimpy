@@ -1,9 +1,12 @@
 <?php
 
 spl_autoload_register("__wimpyAutoload");
+
 function __wimpyAutoload($class)
 {
-	$file = str_replace("_", "/", strtolower($class)).".php";
+	$file = str_replace("_", "/", $class).".php";
+    $lowerFile =  strtolower($file);
+    $lowerClass = strtolower($class);
 //	$file = strtolower($class).".php";
 //
 
@@ -11,12 +14,18 @@ function __wimpyAutoload($class)
 	$application_path = $_SERVER["DOCUMENT_ROOT"]."/../application/";
 	$dirs = array(
 		$application_path."models/$class.php",
+        $application_path."models/$lowerClass.php",
 		$application_path."controllers/$class.php",
+        $application_path."controllers/$lowerClass.php",
 		$application_path."components/$class.php",
+        $application_path."components/$lowerClass.php",
 //		$_SERVER["DOCUMENT_ROOT"]."/inc/$class.php",
 		dirname(__FILE__)."/".$file,
+        dirname(__FILE__)."/".$lowerFile,
 		dirname(__FILE__)."/components/".$file,
+        dirname(__FILE__)."/components/".$lowerFile,
 		dirname(__FILE__)."/library/".$file,
+        dirname(__FILE__)."/library/".$lowerFile,
 	);
 
 	foreach($dirs as $file)	{
@@ -29,6 +38,10 @@ function __wimpyAutoload($class)
 	}
 }
 
+function setIncludePathForZend()
+{
+    set_include_path(dirname(__FILE__)."/library/" . PATH_SEPARATOR . get_include_path());
+}
 
 function js($module)
 {
