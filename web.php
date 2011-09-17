@@ -281,7 +281,8 @@ class Web
             break;
 
         default:
-                return $this->_callDefaultDispatcher($render, $view);        }
+                return $this->_callDefaultDispatcher($render, $view);
+        }
 
     }
 
