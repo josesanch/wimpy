@@ -30,9 +30,9 @@ class AdministrationController extends ApplicationController
     protected $auth;
 //    protected $components = array("auth");
 
-    public function __construct()
+    public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
     {
-        parent::__construct();
+        parent::__construct($request, $response, $invokeArgs);
         $this->view->data = $this;
         web::instance()->adminController = $this;
     }

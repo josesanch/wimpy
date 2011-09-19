@@ -104,7 +104,7 @@ class Web
         // Prepare routes for detecting languages.
 
         $routeLang = new Zend_Controller_Router_Route_Regex(
-            "(".implode("|", $langs).")(.*)",
+            "(".implode("|", $langs).")(/.*)",
             array(
                 "lang" => 1,
             ),
@@ -173,13 +173,15 @@ class Web
     private function parseInfo($uri)
     {
 
-        if (in_array($this->controller, $this->l10n->getLanguages())) {
+        if (in_array($this->request->getParam("lang"), $this->l10n->getLanguages())) {
             $this->l10n->setLanguage($this->request->getParam("lang"));
-            $this->request->setRequestUri($request->getParam("uri"));
+            $uri = $this->request->getParam("uri");
+            $this->request = new Zend_Controller_Request_Http();
+            $this->request->setRequestUri($uri);
             $this->getRouter()->route($this->request);
         }
 
-        $this->params = implode("/", array_slice(explode("/", $this->request->getRequestUri()), 3));
+        $this->params = array_slice(explode("/", $this->request->getRequestUri()), 3);
     }
 
     public static function uri($params, $allParams = true, $exclude = array())
@@ -246,26 +248,24 @@ class Web
         $this->initialized = true;
         $_SESSION['initialized'] = true;
 
-        $this->request = $request = new Zend_Controller_Request_Http();
+        $this->request = new Zend_Controller_Request_Http();
         $this->response = new Zend_Controller_Response_Http();
 
         if (null !== $uri) {
-            $request->setRequestUri($uri);
+            $this->request->setRequestUri($uri);
         } else {
             $this->render = $render = true;
         }
 
-
-
         $this->DealSpecialCases();  // Robots.txt
 
-        $router = $this->getRouter();
-        $router->route($request);
+        $router = $this->getRouter()->route($this->request);
         $this->parseInfo($uri);
 
-        $this->controller = $request->getControllerName();
-        $this->action = $request->getActionName();
-        $this->uri = $request->getRequestUri();
+        $this->controller = $this->request->getControllerName();
+        $this->action = $this->request->getActionName();
+
+        $this->uri = $this->request->getRequestUri();
 
         switch ($this->controller) {
             case 'admin':
@@ -345,8 +345,11 @@ class Web
             $this->loadController("ErrorController");
         }
 
-        $controller = new $controllerClass($this->request, $this->response);
-        $controller->setApplicationPath($this->_applicationPath);
+        $controller = new $controllerClass();
+        $controller
+            ->setApplicationPath($this->_applicationPath)
+            ->setRequest($this->request)
+            ->setResponse($this->response);
 
         if (null !== $view)
             $controller->setView($view);
@@ -366,7 +369,6 @@ class Web
         list($controller, $action) = $this->_getController($view);
         if (!$render) $controller->layout = '';
 
-        echo "<h1>Llamando a ".get_class($controller)." -> $action";
         call_user_func_array(array($controller, $action."Action"), $this->params);
 
         if ($render) {
@@ -387,6 +389,7 @@ class Web
 
         if ($this->action == "index") {
             list($controller, $action) = $this->_getController($view, true);
+
             call_user_func_array(
                 array($controller, $action."Action"),
                 $this->params
@@ -584,7 +587,7 @@ class Web
         header("Status: 404 Not Found");
 
         if (method_exists("ErrorController", "notfoundAction")) {
-            $controller = new ErrorController();
+            $controller = new ErrorController($this->request, $this->response);
             $controller->setApplicationPath($this->_applicationPath);
             $controller->view->controller = $this->controller;
             $controller->view->action = $this->action;

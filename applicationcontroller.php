@@ -9,22 +9,17 @@ class ApplicationController
     public $components = array();
     public $request, $response;
 
-
     protected $_applicationPath;
     protected $_invokeArgs = array();
     protected $_viewFileSuffix = "html";
 
-	public function __construct(Zend_Controller_Request_Abstract $request, Zend_Controller_Response_Abstract $response, array $invokeArgs = array())
+	public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
 	{
 
         $this->setRequest($request)
             ->setResponse($response)
             ->setView()
             ->_setInvokeArgs($invokeArgs);
-
-
-        $this->view->controller = $this->controller = $this->getControllerName();
-        $this->view->action = $this->action = $this->getActionName();
 
 		// Create the compoments
 		foreach ($this->components as $component => $params) {
@@ -42,7 +37,11 @@ class ApplicationController
 
     public function setRequest($request)
     {
-        $this->request = $request;
+        if (null !== $request) {
+            $this->request = $request;
+            $this->view->controller = $this->controller = $this->getControllerName();
+            $this->view->action = $this->action = $this->getActionName();
+        }
         return $this;
     }
 
@@ -83,6 +82,7 @@ class ApplicationController
     {
         return $this->getRequest()->getControllerName();
     }
+
 	public function getActionName()
     {
         return $this->getRequest()->getActionName();
@@ -144,9 +144,6 @@ class ApplicationController
 			$this->view = $view;
 		else
 			$this->view = new html_template();
-
-        $this->view->controller = $this->getControllerName();
-        $this->view->action = $this->getActionName();
 
         return $this;
     }
