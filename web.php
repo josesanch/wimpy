@@ -342,6 +342,7 @@ class Web
     {
         list($controller, $action) = $this->_getController($view);
         if (!$render) $controller->layout = '';
+//        echo "<h2>".get_class($controller)." -> $action</h2>";
         call_user_func_array(array($controller, $action."Action"), $this->params);
 
         if ($render) {
