@@ -1,5 +1,4 @@
 <?php
-
 spl_autoload_register("__wimpyAutoload");
 
 function __wimpyAutoload($class)
@@ -339,4 +338,3 @@ function getMimeType($file)
 	$mime_type = array_shift(explode(";",$mime_type));
 	return $mime_type;
 }
-

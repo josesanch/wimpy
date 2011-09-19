@@ -1,5 +1,4 @@
 <?php
-
 require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
 require dirname(__FILE__)."/database.php";
@@ -12,6 +11,9 @@ require dirname(__FILE__)."/library/log.php";
 *
 * Base class of the framework
 */
+setIncludePathForZend();
+
+
 class Web
 {
 	const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
@@ -44,6 +46,7 @@ class Web
     public $pageTitle = "";
     public $adminController;
 
+    protected $_router;
 
     public function __construct($database = null, $languages = null)
     {
@@ -98,6 +101,19 @@ class Web
 
     public function setLanguages(array $langs)
     {
+        // Prepare routes for detecting languages.
+
+        $routeLang = new Zend_Controller_Router_Route_Regex(
+            "(".implode("|", $langs).")(.*)",
+            array(
+                "lang" => 1,
+            ),
+            array(
+                1 => "lang",
+                2 => "uri"
+            )
+        );
+        $this->getRouter()->addRoute("lang", $routeLang);
         $this->l10n->setLanguages($langs);
     }
 
@@ -156,20 +172,14 @@ class Web
 
     private function parseInfo($uri)
     {
-        $url = parse_url($uri);
-        $uri = explode("/", substr($url["path"], 1));
-        if (in_array($uri[0], $this->l10n->getLanguages())) {
-            $lang = array_shift($uri);
-            $this->l10n->setLanguage($lang);
+
+        if (in_array($this->controller, $this->l10n->getLanguages())) {
+            $this->l10n->setLanguage($this->request->getParam("lang"));
+            $this->request->setRequestUri($request->getParam("uri"));
+            $this->getRouter()->route($this->request);
         }
-        // Controlador por defecto indexController.
-        $uri[0] = $uri[0] ? strtolower($uri[0]) : "index";
-        // Método por defecto index.
-        $uri[1] = isset($uri[1]) && $uri[1] != "" ?
-                            strtolower($uri[1]) : "index";
-        $this->controller = strtolower(array_shift($uri));
-        $this->action = web::processAction(array_shift($uri));
-        $this->params = $uri;
+
+        $this->params = implode("/", array_slice(explode("/", $this->request->getRequestUri()), 3));
     }
 
     public static function uri($params, $allParams = true, $exclude = array())
@@ -236,15 +246,26 @@ class Web
         $this->initialized = true;
         $_SESSION['initialized'] = true;
 
-        if (!$uri) {
+        $this->request = $request = new Zend_Controller_Request_Http();
+        $this->response = new Zend_Controller_Response_Http();
+
+        if (null !== $uri) {
+            $request->setRequestUri($uri);
+        } else {
             $this->render = $render = true;
-            $uri = $_SERVER["REQUEST_URI"];
         }
 
-        $this->uri = $uri;
 
-        $this->DealSpecialCases();
+
+        $this->DealSpecialCases();  // Robots.txt
+
+        $router = $this->getRouter();
+        $router->route($request);
         $this->parseInfo($uri);
+
+        $this->controller = $request->getControllerName();
+        $this->action = $request->getActionName();
+        $this->uri = $request->getRequestUri();
 
         switch ($this->controller) {
             case 'admin':
@@ -324,10 +345,11 @@ class Web
             $this->loadController("ErrorController");
         }
 
-        $controller = new $controllerClass($view);
+        $controller = new $controllerClass($this->request, $this->response);
         $controller->setApplicationPath($this->_applicationPath);
-        $controller->view->controller = $this->controller;
-        $controller->view->action = $this->action;
+
+        if (null !== $view)
+            $controller->setView($view);
 
         if (method_exists($controller, "beforeFilter")) {
             call_user_func_array(
@@ -343,6 +365,8 @@ class Web
     {
         list($controller, $action) = $this->_getController($view);
         if (!$render) $controller->layout = '';
+
+        echo "<h1>Llamando a ".get_class($controller)." -> $action";
         call_user_func_array(array($controller, $action."Action"), $this->params);
 
         if ($render) {
@@ -360,6 +384,7 @@ class Web
 
     private function _callAdminDispatcher($render = true)
     {
+
         if ($this->action == "index") {
             list($controller, $action) = $this->_getController($view, true);
             call_user_func_array(
@@ -801,5 +826,13 @@ EOT;
             foreach ($array as $file) $str .= css($file);
         }
         return $str;
+    }
+
+    public function getRouter()
+    {
+        if (null === $this->_router) {
+            $this->_router = new Zend_Controller_Router_Rewrite();
+        }
+        return $this->_router;
     }
 }
