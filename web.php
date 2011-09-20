@@ -351,8 +351,11 @@ class Web
             ->setRequest($this->request)
             ->setResponse($this->response);
 
+        $controller->view->setDirectory($this->_applicationPath."views/");
+
+
         if (null !== $view)
-            $controller->setView($view);
+            $controller->setViewRenderer($view);
 
         if (method_exists($controller, "beforeFilter")) {
             call_user_func_array(

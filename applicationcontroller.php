@@ -8,18 +8,19 @@ class ApplicationController
     public $template = null;
     public $components = array();
     public $request, $response;
-
     protected $_applicationPath;
     protected $_invokeArgs = array();
     protected $_viewFileSuffix = "html";
+    protected $_viewRendererClass;
+    protected $_templateFile = null;
 
 	public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
 	{
 
         $this->setRequest($request)
             ->setResponse($response)
-            ->setView()
-            ->_setInvokeArgs($invokeArgs);
+            ->_setInvokeArgs($invokeArgs)
+            ->_setupViewRenderer();
 
 		// Create the compoments
 		foreach ($this->components as $component => $params) {
@@ -28,6 +29,21 @@ class ApplicationController
 		}
 	}
 
+    private function _setupViewRenderer()
+    {
+        $viewRenderer = isset($this->_invokeArgs["viewRenderer"]) ? $this->_invokeArgs["viewRenderer"] : "view_renderer_template";
+
+        switch ($viewRenderer) {
+        case "view_renderer_twig":
+            $this->view = new view_renderer_twig();
+            break;
+
+        case "view_renderer_template":
+        default:
+            $this->view = new view_renderer_template();
+
+        }
+    }
 
 	public function setApplicationPath($path)
 	{
@@ -91,10 +107,10 @@ class ApplicationController
 	protected function getViewFile($viewFile)
     {
         if ($this->template) {
-            return $this->_applicationPath."views".$this->template.".".$this->_viewFileSuffix;
+            $this->template.".".$this->_viewFileSuffix;
         }
 
-        return $this->_applicationPath."views/".$this->getControllerName()."/".$viewFile.".".$this->_viewFileSuffix;
+        return $this->getControllerName()."/".$viewFile;
     }
 
 
@@ -103,7 +119,6 @@ class ApplicationController
 		if(get_class($this) == 'ErrorController') {
 			web::instance()->error404();
 		}
-
 	}
 
     public function setTemplate($file)
@@ -114,24 +129,15 @@ class ApplicationController
 
 	public function renderHtml($viewFile)
 	{
-		$viewFilePhisical = $this->getViewFile($viewFile);
-/*
-        if (!file_exists($viewFilePhisical)) {
-            require_once 'Zend/Controller/Exception.php';
-            throw new Zend_Controller_Exception('Invalid action specifier for view render');
+        if (null !== $this->_templateFile) {
+            $viewFile = $this->_templateFile;
         }
-*/
-		if ($this->layout) {
-			//$this->view->setLayout($this->getLayoutFile());
 
-			$layout = clone $this->view;
-			if (file_exists($viewFilePhisical)) {
-				$layout->content = $this->view->toHtml($viewFilePhisical);
-			}
-
-			return $layout->toHtml($this->getLayoutFile());
-		}
-		return $this->view->toHtml($viewFilePhisical);
+        if ($this->layout && $this->view->hasLayouts()) {
+            $this->view->setLayout("layouts/".$this->layout);
+        }
+        $this->view->loadTemplate($this->getViewFile($viewFile));
+        return $this->view->render();
 	}
 
 	public function render($viewFile)
@@ -143,15 +149,12 @@ class ApplicationController
 
 	}
 
-    public function setView($view = null)
+    public function setViewRenderer($view = null)
     {
-        if (null !== $view)
-			$this->view = $view;
-		else
-			$this->view = new html_template();
-
-        return $this;
+        $this->view = $view;
     }
+
+
 
     public function _getParam($param)
     {

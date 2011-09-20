@@ -443,10 +443,14 @@ class html_template extends html_object
 
 			case 'render:':
 				$web = clone web::instance();
-				$t = new html_template($file, null, null, null, $this->__root);
-				$t->__vars = &$vars;
-				$t->__blocks =  $this->__blocks;
+//				$t = new html_template($file, null, null, null, $this->__root);
+                $t = new view_renderer_template();
+
+                $t  ->setDirectory(web::instance()->getApplicationPath()."/views/")
+                    ->setData(&$vars);
+
 				$txt = $web->run($expresion, $t);
+
 				if ($spaces) {
 					$tabSpaces = str_repeat("\t", $spaces);
 					$txt = preg_replace("/\n/", "\n".$tabSpaces, $txt);
@@ -659,6 +663,11 @@ class html_template extends html_object
 		return null;
 	}
 
+    public function setVars($vars)
+    {
+        $this->__vars = $vars;
+        return $this;
+    }
 }
 
 
