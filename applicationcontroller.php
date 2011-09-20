@@ -115,6 +115,12 @@ class ApplicationController
 	public function renderHtml($viewFile)
 	{
 		$viewFilePhisical = $this->getViewFile($viewFile);
+/*
+        if (!file_exists($viewFilePhisical)) {
+            require_once 'Zend/Controller/Exception.php';
+            throw new Zend_Controller_Exception('Invalid action specifier for view render');
+        }
+*/
 		if ($this->layout) {
 			//$this->view->setLayout($this->getLayoutFile());
 
@@ -124,7 +130,6 @@ class ApplicationController
 			}
 
 			return $layout->toHtml($this->getLayoutFile());
-
 		}
 		return $this->view->toHtml($viewFilePhisical);
 	}
@@ -148,4 +153,8 @@ class ApplicationController
         return $this;
     }
 
+    public function _getParam($param)
+    {
+        return $this->getRequest()->getParam($param);
+    }
 }

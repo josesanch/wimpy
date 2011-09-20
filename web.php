@@ -172,16 +172,16 @@ class Web
 
     private function parseInfo($uri)
     {
-
         if (in_array($this->request->getParam("lang"), $this->l10n->getLanguages())) {
             $this->l10n->setLanguage($this->request->getParam("lang"));
-            $uri = $this->request->getParam("uri");
-            $this->request = new Zend_Controller_Request_Http();
-            $this->request->setRequestUri($uri);
-            $this->getRouter()->route($this->request);
-        }
 
-        $this->params = array_slice(explode("/", $this->request->getRequestUri()), 3);
+            if ($uri = $this->request->getParam("uri")) {
+                $this->request = new Zend_Controller_Request_Http();
+                $this->request->setRequestUri($uri);
+                $this->getRouter()->route($this->request);
+            }
+        }
+        $this->params = array_slice(explode("/", $this->request->getPathInfo()), 3);
     }
 
     public static function uri($params, $allParams = true, $exclude = array())
@@ -333,10 +333,10 @@ class Web
             )
         )."Controller";
 
-        $action = $this->action;
+        $action = $this->processAction($this->action);
 
         if (!$this->loadController($controllerClass)
-            || (!method_exists($controllerClass, $this->action."Action")
+            || (!method_exists($controllerClass, $action."Action")
             && !$admin)
         ) {
             $action = "error";
@@ -495,6 +495,11 @@ class Web
     public function setDefaultLanguage($lang)
     {
         $this->l10n->setDefaultLanguage($lang);
+        return $this;
+    }
+    public function getDefaultLanguage()
+    {
+        return $this->l10n->getDefaultLanguage();
     }
 
     public function setInProduction($p)

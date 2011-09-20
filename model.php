@@ -218,8 +218,47 @@ class Model extends ActiveRecord
 			$file->delete();
 	}
 
-	public function url()
+	public function url($lang = null)
 	{
-		return "/".get_class($this)."/view/$this->id/".convert_to_url($this->nombre);
+        if (null !== $lang && $lang != web::instance()->getDefaultLanguage()) {
+            return "/$lang/".get_class($this)."/view/$this->id/".convert_to_url($this->get("nombre", $lang));
+        }
+
+        return "/".get_class($this)."/view/$this->id/".convert_to_url($this->get("nombre", $lang));
 	}
+
+    public static function setupRoutes($options = array())
+    {
+        $modelName = get_called_class();
+        $items = new $modelName;
+        $defaultLanguage = web::instance()->l10n->getDefaultLanguage();
+        $languages = web::instance()->l10n->getNotDefaultLanguages();
+
+        // Ordenamos los lenguages primero el por defecto.
+        array_unshift($languages, $defaultLanguage);
+
+        foreach ($items->select() as $item) {
+            foreach ($languages as $lang) {
+                if ($lang == $defaultLanguage) {
+                    $url = $urlDefault = $item->url($lang);
+                } else {
+                    $url = $item->url($lang);
+                    if ($url == $urlDefault) $url ="/$lang".$url;
+                }
+
+                $routeItem = new Zend_Controller_Router_Route(
+                    $url,
+                    array(
+                        "controller" => $options["controller"],
+                        "action" => $options["action"],
+                        "id" => $item->id,
+                        "model" => $modelName,
+                        "lang" => $lang
+                    )
+                );
+                web::instance()->getRouter()->addRoute("$modelName-$lang-".$item->id, $routeItem);
+            }
+        }
+    }
 }
+

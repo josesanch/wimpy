@@ -30,7 +30,8 @@ class l10n {
 
 	public function setDefaultLanguage($lang) {
 		$this->default_language = $lang;
-		if(!web::instance()->initialized())$this->setLanguage($lang);
+		if(!web::instance()->initialized())
+            $this->setLanguage($lang);
 	}
 
 	public function get($id, $lang = null, $returnDefaultLanguage = true) {
@@ -109,7 +110,9 @@ class l10n {
 		return array_diff($this->languages, array($this->default_language));
 	}
 
-	public function getDefaultLanguage() { 	return $this->default_language;  }
+	public function getDefaultLanguage() {
+        return $this->default_language;
+    }
 
 	public function autoSelectLanguage() {
 		foreach(explode(",",  $_SERVER['HTTP_ACCEPT_LANGUAGE']) as $i => $value) $ask_lang[$i]=trim(array_shift(explode(';', $value)));
