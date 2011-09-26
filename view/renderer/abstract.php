@@ -25,6 +25,12 @@ abstract class view_renderer_abstract implements view_renderer_interface
         return $this;
     }
 
+    public function getDirectory()
+    {
+        return $this->_templateDirectory;
+    }
+
+
     public function setCacheDirectory($directory)
     {
         $this->_cacheDirectory = $directory;
@@ -50,7 +56,7 @@ abstract class view_renderer_abstract implements view_renderer_interface
 
     public function setLayout($layout)
     {
-        $this->_layoutFile = $layout.$this->_suffixFile;
+        $this->_layoutFile = $layout;
         return $this;
     }
 
@@ -62,7 +68,7 @@ abstract class view_renderer_abstract implements view_renderer_interface
 
     protected function _getPhisicalLayoutFile()
     {
-        return $this->_templateDirectory."/".$this->_layoutFile;
+        return $this->_layoutFile;
     }
 
     public function setData($data)

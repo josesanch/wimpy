@@ -11,30 +11,31 @@ class helpers_l10n extends Model
 	}
 
 	public function adminEdit($id) {
+        $this->select("id='$id'");
+
 		$form = new html_form(get_class($this), '/admin/'.get_class($this)."/save".web::params());
 
 		$row = web::instance()->database->query("select field from l10n where id='$id'")->fetch();
+
 		if($row) {
 			$id = $row['field'];
 		}
 
-		$form->add("
-			<input type='hidden' name='field' value='$id'>
-			<fieldset style='width: 50%; margin: auto;'>
-				<legend>Traducción de textos</legend>
-			");
+        $auto = new html_autoform($this);
+
+		$auto->add("<input type='hidden' name='field' value='$id'>");
 
 		foreach(l10n::instance()->getLanguages() as $lang) {
 			$value = l10n::instance()->get($id, $lang, False);
-			$form->add("
+			$auto->add("
 				<p>
 					<label for='data'>Texto ($lang)</label>
-					<br><textarea name='data_$lang' rows=5 cols=60 >$value</textarea>
+					<br><textarea name='data_$lang' rows=10 cols=60 style='width: 80%' >$value</textarea>
 				</p>");
-		}
-		$form->add("<p><input class='submit' type='button' value=volver onclick=\"document.location='/admin/".get_class($this)."/list".web::params()."'\"><input class='submit' type='submit' value=enviar></p></fieldset>");
-		return $form->toHtml();
-//		return $form.js_once("jquery").js_once("jquery.validate");
+
+        }
+
+		return $auto->toHtml();
 	}
 
 
@@ -43,6 +44,17 @@ class helpers_l10n extends Model
 		foreach($l10n->getLanguages() as $lang) {
 			$l10n->set($_REQUEST['field'], $_REQUEST["data_".$lang], $lang);
 		}
+		web::instance()->location("/admin/helpers_l10n/list".web::params());
+		exit;
+	}
+
+    public function adminDelete($id) {
+        $row = web::instance()->database->query("select field from l10n where id='$id'")->fetch();
+
+		if($row) {
+			$id = $row['field'];
+		}
+        web::database()->query("delete from l10n where field='$id' and (model is null or model ='')");
 		web::instance()->location("/admin/helpers_l10n/list".web::params());
 		exit;
 	}
@@ -65,7 +77,4 @@ class helpers_l10n extends Model
 		$rows = $sta->fetchAll();
 		echo json_encode(array("items" => $rows, "count" => count($row)));
 	}
-
-
 }
-?>

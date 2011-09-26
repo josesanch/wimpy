@@ -53,6 +53,7 @@ class html_object
 
 	protected function getAttributes($except = array())
 	{
+        $strAttr ="";
 		if (!is_array($this->attrs)) return "";
 		if(!$this->attrs['id']) $this->attrs['id'] =  $this->attrs['name'];
 		if(!is_array($except)) $except = preg_split("/\s*,\s*/", $except);

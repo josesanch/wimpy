@@ -1,3 +1,4 @@
+
 <?php
 require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
@@ -27,6 +28,7 @@ class Web
     public $bench;
     public $auth;
     public $enableTidy = false;
+    public $gridSize = 25;
     //public $authMethod = Auth::FORM;
     public $authMethod = Auth::REALM;
 
@@ -47,7 +49,8 @@ class Web
     public $adminController;
 
     protected $_router;
-
+    protected $_viewRendererClass = "view_renderer_template";
+    protected $_viewsDirectory;
     public function __construct($database = null, $languages = null)
     {
         session_start();
@@ -71,6 +74,8 @@ class Web
 //        if ($languages) $this->setLanguages($languages);
 
         $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
+        $this->_viewsDirectory = $this->_applicationPath."views/";
+
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
 
         $this->_metaTags = array(
@@ -104,9 +109,10 @@ class Web
         // Prepare routes for detecting languages.
 
         $routeLang = new Zend_Controller_Router_Route_Regex(
-            "(".implode("|", $langs).")(/.*)",
+            "(".implode("|", $langs).")(/.*)?",
             array(
                 "lang" => 1,
+                "uri" => "/"
             ),
             array(
                 1 => "lang",
@@ -115,6 +121,7 @@ class Web
         );
         $this->getRouter()->addRoute("lang", $routeLang);
         $this->l10n->setLanguages($langs);
+        return $this;
     }
 
     /**
@@ -170,7 +177,7 @@ class Web
         return web::$_defaultInstance;
     }
 
-    private function parseInfo($uri)
+    private function parseInfo()
     {
         if (in_array($this->request->getParam("lang"), $this->l10n->getLanguages())) {
             $this->l10n->setLanguage($this->request->getParam("lang"));
@@ -248,19 +255,24 @@ class Web
         $this->initialized = true;
         $_SESSION['initialized'] = true;
 
-        $this->request = new Zend_Controller_Request_Http();
-        $this->response = new Zend_Controller_Response_Http();
-
-        if (null !== $uri) {
-            $this->request->setRequestUri($uri);
-        } else {
-            $this->render = $render = true;
+        if (is_a($uri, "Zend_Controller_Request_Http")) {
+            $this->request = $uri;
+        } else  {
+            $this->request = new Zend_Controller_Request_Http();
+            if (null !== $uri) {
+                $this->request->setRequestUri($uri);
+            } else {
+                $this->render = $render = true;
+            }
         }
+
+
+        $this->response = new Zend_Controller_Response_Http();
 
         $this->DealSpecialCases();  // Robots.txt
 
         $router = $this->getRouter()->route($this->request);
-        $this->parseInfo($uri);
+        $this->parseInfo();
 
         $this->controller = $this->request->getControllerName();
         $this->action = $this->request->getActionName();
@@ -335,24 +347,37 @@ class Web
 
         $action = $this->processAction($this->action);
 
-        if (!$this->loadController($controllerClass)
-            || (!method_exists($controllerClass, $action."Action")
-            && !$admin)
+        if (!$this->loadController($controllerClass)) {
+            throw new Exception('No existe el controlador');
+        }
+
+
+        if (!method_exists($controllerClass, $action."Action"  && !$admin)) {
+//            throw new Exception('No existe el la acción');
+        }
+/*
         ) {
+
             $action = "error";
             $controllerClass = "ErrorController";
             array_unshift($this->params, $this->controller, $this->action);
             $this->loadController("ErrorController");
+
+            throw new Exception('No existe el .');
         }
 
-        $controller = new $controllerClass();
+*/
+        $controller = new $controllerClass(
+            null, null,
+            array("viewRenderer" => $this->_viewRendererClass)
+        );
+
         $controller
             ->setApplicationPath($this->_applicationPath)
             ->setRequest($this->request)
             ->setResponse($this->response);
 
-        $controller->view->setDirectory($this->_applicationPath."views/");
-
+        $controller->view->setDirectory($this->_viewsDirectory);
 
         if (null !== $view)
             $controller->setViewRenderer($view);
@@ -369,16 +394,20 @@ class Web
 
     private function _callDefaultDispatcher($render = true, $view = null)
     {
-        list($controller, $action) = $this->_getController($view);
-        if (!$render) $controller->layout = '';
 
-        call_user_func_array(array($controller, $action."Action"), $this->params);
 
-        if ($render) {
-            $controller->render($this->action);
-        } else {
+        try {
+           list($controller, $action) = $this->_getController($view);
+           if (!$render) $controller->layout = '';
+            call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);
+            if ($render) {
+                echo $value;
+            }
+        } catch (exception $e) {
+            $this->_callErrorController();
         }
+
 
         if (method_exists($controller, "afterFilter")) {
             call_user_func_array(array($controller, "afterFilter"), $this->params);
@@ -389,7 +418,6 @@ class Web
 
     private function _callAdminDispatcher($render = true)
     {
-
         if ($this->action == "index") {
             list($controller, $action) = $this->_getController($view, true);
 
@@ -408,7 +436,6 @@ class Web
             }
             $params = $this->params;
             array_unshift($params, $model);
-
             switch ($action) {
 				case "list":
 					if (!web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
@@ -429,7 +456,6 @@ class Web
                 $params
             );
         }
-
 
         if ($render) {
             $controller->render($this->action);
@@ -459,7 +485,24 @@ class Web
         //call_user_method_array($action, $model, $this->params);
         call_user_func_array(array($model, $action), $this->params);
     }
+    private function _callErrorController($action)
+    {
+        $action = "error";
+        $controllerClass = "ErrorController";
+        array_unshift($this->params, $this->controller, $this->action);
+        $this->loadController("ErrorController");
+        $controller = new $controllerClass(
+            null, null,
+            array("viewRenderer" => $this->_viewRendererClass)
+        );
+        $controller
+            ->setApplicationPath($this->_applicationPath)
+            ->setRequest($this->request)
+            ->setResponse($this->response);
 
+        $controller->view->setDirectory($this->_viewsDirectory);
+        call_user_func_array(array($controller, "errorAction"), $this->params);
+    }
 
     public function getApplicationPath()
     {
@@ -508,6 +551,7 @@ class Web
     public function setInProduction($p)
     {
         $this->_inProduction = $p;
+        return $this;
     }
 
     public function isInProduction()
@@ -608,6 +652,7 @@ class Web
 
         exit;
     }
+
 
     public function forbidden()
     {
@@ -845,5 +890,26 @@ EOT;
             $this->_router = new Zend_Controller_Router_Rewrite();
         }
         return $this->_router;
+    }
+
+    public function setRenderer($class)
+    {
+        $this->_viewRendererClass = "view_renderer_$class";
+        return $this;
+    }
+
+    public function setViewsDirectory($directory)
+    {
+        $this->_viewsDirectory = $directory;
+        return $this;
+    }
+    public function getViewsDirectory()
+    {
+        return $this->_viewsDirectory;
+    }
+
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

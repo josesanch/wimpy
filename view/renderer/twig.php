@@ -2,6 +2,7 @@
 
 class view_renderer_twig extends view_renderer_abstract implements view_renderer_interface
 {
+    protected $_suffixFile = ".twig";
 
     public function render(Array $data = null)
     {
@@ -12,6 +13,9 @@ class view_renderer_twig extends view_renderer_abstract implements view_renderer
             'cache' => $this->_getCacheDirectory(),
             'auto_reload' => true
         ));
+        $twig->addExtension(new view_renderer_twig_extension_render());
+        $twig->addExtension(new view_renderer_twig_extension_text());
+        $twig->addExtension(new view_renderer_twig_extension_wimpy());
 
         $template = $twig->loadTemplate($this->_templateFile);
         return $template->render($this->_data);

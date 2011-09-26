@@ -161,12 +161,25 @@ function create_images_and_files_tables($database)
 						  `id` int(11) NOT NULL auto_increment,
 						  `lang` varchar(6)  NOT NULL default '',
 						  `model` varchar(125),
-						  `field` varchar(255)  NOT NULL default '',
+						  `field` text NOT NULL default '',
 						  `row` int(11),
 						  `data` text NOT NULL,
 						  PRIMARY KEY  (`id`)
 						) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 						");
+    //						  `field` varchar(255)  NOT NULL default '',
+/*
+    $database->exec("
+						CREATE TABLE `l10n_text` (
+						  `id` int(11) NOT NULL auto_increment,
+						  `lang` varchar(6)  NOT NULL default '',
+						  `field` text  NOT NULL default '',
+						  `data` text NOT NULL,
+						  PRIMARY KEY  (`id`)
+						) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+						");
+*/
 	$database->exec("
 				CREATE TABLE `users` (
 				  `id` int(9) unsigned NOT NULL auto_increment,

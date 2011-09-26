@@ -12,7 +12,7 @@ class ActiveRecord
     protected $database_table;
     protected $exists = false;
     protected $where_primary_keys;
-    protected $row_data;
+    protected $row_data = array();
     protected $row_data_l10n;
     protected static $metadata = array();
 
@@ -308,7 +308,7 @@ class ActiveRecord
 		$table = $this->getDatabaseTable();
 		$count = 2;
 		foreach ($this->getAllFields() as $field => $attrs) {
-			if ($attrs["belongs_to"]) {
+			if (isset($attrs["belongs_to"])) {
 				$relatedTable = $attrs["belongs_to"];
 				$fieldName = $field;
 				if (substr($fieldName, -3) == "_id") $fieldName = substr($fieldName, 0, -3);
@@ -410,9 +410,18 @@ class ActiveRecord
 
     public function __get($property)
     {
-        return $this->get($property);
+        if ($this->__isset($property))
+            return $this->get($property);
     }
 
+    public function __isset($name)
+    {
+        if (array_key_exists($name, $this->getAllFields()) ||
+            array_key_exists($name, $this->row_data)) {
+            return true;
+        }
+        return false;
+    }
 
     public function get($property, $selected_lang = null, $return_default_lang_is_not_exists = true)
     {
@@ -520,13 +529,13 @@ class ActiveRecord
     public function getPrimaryKeys()
     {
         $metadata = &$this->getMetadata();
-        return $metadata["primary_keys"];
+        return isset($metadata["primary_keys"]) ? $metadata["primary_keys"] : array();
     }
 
     public function getFields($field = '')
     {
         $metadata = &$this->getMetadata();
-        if ($field) return $metadata["AllFields"][$field];
+        if ($field) return isset($metadata["AllFields"][$field]) ? $metadata["AllFields"][$field] : null;
         return $metadata["fields"];
     }
 
@@ -534,7 +543,8 @@ class ActiveRecord
     public function getAllFields()
     {
         $metadata = &$this->getMetadata();
-        return $metadata["AllFields"];
+        if (isset($metadata["AllFields"]) && is_array($metadata["AllFields"])) return $metadata["AllFields"];
+        return array();
     }
 
 
@@ -714,7 +724,7 @@ class ActiveRecord
         return $this->database_table;
     }
 
-    public function &fields($field) {
+    public function fields($field) {
         return new fields(
             ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
             $field,
@@ -804,11 +814,13 @@ class fields
 
 
 			case "getSqlColumn":
-				if ($this->_attrs["getSqlColumn"]) return $this->_attrs["getSqlColumn"];
+				if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
 
-				if ($this->_attrs["show"]) {
+                if (isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
+
+				if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
 					$this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
-				} elseif ($relatedTable = $this->_attrs['belongs_to']) {
+				} elseif (isset($relatedTable)) {
 					$relatedModel = new $relatedTable;
 					$fieldToSelect = $relatedModel->getTitleField();
 

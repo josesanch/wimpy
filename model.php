@@ -63,6 +63,18 @@ class Model extends ActiveRecord
 		return parent::__get($item);
 	}
 
+    public function __isset($name)
+    {
+        if (
+            ('files' == $name && $this->has_files) ||
+            ('images' == $name && $this->has_images)
+        ) {
+            return true;
+        }
+
+        return parent::__isset($name);
+    }
+
 
 	protected function upload($field, $type = 'file', $ajax = false, $campoEnElModelo = null)
 	{
@@ -259,6 +271,13 @@ class Model extends ActiveRecord
                 web::instance()->getRouter()->addRoute("$modelName-$lang-".$item->id, $routeItem);
             }
         }
+    }
+
+    public static function factory()
+    {
+        $modelName = get_called_class();
+        return new $modelName;
+
     }
 }
 

@@ -16,7 +16,6 @@ class ApplicationController
 
 	public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
 	{
-
         $this->setRequest($request)
             ->setResponse($response)
             ->_setInvokeArgs($invokeArgs)
@@ -57,6 +56,8 @@ class ApplicationController
             $this->request = $request;
             $this->view->controller = $this->controller = $this->getControllerName();
             $this->view->action = $this->action = $this->getActionName();
+            $this->view->web = web::instance();
+            $this->view->request = $request;
         }
         return $this;
     }
@@ -91,7 +92,7 @@ class ApplicationController
 
 	protected function getLayoutFile()
     {
-        return $this->_applicationPath."views/layouts/".$this->layout.".html";
+        return $this->view->getDirectory()."layouts/".$this->layout.".html";
     }
 
 	public function getControllerName()
@@ -110,7 +111,7 @@ class ApplicationController
             $this->template.".".$this->_viewFileSuffix;
         }
 
-        return $this->getControllerName()."/".$viewFile;
+        return strtolower($this->getControllerName())."/".$viewFile;
     }
 
 
@@ -134,8 +135,9 @@ class ApplicationController
         }
 
         if ($this->layout && $this->view->hasLayouts()) {
-            $this->view->setLayout("layouts/".$this->layout);
+            $this->view->setLayout($this->getLayoutFile());
         }
+
         $this->view->loadTemplate($this->getViewFile($viewFile));
         return $this->view->render();
 	}
@@ -155,9 +157,9 @@ class ApplicationController
     }
 
 
-
     public function _getParam($param)
     {
         return $this->getRequest()->getParam($param);
     }
+
 }

@@ -218,6 +218,7 @@ class html_template extends html_object
 		$strData = array();
 		foreach ($data as $item) {
 			if (is_array($item)) {
+                $len = 0;
 				if (substr($item[1], 0, 6) == "render") {
 					$predata = $strData[count($strData) - 1];
 					$len = strlen(array_pop(explode("\n", $predata)));
@@ -446,7 +447,7 @@ class html_template extends html_object
 //				$t = new html_template($file, null, null, null, $this->__root);
                 $t = new view_renderer_template();
 
-                $t  ->setDirectory(web::instance()->getApplicationPath()."/views/")
+                $t  ->setDirectory(web::instance()->getViewsDirectory())
                     ->setData(&$vars);
 
 				$txt = $web->run($expresion, $t);

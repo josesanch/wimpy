@@ -117,6 +117,7 @@ class html_base_grid extends html_object
         $de = ($model->current_page - 1) * $model->page_size + 1;
         $hasta = $de + $model->page_size - 1;
 		$hasta =  $hasta > $model->total_results ? $model->total_results : $hasta;
+        $data = "";
         if($de > $hasta) $de = $hasta;
         $paginas = array(__("Mostrando")." $de a $hasta de ".$model->total_results);
         $paginacion = html_base_grid::_getPaginate($results, $pageField);
@@ -243,7 +244,7 @@ class html_base_grid extends html_object
 							$value = "";
 					break;
 				}
-				if ($attrs["money"]) $value = number_format($value, 0, ',', '.');
+				if (isset($attrs["money"]) && $attrs["money"]) $value = number_format($value, 0, ',', '.');
 
                 $formData .= "
                 <td class='grid_cell'$style>$value</td>";
@@ -265,7 +266,7 @@ class html_base_grid extends html_object
             $formData .= "</tr>\n";
         }
         $formData .= "</tbody></table>\n";
-
+        $ajaxForm = $bindLinks = "";
         if (web::request("dialog")) {
             $bindLinks =  "$('a.dialog').bind('click', function() { openUrl($(this).attr('href')); return false; });";
             $openUrl = "$('#".web::request("field")."_dialog').load(url);";
