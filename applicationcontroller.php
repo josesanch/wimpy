@@ -107,8 +107,8 @@ class ApplicationController
 
 	protected function getViewFile($viewFile)
     {
-        if ($this->template) {
-            $this->template.".".$this->_viewFileSuffix;
+        if (null !== $this->template) {
+            return $this->template;
         }
 
         return strtolower($this->getControllerName())."/".$viewFile;
@@ -130,10 +130,11 @@ class ApplicationController
 
 	public function renderHtml($viewFile)
 	{
+        /*
         if (null !== $this->_templateFile) {
             $viewFile = $this->_templateFile;
         }
-
+        */
         if ($this->layout && $this->view->hasLayouts()) {
             $this->view->setLayout($this->getLayoutFile());
         }
