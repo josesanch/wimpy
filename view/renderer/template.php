@@ -13,6 +13,7 @@ class view_renderer_template extends view_renderer_abstract implements view_rend
     {
         if (null != $data) $this->_data = $data;
         $template = $this->_htmltemplate;
+        $template->setData($this->_data);
 
 		if ($this->_layoutFile) {
 			$layout = clone $template;

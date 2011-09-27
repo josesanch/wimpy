@@ -276,7 +276,6 @@ class Web
 
         $this->controller = $this->request->getControllerName();
         $this->action = $this->request->getActionName();
-
         $this->uri = $this->request->getRequestUri();
 
         switch ($this->controller) {
@@ -351,22 +350,6 @@ class Web
             throw new Exception('No existe el controlador');
         }
 
-
-        if (!method_exists($controllerClass, $action."Action"  && !$admin)) {
-//            throw new Exception('No existe el la acción');
-        }
-/*
-        ) {
-
-            $action = "error";
-            $controllerClass = "ErrorController";
-            array_unshift($this->params, $this->controller, $this->action);
-            $this->loadController("ErrorController");
-
-            throw new Exception('No existe el .');
-        }
-
-*/
         $controller = new $controllerClass(
             null, null,
             array("viewRenderer" => $this->_viewRendererClass)
@@ -382,6 +365,12 @@ class Web
         if (null !== $view)
             $controller->setViewRenderer($view);
 
+        if (!method_exists($controller, $action."Action")  && !$admin) {
+            throw new Exception('No existe el la acción $controllerClass ->  {$action}Action');
+        }
+
+
+
         if (method_exists($controller, "beforeFilter")) {
             call_user_func_array(
                 array($controller, "beforeFilter"),
@@ -395,9 +384,9 @@ class Web
     private function _callDefaultDispatcher($render = true, $view = null)
     {
 
-
         try {
            list($controller, $action) = $this->_getController($view);
+
            if (!$render) $controller->layout = '';
             call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);

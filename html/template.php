@@ -446,7 +446,6 @@ class html_template extends html_object
 				$web = clone web::instance();
 //				$t = new html_template($file, null, null, null, $this->__root);
                 $t = new view_renderer_template();
-
                 $t  ->setDirectory(web::instance()->getViewsDirectory())
                     ->setData(&$vars);
 
@@ -665,6 +664,12 @@ class html_template extends html_object
 	}
 
     public function setVars($vars)
+    {
+        $this->__vars = $vars;
+        return $this;
+    }
+
+    public function setData($vars)
     {
         $this->__vars = $vars;
         return $this;

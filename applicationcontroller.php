@@ -155,6 +155,7 @@ class ApplicationController
     public function setViewRenderer($view = null)
     {
         $this->view = $view;
+        return $this;
     }
 
 
