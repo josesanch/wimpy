@@ -1,4 +1,3 @@
-
 <?php
 require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
@@ -370,7 +369,6 @@ class Web
         }
 
 
-
         if (method_exists($controller, "beforeFilter")) {
             call_user_func_array(
                 array($controller, "beforeFilter"),
@@ -390,6 +388,7 @@ class Web
            if (!$render) $controller->layout = '';
             call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);
+
             if ($render) {
                 echo $value;
             }

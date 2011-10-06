@@ -253,7 +253,7 @@ class AdministrationController extends ApplicationController
 
     public function logoutAction()
     {
-        $this->auth->logout();
+        web::instance()->auth->logout();
         web::instance()->location("/");
         exit;
 

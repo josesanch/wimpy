@@ -143,10 +143,10 @@ class html_form extends html_object
 
 
                 if ($attrs["dialog"] && !$attrs["readonly"]) {
-
+                    $dialogModifier = $attrs["urlDialogModifier"] ? $attrs["urlDialogModifier"] : "null";
                     $inputAutocomplete->add(
                         "<input type='button' value='' class='dialog'
-							onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\")'/>"
+							onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\",$dialogModifier)'/>"
                     );
 
                     $this->addToEnd("<div id='{$field}_dialog'></div>");

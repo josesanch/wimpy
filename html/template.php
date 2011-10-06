@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *  @desc Clase para manipular plantillas html.
  *  @author Jos� S�nchez Moreno
@@ -455,6 +455,7 @@ class html_template extends html_object
 					$tabSpaces = str_repeat("\t", $spaces);
 					$txt = preg_replace("/\n/", "\n".$tabSpaces, $txt);
 				}
+
 				return $txt;
 				break;
 

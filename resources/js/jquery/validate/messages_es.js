@@ -21,3 +21,15 @@ jQuery.extend(jQuery.validator.messages, {
   max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
   min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
 });
+
+$.validator.addMethod(
+    "date",
+    function ( value, element ) {
+        var bits = value.match( /([0-9]+)/gi ), str;
+        if ( ! bits )
+            return this.optional(element) || false;
+        str = bits[ 1 ] + '/' + bits[ 0 ] + '/' + bits[ 2 ];
+        return this.optional(element) || !/Invalid|NaN/.test(new Date( str ));
+    },
+    "Please enter a date in the format dd/mm/yyyy"
+);

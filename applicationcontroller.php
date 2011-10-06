@@ -110,8 +110,7 @@ class ApplicationController
         if (null !== $this->template) {
             return $this->template;
         }
-
-        return strtolower($this->getControllerName())."/".$viewFile;
+        return  strtolower(str_replace("-", "_", convert_to_url($this->getControllerName())."/".$viewFile));
     }
 
 
