@@ -27,7 +27,9 @@ class html_base_grid extends html_object
         $fields = array_keys($model->getFields());
 
         $dialog = web::request("dialog") ? "dialog" : "";
-        $form = new html_base_form($modelName);
+        $formName = $dialog ? $modelName."-".$dialog : $modelName;
+
+        $form = new html_base_form($formName);
         $form->method("get");
 
 
@@ -269,7 +271,7 @@ class html_base_grid extends html_object
         if (web::request("dialog")) {
             $bindLinks =  "$('a.dialog').bind('click', function() { openUrl($(this).attr('href')); return false; });";
             $openUrl = "$('#".web::request("field")."_dialog').load(url);";
-            $ajaxForm = "$('#".get_class($model)."').ajaxForm({ target: '#".web::request("field")."_dialog' })";
+            $ajaxForm = "$('#".$formName."').ajaxForm({ target: '#".web::request("field")."_dialog' })";
         } else {
             $openUrl = "document.location = url;";
         }
