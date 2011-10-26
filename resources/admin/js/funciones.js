@@ -398,7 +398,7 @@ var Dialog = {
 
 	click : function (model, field, parent, value) {
 		$("#" + parent + " #" + field).val(value)
-		$.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
+		$.get("/ajax/" + parent + "/getValueDialog/" + value + "/field=" + field, function(data) {
 			$("#" + parent + " #" + field + "_autocomplete").val(data);
 
 			if(typeof(autocompleteCallback) != "undefined")

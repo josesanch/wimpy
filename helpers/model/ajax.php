@@ -233,6 +233,28 @@ class helpers_model_ajax  {
         echo $data->text;
         exit;
 	}
+
+	public function getValueDialog($id)
+	{
+
+	    $attrs = $this->model->getFields(web::request("field"));
+        $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
+        $relatedModel = new $relatedModelName;
+
+        if($attrs["show"]) $name = $attrs["show"];
+        if(!$name) $name = $relatedModel->getTitleField();
+
+        $fieldName = $field = web::request("field");
+        if (substr($fieldName, -3) == "_id") $fieldName = substr($fieldName, 0, -3);
+
+        $primaryKey = array_shift($relatedModel->getPrimaryKeys());
+        $sql = "select $name as text from $relatedModelName as $fieldName
+         where $fieldName.$primaryKey='$id'";
+        $data = web::database()->query($sql)->fetch();
+
+        echo $data["text"];
+        exit;
+	}
 }
 
 ?>

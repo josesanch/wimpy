@@ -188,7 +188,7 @@ class ActiveRecord
         if (isset($what)) {
             if (is_numeric($what)) {
                 $primary_key = array_shift($this->getPrimaryKeys());
-                $this->select_conditions = $primary_key."='$what' ";
+                $this->select_conditions = $table.".".$primary_key."='$what' ";
             } else {
                 $this->select_conditions = $what;
             }

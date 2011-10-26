@@ -245,10 +245,13 @@ class AdministrationController extends ApplicationController
     }
 
     protected function getLayoutFile() {
+        if (file_exists(web::instance()->getApplicationPath()."/views/layouts/".$this->layout.".html")) {
+            return web::instance()->getApplicationPath()."/views/layouts/".$this->layout.".html";
+
+        }
+
         if (file_exists(dirname(__FILE__)."/views/layouts/".$this->layout.".html"))
             return dirname(__FILE__)."/views/layouts/".$this->layout.".html";
-
-        return web::instance()->getApplicationPath()."/views/layouts/".$this->layout.".html";
     }
 
     public function logoutAction()

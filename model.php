@@ -273,11 +273,10 @@ class Model extends ActiveRecord
         }
     }
 
-    public static function factory()
+    public static function factory($id = null)
     {
         $modelName = get_called_class();
-        return new $modelName;
+        return new $modelName($id);
 
     }
 }
-

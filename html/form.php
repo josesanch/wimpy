@@ -115,12 +115,23 @@ class html_form extends html_object
                 $relatedModel = new $relatedModelName($value);
 
                 if ($attrs["show"]) {
+
+                    $data = $this->model->selectFirst(
+                        "columns: ".$attrs["show"]." as text",
+                        "where: ".$this->model->getDatabaseTable().".".$field."='".$this->model->$field."'",
+                        "order: text",
+                        ActiveRecord::INNER
+                    );
+
+                    /*
                     $primaryKey = array_shift($relatedModel->getPrimaryKeys());
                     $data = $relatedModel->selectFirst(
                         "columns: ".$attrs["show"]." as text",
                         "where: $primaryKey='".$relatedModel->get($primaryKey)."'",
-                        "order: text"
+                        "order: text",
+                        ActiveRecord::INNER
                     );
+                    */
                     $text = $data->text;
                 } else {
                     $titleField = $relatedModel->getTitleField();
