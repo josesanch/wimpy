@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  *  @desc Clase para manipular plantillas html.
  *  @author Jos� S�nchez Moreno
@@ -218,6 +218,7 @@ class html_template extends html_object
 		$strData = array();
 		foreach ($data as $item) {
 			if (is_array($item)) {
+                $len = 0;
 				if (substr($item[1], 0, 6) == "render") {
 					$predata = $strData[count($strData) - 1];
 					$len = strlen(array_pop(explode("\n", $predata)));
@@ -443,16 +444,19 @@ class html_template extends html_object
 
 			case 'render:':
 				$web = clone web::instance();
-				$t = new html_template($file, null, null, null, $this->__root);
-				$t->__vars = &$vars;
-				$t->__blocks =  $this->__blocks;
+//				$t = new html_template($file, null, null, null, $this->__root);
+                $t = new view_renderer_template();
+                $t  ->setDirectory(web::instance()->getViewsDirectory())
+                    ->setData($vars);
+
 				$txt = $web->run($expresion, $t);
+
 				if ($spaces) {
 					$tabSpaces = str_repeat("\t", $spaces);
-					return preg_replace("/\n/", "\n".$tabSpaces, $txt);
+					$txt = preg_replace("/\n/", "\n".$tabSpaces, $txt);
 				}
-				return $txt;
 
+				return $txt;
 				break;
 
 			case 'link:':
@@ -541,8 +545,8 @@ class html_template extends html_object
 	private function __evalVar($var, &$vars)		// Evalua variable o constante para while o if
 	{
 		$txt = preg_replace("/\\\$([^_]\w*)/", "\\\$vars['\\1']", $var);
-		if ($this->_checkCode("$txt;")) 		
-			return eval("$txt;");		
+		if ($this->_checkCode("$txt;"))
+			return eval("$txt;");
 	}
 
 
@@ -642,14 +646,14 @@ class html_template extends html_object
 		$this->__vars = &$template->__vars;
 		$this->__blocks =  $template->__blocks;
 	}
-	
+
 	private function _checkCode($code) {
 		if (@eval('return true;' . $code) === true) return true;
 		$error = error_get_last();
 		web::error("<font color=red>ERROR Al evaluar: $code</font> -- ".$error["message"]." --> <br/>".$this->__file);
 		return false;
 	}
-	
+
 	private function _eval($code) {
 		if (@eval('return true;' . $code) === true) {
 			return eval($code);
@@ -658,8 +662,19 @@ class html_template extends html_object
 			web::error("ERROR Al evaluar: $code -- <br>$error");
 		}
 		return null;
-	}	
+	}
 
+    public function setVars($vars)
+    {
+        $this->__vars = $vars;
+        return $this;
+    }
+
+    public function setData($vars)
+    {
+        $this->__vars = $vars;
+        return $this;
+    }
 }
 
 

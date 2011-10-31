@@ -242,7 +242,7 @@ tr.row_odd {
 }
 
 
-tr.grid_row_hover {
+tr.grid_row_hover, tr.grid_row:hover {
 	background-color: #DBDBDB;
 	color: #;
 	cursor: pointer;

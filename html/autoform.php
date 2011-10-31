@@ -73,6 +73,11 @@ class html_autoform extends html_form
         );
     }
 
+    public function getButton($type, $value = null)
+    {
+        return $this->_getButton($type, $value);
+    }
+
     private function _getButton($type, $value = null)
 	{
 		$isDialog = web::request("dialog");

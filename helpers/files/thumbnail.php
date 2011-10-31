@@ -6,7 +6,8 @@ class thumb
     const CROP = 2;
     const NO_RESIZE_SMALLER = 4;
 }
-
+define(THUMB_CROP, thumb::CROP);
+define(THUMB_NO_RESIZE_SMALLER, thumb::CROP);
 class helpers_files_thumbnail
 {
     private $_img;

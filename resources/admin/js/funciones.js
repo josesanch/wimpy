@@ -363,14 +363,14 @@ function GridFiles(field, model, vid, vtmp_upload) {
 		}
 	});
 
-	return this
+	return this;
 }
 
 var Dialog = {
 	init : function () {
 	},
 
-	open : function (model, field, parent) {
+	open : function (model, field, parent, urlDialogModifier) {
 		widget = $("#" + field + "_dialog").dialog("widget");
 
 		if(widget.attr("id")) {
@@ -384,8 +384,12 @@ var Dialog = {
 				autoOpen: false
 			});
 		}
-
-		$("#" + field + "_dialog").load("/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent, function() {
+        var urlDialog = "/admin/" + model + "/list/no_layout=true/dialog=true/field=" + field  + "/parent=" + parent;
+        if (typeof urlDialogModifier !== "undefined" && urlDialogModifier !== null) {
+            urlDialog = urlDialogModifier(urlDialog);            
+        }
+        
+		$("#" + field + "_dialog").load(urlDialog, function() {
 			$("#" + field + "_dialog").dialog('open');
 				//$("#usuarios").ajaxForm({ target: "#resultados" })
 		});
@@ -394,7 +398,7 @@ var Dialog = {
 
 	click : function (model, field, parent, value) {
 		$("#" + parent + " #" + field).val(value)
-		$.get("/ajax/" + model + "/getValue/" + value + "/field=" + field, function(data) {
+		$.get("/ajax/" + parent + "/getValueDialog/" + value + "/field=" + field, function(data) {
 			$("#" + parent + " #" + field + "_autocomplete").val(data);
 
 			if(typeof(autocompleteCallback) != "undefined")
