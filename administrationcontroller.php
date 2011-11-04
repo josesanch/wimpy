@@ -121,9 +121,9 @@ class AdministrationController extends ApplicationController
     // Preprocesado antes de hacer nada para organizar los datos.
     private function preprocessMenu($menu_noprocess, $root = true)
     {
+        var_dump($menu_noprocess);
         $menu = array();
-        foreach ($menu_noprocess as $name => $data)
-            {
+        foreach ($menu_noprocess as $name => $data) {
 
                 if (is_numeric($name)) $name = $data;
 
