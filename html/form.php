@@ -1,6 +1,6 @@
 <?php
 
-class html_form extends html_object
+class html_form extends html_object implements Iterator
 {
 
     public $css = null;
@@ -115,8 +115,8 @@ class html_form extends html_object
                 $relatedModel = new $relatedModelName($value);
 
                 if ($attrs["show"]) {
-
-                    $data = $this->model->selectFirst(
+                    $model = clone $this->model;
+                    $data = $model->selectFirst(
                         "columns: ".$attrs["show"]." as text",
                         "where: ".$this->model->getDatabaseTable().".".$field."='".$this->model->$field."'",
                         "order: text",
@@ -378,4 +378,36 @@ class html_form extends html_object
     public function getEndData() {
         return $this->_endData;
     }
+
+    /* -- ITERATOR -- */
+    public function rewind()
+    {
+        reset($this->inputs);
+    }
+
+    public function current()
+    {
+        $var = current($this->inputs);
+        return $var;
+    }
+
+    public function key()
+    {
+        $var = key($this->inputs);
+        return $var;
+    }
+
+    public function next()
+    {
+        $var = next($this->inputs);
+        return $var;
+    }
+
+    public function valid()
+    {
+        $key = key($this->inputs);
+        $var = ($key !== NULL && $key !== FALSE);
+        return $var;
+    }
+
 }

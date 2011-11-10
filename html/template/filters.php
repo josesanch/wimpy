@@ -17,6 +17,8 @@ class html_template_filters
 	{
 		return nl2br($text);
 	}
+
+
 	function nobr($text)
 	{
 		return preg_replace("/<br[^>]*>/", "d ", $text);
@@ -90,6 +92,11 @@ class html_template_filters
 		return $str;
 
 	}
+
+    public function striptags($texto)
+    {
+        return (strip_tags($texto));
+    }
 }
 
 ?>

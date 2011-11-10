@@ -414,9 +414,9 @@ class Web
 
     private function _callAdminDispatcher($render = true)
     {
+
         if ($this->action == "index") {
             list($controller, $action) = $this->_getController($view, true);
-
             call_user_func_array(
                 array($controller, $action."Action"),
                 $this->params
@@ -425,11 +425,13 @@ class Web
             list($controller, $action) = $this->_getController(null, true);
             $this->model = $model = $this->action;
             $this->action = $action = array_shift($this->params);
+
             // By default we call to list method of the model.
             if (!$action) {
                 $this->redirect("/admin/$model/list");
                 exit;
             }
+
             $params = $this->params;
             array_unshift($params, $model);
             switch ($action) {
@@ -672,6 +674,21 @@ class Web
             echo "</pre>";
         }
     }
+
+    public static function log($mensaje, $file = "log")
+	{
+        $backtrace = debug_backtrace();
+        $last = array_shift($backtrace);
+        $pre = array_shift($backtrace);
+//        $debug = var_export(array($last, $pre), true);
+        $debug = "$last[file]($last[line]): $pre[function]";
+
+		file_put_contents(
+            $_SERVER["DOCUMENT_ROOT"]."/../log/".$file."-".date("Y-m-d").".txt",
+            getmypid()."|".date("H:i:s")." $debug: $mensaje\n",
+            FILE_APPEND
+        );
+	}
 
     public static function error($texto, $file = null, $linea = null, $notify = null)
     {
