@@ -148,7 +148,6 @@ class html_form extends html_object implements Iterator
                 $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
                 $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
 
-
                 if(!$attrs['autocomplete'] || $attrs["readonly"])
                     $inputAutocomplete->disabled(true);
 

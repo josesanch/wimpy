@@ -245,6 +245,12 @@ class html_base_grid extends html_object
 						else
 							$value = "";
 					break;
+                case "datetime":
+						if($value != "0000-00-00")
+							$value = format::date($value, "d/m/Y H:i");
+						else
+							$value = "";
+					break;
 				}
 				if (isset($attrs["money"]) && $attrs["money"]) $value = number_format($value, 0, ',', '.');
 

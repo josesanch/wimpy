@@ -63,6 +63,11 @@ class html_template extends html_object
 	{
 		$this->loadFile($file);
 		$data = $this->execute($this->dataPrepared);
+
+        if ($this->_layout) {
+            $this->_layout->content = $data;
+            return $this->_layout->toHtml();
+        }
 		return $data;
 	}
 

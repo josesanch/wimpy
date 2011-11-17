@@ -238,10 +238,11 @@ class helpers_files extends ActiveRecord
 	}
 
 	// Para descargar el archivo.
-	public function download($disposition = "attachment")
+	public function download($disposition = "attachment", $filename = null)
 	{
+        if (!$filename) $filename = $this->nombre;
 		header("Content-Type: $this->tipo");
-		header("Content-Disposition: $disposition; filename=\"$this->nombre\"");
+		header("Content-Disposition: $disposition; filename=\"$filename\"");
 		header("Content-Transfer-Encoding: binary");
 		//set file length so browser can calculate download time
 		header("Content-length: " . $this->size());
@@ -326,4 +327,3 @@ class helpers_files extends ActiveRecord
 
     }
 }
-
