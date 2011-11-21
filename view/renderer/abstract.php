@@ -71,9 +71,9 @@ abstract class view_renderer_abstract implements view_renderer_interface
         return $this->_layoutFile;
     }
 
-    public function setData($data)
+    public function setData(&$data)
     {
-        $this->_data = $data;
+        $this->_data = &$data;
         return $this;
     }
 }
