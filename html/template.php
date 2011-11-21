@@ -453,7 +453,7 @@ class html_template extends html_object
 
                 $t = new view_renderer_template();
                 $t  ->setDirectory(web::instance()->getViewsDirectory())
-                    ->setData(&$vars);
+                    ->setData($vars);
 
 				$txt = $web->run($expresion, $t);
 
