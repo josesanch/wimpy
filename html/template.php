@@ -68,6 +68,7 @@ class html_template extends html_object
             $this->_layout->content = $data;
             return $this->_layout->toHtml();
         }
+
 		return $data;
 	}
 
@@ -152,7 +153,7 @@ class html_template extends html_object
 				case "}":
 					$openers--;
 					$curr_item[] = $item;
-					if($openers < 0)	{ return array($pre_item, null, null); //  $this->error("Unclosed Brace");
+					if($openers < 0)	{ return array($pre_item, null, null); //  $this->error("Unclosed Braceé");
 					 }
 					if($openers == 0)	// Se ha cerrado la llave
 					{

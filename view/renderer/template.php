@@ -15,11 +15,14 @@ class view_renderer_template extends view_renderer_abstract implements view_rend
         $template = $this->_htmltemplate;
         $template->setData($this->_data);
 
+
 		if ($this->_layoutFile) {
+
 			$layout = clone $template;
 			if (file_exists($this->_getPhisicalTemplateFile())) {
 				$layout->content = $template->toHtml($this->_getPhisicalTemplateFile());
 			}
+
             return $layout->toHtml($this->_getPhisicalLayoutFile());
 		}
 
@@ -34,11 +37,9 @@ class view_renderer_template extends view_renderer_abstract implements view_rend
         return $this;
 	}
 
-
+    // Tiene soporte para layouts
     public function hasLayouts()
     {
         return true;
     }
-
-
 }

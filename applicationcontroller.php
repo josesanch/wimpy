@@ -92,7 +92,7 @@ class ApplicationController
 
 	protected function getLayoutFile()
     {
-        return $this->view->getDirectory()."layouts/".$this->layout.".html";
+        return $this->view->getDirectory()."layouts/".$this->layout.".".$this->_viewFileSuffix;
     }
 
 	public function getControllerName()

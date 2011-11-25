@@ -12,7 +12,14 @@ abstract class view_renderer_abstract implements view_renderer_interface
 
     public function loadTemplate($template)
     {
-        $this->_templateFile = $template.$this->_suffixFile;
+        $this->_templateFile = $template;
+
+        // Si no tiene la extensión se la añadimos.
+        $pathInfo = pathinfo($template);
+
+        if (".".$pathInfo["extension"] != $this->_suffixFile)
+            $this->_templateFile .= $this->_suffixFile;
+
         return $this;
     }
 
