@@ -16,7 +16,7 @@ setIncludePathForZend();
 
 class Web
 {
-	const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
+    const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
 
     public $laguages = array("es");
     public $database;
@@ -58,7 +58,7 @@ class Web
         //error_reporting(E_ALL);
         //error_reporting(E_STRICT);
 
-		if ($database) $this->setDatabase($database);
+        if ($database) $this->setDatabase($database);
 
         if (!web::$_defaultInstance) {
             web::$_defaultInstance = $this;
@@ -78,7 +78,7 @@ class Web
         if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
 
         $this->_metaTags = array(
-            "Content-Type" => array("http-equiv", "application/xhtml+xml; charset=UTF-8"),
+            "Content-Type" => array("http-equiv", "text/html; charset=UTF-8"),
             "Cache-Control" => array("http-equiv", "max-age=200"),
             "Content-Script-Type" => array("name", "text/javascript"),
             "Content-language" => array("name", web::instance()->getLanguage()),
@@ -141,19 +141,19 @@ class Web
 
     public function setDatabase($database)
     {
-		$proto = array_shift(explode(":", $database[0]));
-		switch ($proto) {
-			case "mysql":
-				$dbConector = "database_mysql";
-				break;
-			case "pgsql":
-				$dbConector = "database_pgsql";
-				break;
-		}
+        $proto = array_shift(explode(":", $database[0]));
+        switch ($proto) {
+            case "mysql":
+                $dbConector = "database_mysql";
+                break;
+            case "pgsql":
+                $dbConector = "database_pgsql";
+                break;
+        }
 
         try {
-			$this->database = new $dbConector($database);
-		} catch (PDOException $e) {
+            $this->database = new $dbConector($database);
+        } catch (PDOException $e) {
             web::error("Error conectando con la base de datos");
             exit;
         }
@@ -219,17 +219,17 @@ class Web
         }
 
         if ($_SERVER["QUERY_STRING"] && $queryString) {
-			$query = array();
-			foreach ($_GET as $item => $value) {
-				if (!array_key_exists($item, $arr) && !in_array($item, $exclude))
-				if (is_array($value)) {
-					foreach ($value as $v) $query[]= $item."[]=".urlencode($v);
-				} else {
-					$query[]= "$item=".urlencode($value);
-				}
-			}
-			$uri .= "?".implode("&", $query);
-		}
+            $query = array();
+            foreach ($_GET as $item => $value) {
+                if (!array_key_exists($item, $arr) && !in_array($item, $exclude))
+                if (is_array($value)) {
+                    foreach ($value as $v) $query[]= $item."[]=".urlencode($v);
+                } else {
+                    $query[]= "$item=".urlencode($value);
+                }
+            }
+            $uri .= "?".implode("&", $query);
+        }
         return $uri;
     }
 
@@ -435,19 +435,19 @@ class Web
             $params = $this->params;
             array_unshift($params, $model);
             switch ($action) {
-				case "list":
-					if (!web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
-					break;
-				case "edit":
-					if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
-					break;
-				case "save":
-					if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::ADD)) web::forbidden();
-					break;
-				case "delete":
-					if (!web::auth()->hasPermission($model, auth::DELETE)) web::forbidden();
-					break;
-			}
+                case "list":
+                    if (!web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
+                    break;
+                case "edit":
+                    if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::VIEW)) web::forbidden();
+                    break;
+                case "save":
+                    if (!web::auth()->hasPermission($model, auth::MODIFY) && !web::auth()->hasPermission($model, auth::ADD)) web::forbidden();
+                    break;
+                case "delete":
+                    if (!web::auth()->hasPermission($model, auth::DELETE)) web::forbidden();
+                    break;
+            }
 
             call_user_func_array(
                 array($controller, $action."Action"),
@@ -559,7 +559,7 @@ class Web
 
     public function reportErrors($error = null)
     {
-		if ($error) $this->_reportErrors = $error;
+        if ($error) $this->_reportErrors = $error;
         return $this->_reportErrors;
     }
 
@@ -654,10 +654,10 @@ class Web
 
     public function forbidden()
     {
-		header('HTTP/1.1 403 Forbidden');
-		echo "<h1>Acceso denegado</h1>";
-		exit;
-	}
+        header('HTTP/1.1 403 Forbidden');
+        echo "<h1>Acceso denegado</h1>";
+        exit;
+    }
 
     public static function debug($texto, $file = null, $linea = null)
     {
@@ -676,19 +676,19 @@ class Web
     }
 
     public static function log($mensaje, $file = "log")
-	{
+    {
         $backtrace = debug_backtrace();
         $last = array_shift($backtrace);
         $pre = array_shift($backtrace);
 //        $debug = var_export(array($last, $pre), true);
         $debug = "$last[file]($last[line]): $pre[function]";
 
-		file_put_contents(
+        file_put_contents(
             $_SERVER["DOCUMENT_ROOT"]."/../log/".$file."-".date("Y-m-d").".txt",
             getmypid()."|".date("H:i:s")." $debug: $mensaje\n",
             FILE_APPEND
         );
-	}
+    }
 
     public static function error($texto, $file = null, $linea = null, $notify = null)
     {
@@ -698,26 +698,26 @@ class Web
         if (!web::instance()->isInProduction()
             || web::instance()->reportErrors()
             || web::instance()->isDevelopmentServer())
-			$str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
+            $str .= "<span style='font-size: 0.6em;'>$file ($linea)</span>:\n$texto";
 
         if ($notify == web::NOTIFY_BY_EMAIL
             && web::instance()->isInProduction()
             && !web::instance()->reportErrors()) {
-			$mailMsg = "<pre style='padding: 1em; border: 1px dashed #666;'>
-						<h3 style='color: red;'> * Se ha producido un error </h3>
-						<span style='font-size: 0.6em;'>$file ($linea)</span>:\n
-						$texto
+            $mailMsg = "<pre style='padding: 1em; border: 1px dashed #666;'>
+                        <h3 style='color: red;'> * Se ha producido un error </h3>
+                        <span style='font-size: 0.6em;'>$file ($linea)</span>:\n
+                        $texto
                     </pre>";
 
-			$notificando = "<hr/><h4>* Notificado por e-mail a ".web::NOTIFY_BY_EMAIL."</h4>";
+            $notificando = "<hr/><h4>* Notificado por e-mail a ".web::NOTIFY_BY_EMAIL."</h4>";
 
-			$mail = new net_mail();
-			$mail->msg($mailMsg);
-			$mail->subject("ERROR de SQL en: ".$_SERVER["SERVER_NAME"]." - ".web::uri());
-			$mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
-		}
+            $mail = new net_mail();
+            $mail->msg($mailMsg);
+            $mail->subject("ERROR de SQL en: ".$_SERVER["SERVER_NAME"]." - ".web::uri());
+            $mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
+        }
 
-		if (web::instance()->showErrors)
+        if (web::instance()->showErrors)
             echo $str."$notificando</pre>";
     }
 
@@ -768,15 +768,15 @@ class Web
         return $tidy;
     }
 
-	/**
-	 * Devuelve true si el servidor es un servidor de desarrollo.
-	 * Para que el servidor sea de desarrollo tiene que existir un fichero en .htdocs llamado .development
-	 * @return boolean
-	 */
-	public function isDevelopmentServer()
-	{
-		return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
-	}
+    /**
+     * Devuelve true si el servidor es un servidor de desarrollo.
+     * Para que el servidor sea de desarrollo tiene que existir un fichero en .htdocs llamado .development
+     * @return boolean
+     */
+    public function isDevelopmentServer()
+    {
+        return file_exists($_SERVER["DOCUMENT_ROOT"]."/.development");
+    }
 
     public static function isMobile($type = null)
     {
@@ -823,12 +823,14 @@ class Web
     {
         $language = $this->getLanguage();
         $pageTitle = $this->pageTitle;
+
         switch ($tipo) {
 
         case "html5":
             $doctype = "<!DOCTYPE html>
-<html lang=\"$language-$language\">\n";
-            $this->_metaTags["charset"] = array("name", "charset=UTF-8");
+<html lang=\"".$this->l10n->getCode()."\">\n";
+
+            //$this->_metaTags["charset"] = array("name", "charset=UTF-8");
             $this->_metaTags["viewport"] = array("name", "width=device-width,initial-scale=1");
             unset($this->_metaTags["http-equiv"]);
             unset($this->_metaTags["Cache-Control"]);

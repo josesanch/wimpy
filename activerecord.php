@@ -2,7 +2,7 @@
 
 class ActiveRecord
 {
-	const NORMAL = "SQL_NORMAL";
+    const NORMAL = "SQL_NORMAL";
     const INNER = "SQL_INNER";
     public $current_page = 1;
     public $page_size = null;
@@ -80,9 +80,9 @@ class ActiveRecord
         $args = func_get_args();
         array_push($args, "columns: count(*) as total");
         $results = call_user_func_array(
-			array($this, "selectSql"),
-			$args
-		);
+            array($this, "selectSql"),
+            $args
+        );
         return $results[0]->total;
     }
 
@@ -115,7 +115,7 @@ class ActiveRecord
                 }
             }
             $sql .= join(", ", $fields_to_update)." where ".$this->where_primary_keys;
-        } else {  			// INSERT
+        } else {            // INSERT
             $insert = true;
             $fields = array(); $values = array();
             foreach ($this->getFields() as $name => $attrs) {
@@ -143,7 +143,7 @@ class ActiveRecord
         if (!$insert) $id = $this->row_data['id'];
         $this->savel10n($id);
         $this->id = $id;
-		$this->setWherePK();
+        $this->setWherePK();
         // Save the changes in the log.
         if (is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
 
@@ -174,7 +174,7 @@ class ActiveRecord
         $order = $joins = "";
         $this->select_columns = $this->select_order = $this->select_limit = $this->select_conditions = '';
         $args = func_get_args();
-		$table = $this->getDatabaseTable();
+        $table = $this->getDatabaseTable();
 
         // Toma el primer elemento como where
         if (count($args) > 0 && !in_array(array_shift(explode(":", $args[0])), array("order", "limit", "columns"))) {
@@ -223,28 +223,28 @@ class ActiveRecord
                     break;
                 }
             } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
-				$mode = $arg;
-			}
+                $mode = $arg;
+            }
         }
 
 
-		if ($mode == ActiveRecord::INNER) {
-			$joins = $this->_getLeftJoins();
-		}
+        if ($mode == ActiveRecord::INNER) {
+            $joins = $this->_getLeftJoins();
+        }
 
-        if ($this->select_conditions) 	$where = " WHERE ".$this->select_conditions;
-        if ($this->select_order)    	$order = " ORDER BY ".$this->select_order;
-        if ($this->select_group)    	$group = " GROUP BY ".$this->select_group;
-        if ($this->select_limit) 		$limit = " LIMIT ".$this->select_limit;
-        if ($this->select_joins) 		$joins = " ".$this->select_limit;
-		$sql = "
-			SELECT
-				".$this->select_columns."
-			FROM
-				".$this->database_table."
-			$joins
-			$where
-			$order
+        if ($this->select_conditions)   $where = " WHERE ".$this->select_conditions;
+        if ($this->select_order)        $order = " ORDER BY ".$this->select_order;
+        if ($this->select_group)        $group = " GROUP BY ".$this->select_group;
+        if ($this->select_limit)        $limit = " LIMIT ".$this->select_limit;
+        if ($this->select_joins)        $joins = " ".$this->select_limit;
+        $sql = "
+            SELECT
+                ".$this->select_columns."
+            FROM
+                ".$this->database_table."
+            $joins
+            $where
+            $order
             $group
            ";
 
@@ -272,7 +272,7 @@ class ActiveRecord
             }
         }
 
-		$sql .= $limit;
+        $sql .= $limit;
 //        echo "<pre>".$sql."</pre><hr/>";
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
@@ -302,36 +302,36 @@ class ActiveRecord
 
     }
 
-	private function _getLeftJoins()
-	{
-		$joins = array();
-		$table = $this->getDatabaseTable();
-		$count = 2;
-		foreach ($this->getAllFields() as $field => $attrs) {
-			if (isset($attrs["belongs_to"])) {
-				$relatedTable = $attrs["belongs_to"];
-				$fieldName = $field;
-				if (substr($fieldName, -3) == "_id") $fieldName = substr($fieldName, 0, -3);
-				if ($fieldName == $table) $fieldName.= $count++;
-				$joins[]= "
-					LEFT OUTER JOIN $relatedTable $fieldName ON
-						$fieldName.id=$table.$field
-				";
-			}
-		}
-		return implode("\n", $joins);
-	}
+    private function _getLeftJoins()
+    {
+        $joins = array();
+        $table = $this->getDatabaseTable();
+        $count = 2;
+        foreach ($this->getAllFields() as $field => $attrs) {
+            if (isset($attrs["belongs_to"])) {
+                $relatedTable = $attrs["belongs_to"];
+                $fieldName = $field;
+                if (substr($fieldName, -3) == "_id") $fieldName = substr($fieldName, 0, -3);
+                if ($fieldName == $table) $fieldName.= $count++;
+                $joins[]= "
+                    LEFT OUTER JOIN $relatedTable $fieldName ON
+                        $fieldName.id=$table.$field
+                ";
+            }
+        }
+        return implode("\n", $joins);
+    }
 
-	private function _alterColumns($data)
-	{
+    private function _alterColumns($data)
+    {
 
-		if (!$data) return $data;
-		var_dump($data);
-		$fields = implode("|", array_keys($this->getAllFields()));
-		$table = $this->getDatabaseTable();
-		$data = preg_replace("/(^|[\(\s,=])(?<!as )($fields)([\s,=\)]|$)/i", '$1'.$table.'.$2'.'$3', $data);
-		return $data;
-	}
+        if (!$data) return $data;
+        var_dump($data);
+        $fields = implode("|", array_keys($this->getAllFields()));
+        $table = $this->getDatabaseTable();
+        $data = preg_replace("/(^|[\(\s,=])(?<!as )($fields)([\s,=\)]|$)/i", '$1'.$table.'.$2'.'$3', $data);
+        return $data;
+    }
 
     protected function dumpValues()
     {
@@ -393,10 +393,10 @@ class ActiveRecord
                     if (in_array("html", $attrs)) $field["html"] =  true;
                     if (in_array("auto_increment", $attrs) || in_array("autoincrement", $attrs)) $field["autoincrement"] = true;
                     if (in_array("autocomplete", $attrs) || in_array("autocomplete", $attrs)) $field["autocomplete"] = true;
-					if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
-					if (in_array("newvalues", $attrs) || in_array("newvalues", $attrs)) $field["newvalues"] = true;
-					if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
-					if (in_array("hidden", $attrs) || in_array("hidden", $attrs)) $field["hidden"] = true;
+                    if (in_array("dialog", $attrs) || in_array("dialog", $attrs)) $field["dialog"] = true;
+                    if (in_array("newvalues", $attrs) || in_array("newvalues", $attrs)) $field["newvalues"] = true;
+                    if (in_array("newline", $attrs) || in_array("newline", $attrs)) $field["newline"] = true;
+                    if (in_array("hidden", $attrs) || in_array("hidden", $attrs)) $field["hidden"] = true;
                     if ($field['type'] != 'image' && $field['type'] != 'file' && $field['type'] != 'files' )
                         $metadata["fields"][$name] = &$field;
 
@@ -576,15 +576,15 @@ class ActiveRecord
 //        web::debug(__FILE__, __LINE__, $sql);
 
         if (is_a($this, "Model")) {
-			$this->_deleteAsociatedFiles();
-			log::add(
+            $this->_deleteAsociatedFiles();
+            log::add(
                 web::auth()->get("user"),
                 $this->getTitle()." [$this->id] DELETED",
                 log::WARNING,
                 $sql
             );
-		}
-		$this->database->exec($sql);
+        }
+        $this->database->exec($sql);
     }
 
     public function saveFromRequest()
@@ -656,18 +656,18 @@ class ActiveRecord
     {
         $args = func_get_args();
         if (func_num_args() == 0) {
-			if ($this->exists) return true;
+            if ($this->exists) return true;
             if (!$this->where_primary_keys) return False;
             $results = call_user_func_array(
-				array($this, "count"),
-				array($this->where_primary_keys)
-			);
+                array($this, "count"),
+                array($this->where_primary_keys)
+            );
 
         } else {
             $results = call_user_func_array(
-				array($this, "count"),
-				$args
-			);
+                array($this, "count"),
+                $args
+            );
         }
         return $results[0];
     }
@@ -737,10 +737,29 @@ class ActiveRecord
         return $this->fields;
     }
 
-	public function forceCreation()
-	{
-		unset($this->where_primary_keys);
-	}
+    public function toArray($fields)
+    {
+        $datos = array();
+        if ($fields) {
+            foreach ($fields as $field)
+                $datos[$field] = $this->get($field);
+        } else {
+            foreach ($this->getFields() as $field => $attrs)
+                $datos[$field] = $this->get($field);
+        }
+
+        return $datos;
+    }
+
+    public function toJson($fields)
+    {
+        return json_encode($this->toArray($fields));
+    }
+
+    public function forceCreation()
+    {
+        unset($this->where_primary_keys);
+    }
 
     public function &getMetadata()
     {
@@ -776,14 +795,14 @@ class fields
     public function __call($method, $args)
     {
         switch($method) {
-			case "belongsTo":
-				if (empty($args)) {
-					return $this->_attrs[$method] ? $this->_attrs[$method] : $this->_attrs["belongs_to"];
-				} else {
-					$this->_attrs[$method] = $args[0];
-					$this->_attrs["belongs_to"] = $args[0];
-				}
-				break;
+            case "belongsTo":
+                if (empty($args)) {
+                    return $this->_attrs[$method] ? $this->_attrs[$method] : $this->_attrs["belongs_to"];
+                } else {
+                    $this->_attrs[$method] = $args[0];
+                    $this->_attrs["belongs_to"] = $args[0];
+                }
+                break;
 
             case 'required':
                 if (empty($args))
@@ -792,48 +811,48 @@ class fields
                     $this->_attrs["not null"] = $args[0];
                 break;
 
-			case "getSql":
-				if ($this->_attrs["getSql"]) return $this->_attrs["getSql"];
+            case "getSql":
+                if ($this->_attrs["getSql"]) return $this->_attrs["getSql"];
 
-				if ($this->_attrs["show"]) {
-					$this->_attrs["getSql"] = $this->_attrs["show"];
-				} elseif($relatedTable = $this->_attrs['belongs_to']) {
-					$relatedModel = new $relatedTable;
-					$fieldToSelect = $relatedModel->getTitleField();
+                if ($this->_attrs["show"]) {
+                    $this->_attrs["getSql"] = $this->_attrs["show"];
+                } elseif($relatedTable = $this->_attrs['belongs_to']) {
+                    $relatedModel = new $relatedTable;
+                    $fieldToSelect = $relatedModel->getTitleField();
 
-					$field = $this->_name;
-					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
-					$this->_attrs["getSql"] = "$field.$fieldToSelect";
-				} elseif($this->_attrs) {
-					$this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
-				} else {
-					$this->_attrs["getSql"] = $this->_name;
+                    $field = $this->_name;
+                    if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+                    $this->_attrs["getSql"] = "$field.$fieldToSelect";
+                } elseif($this->_attrs) {
+                    $this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
+                } else {
+                    $this->_attrs["getSql"] = $this->_name;
 
-				}
-				return $this->_attrs["getSql"];
+                }
+                return $this->_attrs["getSql"];
 
 
-			case "getSqlColumn":
-				if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
+            case "getSqlColumn":
+                if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
 
                 if (isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
 
-				if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
-					$this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
-				} elseif (isset($relatedTable)) {
-					$relatedModel = new $relatedTable;
-					$fieldToSelect = $relatedModel->getTitleField();
+                if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
+                    $this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
+                } elseif (isset($relatedTable)) {
+                    $relatedModel = new $relatedTable;
+                    $fieldToSelect = $relatedModel->getTitleField();
 
-					$field = $this->_name;
-					if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
-					if ($field == $this->_table) $field.="2";
-					$this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
-				} elseif($this->_attrs) {
-					$this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
-				} else {
-					$this->_attrs["getSqlColumn"] = $this->_name;
-				}
-				return $this->_attrs["getSqlColumn"];
+                    $field = $this->_name;
+                    if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+                    if ($field == $this->_table) $field.="2";
+                    $this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
+                } elseif($this->_attrs) {
+                    $this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
+                } else {
+                    $this->_attrs["getSqlColumn"] = $this->_name;
+                }
+                return $this->_attrs["getSqlColumn"];
 
             default:
                 if (empty($args))
@@ -847,12 +866,12 @@ class fields
 
     public function label($label)
     {
-		if ($label) {
-			$this->_attrs["label"] = $label;
-			return $this;
-		} else {
-			return $this->_attrs["label"] ?  $this->_attrs["label"] : $this->_name;
-		}
+        if ($label) {
+            $this->_attrs["label"] = $label;
+            return $this;
+        } else {
+            return $this->_attrs["label"] ?  $this->_attrs["label"] : $this->_name;
+        }
 
-	}
+    }
 }
