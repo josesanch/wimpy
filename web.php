@@ -402,6 +402,7 @@ class Web
             }
         } catch (exception $e) {
 //            var_dump($e);
+            web::log(var_export($e, true));
             $this->_callErrorController();
         }
 
