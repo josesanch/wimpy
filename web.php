@@ -401,8 +401,8 @@ class Web
                 echo $value;
             }
         } catch (exception $e) {
-//            var_dump($e);
-            web::log(var_export($e, true));
+            var_dump($e);
+//            web::log(var_export($e, true));
             $this->_callErrorController();
         }
 
