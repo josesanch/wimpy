@@ -418,6 +418,7 @@ class Web
 
         if ($this->action == "index") {
             list($controller, $action) = $this->_getController($view, true);
+            call_user_func_array(
                 array($controller, $action."Action"),
                 $this->params
             );
@@ -727,7 +728,7 @@ class Web
             echo "<pre style='padding: 1em; border: 1px dashed #orange;'>
                     <h3 style='color: orange;'>
                     <span style='font-size: 0.6em;'>$file ($linea)</span>:\n";
-//            var_dump($texto);
+            var_dump($texto);
             echo "</h3></pre>";
         }
     }
