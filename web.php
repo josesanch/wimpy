@@ -403,7 +403,7 @@ class Web
         } catch (exception $e) {
 //            var_dump($e);
 //            web::log(var_export($e, true));
-            $this->_callErrorController();
+            $this->_callErrorController($e);
         }
 
 
@@ -485,21 +485,24 @@ class Web
         //call_user_method_array($action, $model, $this->params);
         call_user_func_array(array($model, $action), $this->params);
     }
-    private function _callErrorController($action)
+
+    private function _callErrorController($exception)
     {
         $action = "error";
         $controllerClass = "ErrorController";
         array_unshift($this->params, $this->controller, $this->action);
+
         $this->loadController("ErrorController");
         $controller = new $controllerClass(
             null, null,
             array("viewRenderer" => $this->_viewRendererClass)
         );
+
         $controller
             ->setApplicationPath($this->_applicationPath)
             ->setRequest($this->request)
             ->setResponse($this->response);
-
+        $controller->exception = $exception;
         $controller->view->setDirectory($this->_viewsDirectory);
         call_user_func_array(array($controller, "errorAction"), $this->params);
     }
