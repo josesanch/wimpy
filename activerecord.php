@@ -145,7 +145,8 @@ class ActiveRecord
         $this->id = $id;
         $this->setWherePK();
         // Save the changes in the log.
-        if (is_a($this, "Model")) log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
+        if (is_a($this, "Model"))
+            log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
 
         return $id;
 
