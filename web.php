@@ -141,7 +141,8 @@ class Web
 
     public function setDatabase($database)
     {
-        $proto = array_shift(explode(":", $database[0]));
+        $arr = explode(":", $database[0]);
+        $proto = array_shift($arr);
         switch ($proto) {
             case "mysql":
                 $dbConector = "database_mysql";
@@ -502,6 +503,7 @@ class Web
             ->setApplicationPath($this->_applicationPath)
             ->setRequest($this->request)
             ->setResponse($this->response);
+
         $controller->exception = $exception;
         $controller->view->setDirectory($this->_viewsDirectory);
         call_user_func_array(array($controller, "errorAction"), $this->params);

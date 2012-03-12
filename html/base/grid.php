@@ -67,7 +67,8 @@ class html_base_grid extends html_object
 
 
         // We add the primary key to the seleted fields.
-        $primaryKey = array_shift($model->getPrimaryKeys());
+        $primaryKeys = $model->getPrimaryKeys();
+        $primaryKey = array_shift($primaryKeys);
 
         if($primaryKey
            && !(in_array($primaryKey, $sqlcolumns) || in_array("$table.$primaryKey", $sqlcolumns))) {

@@ -122,7 +122,7 @@ class ActiveRecord
                 if (!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal'))) continue;
                 if (isset($this->row_data[$name])) {
                     $fields[] = $name;
-                    $values[] = mysql_escape_string($this->row_data[$name]);
+                    $values[] = mysql_real_escape_string($this->row_data[$name]);
                 }
             }
             $fields = join(", ", $fields);
@@ -178,7 +178,8 @@ class ActiveRecord
         $table = $this->getDatabaseTable();
 
         // Toma el primer elemento como where
-        if (count($args) > 0 && !in_array(array_shift(explode(":", $args[0])), array("order", "limit", "columns"))) {
+        $explodeArgs = explode(":", $args[0]);
+        if (count($args) > 0 && !in_array(array_shift($explodeArgs), array("order", "limit", "columns"))) {
             $what = array_shift($args);
         }
 
@@ -188,7 +189,8 @@ class ActiveRecord
 
         if (isset($what)) {
             if (is_numeric($what)) {
-                $primary_key = array_shift($this->getPrimaryKeys());
+                $primaryKeys = $this->getPrimaryKeys();
+                $primary_key = array_shift($primaryKeys);
                 $this->select_conditions = $table.".".$primary_key."='$what' ";
             } else {
                 $this->select_conditions = $what;
@@ -431,13 +433,13 @@ class ActiveRecord
              $field = $this->getFields($property);
 
              if ($field['type'] == 'image') {
-                $primary_key = array_shift($this->getPrimaryKeys());
-                $this->$property = new helpers_images();
-                $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
-                $item = $this->$property;
-                return $this->$property;
-
-            } elseif ($field['type'] == 'file') {
+                 $primaryKeys = $this->getPrimaryKeys();
+                 $primary_key = array_shift();
+                 $this->$property = new helpers_images();
+                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
+                 $item = $this->$property;
+                 return $this->$property;
+             } elseif ($field['type'] == 'file') {
                 $primary_key = array_shift($this->getPrimaryKeys());
                 $this->$property = new helpers_files();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
@@ -691,6 +693,12 @@ class ActiveRecord
             $model = new $model();
             return $model->select($this->database_table."_id='$this->id'");
         }
+
+        if (!web::instance()->isInProduction() || web::instance()->inDevelopment) {
+            web::error('No existe el método:'.$method);
+            throw new Exception("No existe el método: $method en la clase ".get_class($this));
+//            echo
+        }
     }
 
     public function setCurrentPage($page = 1)
@@ -856,10 +864,11 @@ class fields
                 return $this->_attrs["getSqlColumn"];
 
             default:
-                if (empty($args))
+                if (empty($args)) {
                     return $this->_attrs[$method];
-                else
+                } else {
                     $this->_attrs[$method] = $args[0];
+                }
         }
 
         return $this;

@@ -77,13 +77,13 @@ class html_form extends html_object implements Iterator
 
     public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
-		if (substr($type, 0, 3) == "---" or $type == "separation") {
-			$attrs["type"] = "---";
+        if (substr($type, 0, 3) == "---" or $type == "separation") {
+            $attrs["type"] = "---";
             $words = explode(" ", $type);
             if (in_array("accordion", $words)) $attrs["accordion"] = true;
             if (in_array("collapsed", $words)) $attrs["accordion"] = "collapsed";
-		} else {
-			$attrs = $this->model->getFields($field);
+        } else {
+            $attrs = $this->model->getFields($field);
         }
 
         if (!isset($attrs["hidden"])
@@ -156,7 +156,7 @@ class html_form extends html_object implements Iterator
                     $dialogModifier = $attrs["urlDialogModifier"] ? $attrs["urlDialogModifier"] : "null";
                     $inputAutocomplete->add(
                         "<input type='button' value='' class='dialog'
-							onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\",$dialogModifier)'/>"
+                            onclick='Dialog.open(\"$relatedModelName\",\"$field\",\"".$this->attrs["name"]."\",$dialogModifier)'/>"
                     );
 
                     $this->addToEnd("<div id='{$field}_dialog'></div>");
@@ -183,8 +183,8 @@ class html_form extends html_object implements Iterator
                 $input->setData($inputAutocomplete);
 
                 }
-		} elseif ($attrs['primary_key'] || $attrs["hidden"]) {
-				 $input = new html_form_hidden($field);
+        } elseif ($attrs['primary_key'] || $attrs["hidden"]) {
+                 $input = new html_form_hidden($field);
                  $input->value($this->model->$field);
         } else {
             switch($attrs['type']) {
@@ -196,7 +196,7 @@ class html_form extends html_object implements Iterator
                         $input = new html_form_textarea($lang ? $field."|".$lang : $field);
                         $input->rows(10)->cols(60);
                     }
-					if($attrs['not null']) $input->class($input->class()." required");
+                    if($attrs['not null']) $input->class($input->class()." required");
                     $input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()), false));
                 break;
 
@@ -206,7 +206,7 @@ class html_form extends html_object implements Iterator
                     $input->class("textbox datepicker");
                     if($this->model->$field != '0000-00-00' and $this->model->$field != '')
                         $input->value(strftime('%d/%m/%Y', strtotime($this->model->$field)));
-					if($attrs['not null']) $input->class($input->class()." required");
+                    if($attrs['not null']) $input->class($input->class()." required");
 
                 break;
 
@@ -238,8 +238,8 @@ class html_form extends html_object implements Iterator
                     if($this->model->get($field)) $input->checked("True");
                     break;
 
-				case "separator":
-				case "---":
+                case "separator":
+                case "---":
                     $input = new html_form_html($field);
 
                 if ($this->openDiv) {
@@ -279,11 +279,11 @@ class html_form extends html_object implements Iterator
             }
         }
 
-		if (!$attrs['primary_key'] && !$attrs["hidden"]) {
-			if($lang)
-				$input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
-			else
-				$input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+        if (!$attrs['primary_key'] && !$attrs["hidden"]) {
+            if($lang)
+                $input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
+            else
+                $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
         }
 
 
@@ -291,7 +291,7 @@ class html_form extends html_object implements Iterator
         $this->inputs[]= $input;
         if($attrs['l10n'] && !$lang) {
             foreach(l10n::instance()->getNotDefaultLanguages() as $lang)
-            	$this->auto($field, $lang);
+                $this->auto($field, $lang);
         }
 
         return $input;
@@ -300,15 +300,15 @@ class html_form extends html_object implements Iterator
     public function remove($field)
     {
         $this->inputs = array_filter(
-        	$this->inputs,
-        	create_function(
-        		'$input',
-        		'return !(
-					is_a($input, "html_object")
-					&&
-					$input->name() == "'.$field.'"
-				);'
-        	)
+            $this->inputs,
+            create_function(
+                '$input',
+                'return !(
+                    is_a($input, "html_object")
+                    &&
+                    $input->name() == "'.$field.'"
+                );'
+            )
         );
         return $this;
     }
@@ -358,20 +358,20 @@ class html_form extends html_object implements Iterator
     public function getJs()
     {
         if ($this->_javascriptOnload)
-			$str .= "
+            $str .= "
                     $(document).ready(function() {
                             $this->_javascriptOnload
                     });
                     ";
-		if ($this->_javascript)
-			$str .= $this->_javascript;
+        if ($this->_javascript)
+            $str .= $this->_javascript;
 
         if ($str)
-			return "
-			<script type='text/javascript'>
-			$str
-			</script>
-			";
+            return "
+            <script type='text/javascript'>
+            $str
+            </script>
+            ";
     }
 
     public function getEndData() {

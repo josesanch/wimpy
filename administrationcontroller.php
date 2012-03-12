@@ -55,7 +55,8 @@ class AdministrationController extends ApplicationController
         foreach ($this->menu as $menu => $submenu) {
             if (!$this->_selectedMenu) $this->_selectedMenu = $menu;
 
-            $item = array_shift(array_values($submenu['items']));
+            $arrayValues = array_values($submenu['items']);
+            $item = array_shift($arrayValues);
             $href = "href='/admin/".$item['link']."'";
             $active = $this->_selectedMenu == $submenu ? "class='active'" : "";
             $str .= "<li $active>
@@ -79,44 +80,44 @@ class AdministrationController extends ApplicationController
         return implode("<span class='separador_submenu'> | </span>", $subitems);
     }
 
-	private function _getItem($force = false)
-	{
-		$modelName = web::instance()->model;
-		if(!$modelName) $selectFirst = true;
+    private function _getItem($force = false)
+    {
+        $modelName = web::instance()->model;
+        if(!$modelName) $selectFirst = true;
 
-		$params = web::params(null, null, false, array("page-$modelName","order-$modelName","desc-$modelName"));
+        $params = web::params(null, null, false, array("page-$modelName","order-$modelName","desc-$modelName"));
         $action = web::instance()->action;
         $regExpActions = "edit";
 
-		if ($action == "edit") {
+        if ($action == "edit") {
             $regExpActions = "list|edit";
-			// Eliminamos el elemento que estamos editando.
-			$params = "/".implode("/", array_slice(explode("/", $params), 1));
-		}
+            // Eliminamos el elemento que estamos editando.
+            $params = "/".implode("/", array_slice(explode("/", $params), 1));
+        }
 
-		$regExp = "#$modelName/($action|$regExpActions)$params.*?#";
-		$menu = $this->menu;
-		foreach ($menu as $tab) {
-			foreach ($tab["items"] as $submenu) {
-				if ($selectFirst) {
-					return array($tab, $submenu);
+        $regExp = "#$modelName/($action|$regExpActions)$params.*?#";
+        $menu = $this->menu;
+        foreach ($menu as $tab) {
+            foreach ($tab["items"] as $submenu) {
+                if ($selectFirst) {
+                    return array($tab, $submenu);
                 }
 
-				$link = $submenu["link"];
-				if (!$force) {
-					if (preg_match($regExp, $link)) {
-						return array($tab, $submenu);
+                $link = $submenu["link"];
+                if (!$force) {
+                    if (preg_match($regExp, $link)) {
+                        return array($tab, $submenu);
                     }
-				} else {
-					if ($link == $modelName) {
-						return array($tab, $submenu);
+                } else {
+                    if ($link == $modelName) {
+                        return array($tab, $submenu);
                     }
-				}
-			}
-		}
-		if (!$force)
-			return $this->_getItem(true);
-	}
+                }
+            }
+        }
+        if (!$force)
+            return $this->_getItem(true);
+    }
 
     // Preprocesado antes de hacer nada para organizar los datos.
     private function preprocessMenu($menu_noprocess, $root = true)
@@ -263,11 +264,11 @@ class AdministrationController extends ApplicationController
 
     public function indexAction()
     {
-		$this->menu = $this->preprocessMenu($this->menu);
-		list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
-		web::instance()->location("/admin/".$this->_selectedSubmenu["link"]);
-		exit;
-	}
+        $this->menu = $this->preprocessMenu($this->menu);
+        list($this->_selectedMenu, $this->_selectedSubmenu) = $this->_getItem();
+        web::instance()->location("/admin/".$this->_selectedSubmenu["link"]);
+        exit;
+    }
 
     public function setSelected($menu, $submenu)
     {
