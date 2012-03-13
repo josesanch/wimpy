@@ -38,7 +38,7 @@ class l10n {
         if(!$id || $id == '') return $id;
         if(!$lang) $lang = $this->selected_language;
         if (isset($this->cached_data[$lang][$id])) return $this->cached_data[$lang][$id];
-        $sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='".mysql_real_escape_string($id)."' and lang='$lang'");
+        $sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field=".web::instance()->database->quote($id)." and lang='$lang'");
         if($sta) $row = $sta->fetch();
         if($row && $row['data'] != '') {
             $this->cached_data[$lang][$id] = $row['data'];
@@ -64,15 +64,15 @@ class l10n {
     public function set($id, $value, $lang = null) {
         if(!$lang) $lang = $this->selected_language;
         $this->cached_data[$lang][$id] = $value;
-        $sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field='".mysql_real_escape_string($id)."' and lang='$lang'");
+        $sta = web::instance()->database->query("SELECT data from l10n where model='' and row=0 and field=".web::instance()->database->quote($id)." and lang='$lang'");
         if($sta) $row = $sta->fetch();
         if(!$row) {
             $sta = web::instance()->database->query("
             INSERT INTO l10n (lang, model, field, data, row)
-             VALUES('$lang', '', '".mysql_real_escape_string($id)."', '".mysql_real_escape_string($value)."', 0)");
+             VALUES('$lang', '', ".web::instance()->database->quote($id).", ".web::instance()->database->quote($value).", 0)");
         } else {
             $sta = web::instance()->database->query("
-            UPDATE l10n set data='".mysql_real_escape_string($value)."' where model='' and row=0 and field='".mysql_real_escape_string($id)."' and lang='$lang'");
+            UPDATE l10n set data=".web::instance()->database->quote($value)." where model='' and row=0 and field=".web::instance()->database->quote($id)." and lang='$lang'");
         }
 
 /*		$sta = web::instance()->database->query("

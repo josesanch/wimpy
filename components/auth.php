@@ -11,9 +11,9 @@ class auth
     public $showLogo = true;
     public $message = "Si tiene algún problema puede contactar con nuestro soporte por e-mail en soporte@o2w.es o por teléfono llamando al 968 19 29 05";
 
-	const FORM = 100;
-	const REALM = 101;
-	const FORM_MD5 = 102;
+    const FORM = 100;
+    const REALM = 101;
+    const FORM_MD5 = 102;
 
     const VIEW = 1;
     const ADD = 2;
@@ -36,13 +36,12 @@ class auth
         }
 
         $this->usuario = $user;
-		$password_field = $this->getPasswordField($this->password_field);
+        $password_field = $this->getPasswordField($this->password_field);
 
         $statement = web::instance()->database->query(
             "SELECT * FROM
             $this->table WHERE
-            $this->user_field='$user' and $password_field='$pass'"
-        );
+            $this->user_field=".$this->database->qoute($user)." and $password_field=".$this->database->qoute($pass)."'");
         if ($statement) {
             $result = $statement->fetch();
             if ($result['id']) {
@@ -63,8 +62,8 @@ class auth
 
     public function getPasswordField($field)
     {
-		return web::instance()->authMethod == Auth::FORM_MD5 ? "md5(CONCAT($field, '".$_SESSION["auth_number"]."'))" : $field;
-	}
+        return web::instance()->authMethod == Auth::FORM_MD5 ? "md5(CONCAT($field, '".$_SESSION["auth_number"]."'))" : $field;
+    }
 
     public function isLogged()
     {
@@ -85,51 +84,51 @@ class auth
     }
 
 
-	public function _requestAuthFormMd5()
-	{
-		if (!$_SESSION["auth_number"]) $_SESSION["auth_number"] = rand(0, 99999);
-		$view = new html_template(dirname(__FILE__)."/../views/auth/md5.html");
-		$view->title = $this->title;
-		$view->showLogo = $this->showLogo;
-		$view->message = $this->message;
+    public function _requestAuthFormMd5()
+    {
+        if (!$_SESSION["auth_number"]) $_SESSION["auth_number"] = rand(0, 99999);
+        $view = new html_template(dirname(__FILE__)."/../views/auth/md5.html");
+        $view->title = $this->title;
+        $view->showLogo = $this->showLogo;
+        $view->message = $this->message;
 
-		if ($_POST["username"] && $_POST["password_user"]) {
-			$usuario = mysql_escape_string($_POST["username"]);
-            $clave = mysql_escape_string($_POST["password_user"]);
+        if ($_POST["username"] && $_POST["password_user"]) {
+            $usuario = ($_POST["username"]);
+            $clave = ($_POST["password_user"]);
             if ($this->login($usuario, $clave, true) == true) {
                 return true; unset($_SESSION['logout']);
             }
             $view->error = __("Error de autentificación");
-		}
+        }
 
 
-		$view->numero = $_SESSION["auth_number"];
-		echo $view->display();
+        $view->numero = $_SESSION["auth_number"];
+        echo $view->display();
 
-	}
+    }
 
-	public function _requestAuthForm()
-	{
-		$view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
-		$view->title = $this->title;
-		$view->showLogo = $this->showLogo;
-		$view->message = $this->message;
-		if ($_POST["username"] && $_POST["password"]) {
-			$usuario = mysql_escape_string($_POST["username"]);
+    public function _requestAuthForm()
+    {
+        $view = new html_template(dirname(__FILE__)."/../views/auth/index.html");
+        $view->title = $this->title;
+        $view->showLogo = $this->showLogo;
+        $view->message = $this->message;
+        if ($_POST["username"] && $_POST["password"]) {
+            $usuario = mysql_escape_string($_POST["username"]);
             $clave = mysql_escape_string($_POST["password"]);
             if ($this->login($usuario, $clave) == true) {
                 return true; unset($_SESSION['logout']);
             }
             $view->error = __("Error de autentificación");
-		}
+        }
 
-		echo $view->display();
-	}
+        echo $view->display();
+    }
 
 
     public function _requestAuthRealm()
     {
-		if (isset($_SERVER['PHP_AUTH_USER'])
+        if (isset($_SERVER['PHP_AUTH_USER'])
             && !$_SESSION["auth_module"]["logout"]
             && !isset($_SESSION['logout'])
         ) {
@@ -140,7 +139,7 @@ class auth
             }
         }
 
-		unset($_SESSION['logout']);
+        unset($_SESSION['logout']);
         $content = ob_get_clean();
         header('WWW-Authenticate: Basic realm="Zona de acceso restringido"');
         header('HTTP/1.0 401 Unauthorized');
@@ -149,19 +148,19 @@ class auth
 
     public function requestAuth()
     {
-		switch (web::instance()->authMethod) {
-			case Auth::REALM:
-				return $this->_requestAuthRealm();
-			break;
-			case Auth::FORM:
-				return $this->_requestAuthForm();
-			break;
-			case Auth::FORM_MD5:
-				return $this->_requestAuthFormMd5();
-			break;
+        switch (web::instance()->authMethod) {
+            case Auth::REALM:
+                return $this->_requestAuthRealm();
+            break;
+            case Auth::FORM:
+                return $this->_requestAuthForm();
+            break;
+            case Auth::FORM_MD5:
+                return $this->_requestAuthFormMd5();
+            break;
 
-		}
-	}
+        }
+    }
 
     public function hasPermission($perm, $model)
     {

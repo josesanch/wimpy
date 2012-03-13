@@ -111,7 +111,7 @@ class ActiveRecord
                 if (is_null($this->row_data[$name]) || ($this->row_data[$name] == "" && in_array($attrs['type'], array('int', 'decimal')))) {
                     $fields_to_update[] = $name."=Null";
                 } else {
-                    $fields_to_update[] = $name."='".mysql_escape_string($this->row_data[$name])."'";
+                    $fields_to_update[] = $name."=".$this->database->quote($this->row_data[$name]);
                 }
             }
             $sql .= join(", ", $fields_to_update)." where ".$this->where_primary_keys;
@@ -122,24 +122,25 @@ class ActiveRecord
                 if (!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal'))) continue;
                 if (isset($this->row_data[$name])) {
                     $fields[] = $name;
-                    $values[] = mysql_real_escape_string($this->row_data[$name]);
+                    $values[] = $this->database->quote($this->row_data[$name]);
                 }
             }
             $fields = join(", ", $fields);
 
-            $values = "'".join("', '", $values)."'";
+            $values = join(", ", $values);
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
+//        var_dump($sql);
 //        log::to_file($sql."<br/><hr>");
 //        web::debug(__FILE__, __LINE__, $sql);
 
         // Execute the query.
-        if (!$this->database->exec($sql) && $this->database->errorCode() > 0 )
+        if (!$this->database->exec($sql) && $this->database->errorCode() > 0 ) {
             var_dump($sql, $this->database->errorInfo());
-        else
+        } else {
             $id =  $this->lastInsertId();
-
+        }
         if (!$insert) $id = $this->row_data['id'];
         $this->savel10n($id);
         $this->id = $id;
@@ -159,7 +160,7 @@ class ActiveRecord
         $values = array();
         foreach ($this->row_data_l10n as $lang => $rows) {
             foreach ($rows as $field => $data) {
-                $values[]= "('$lang', '".get_class($this)."', '$field', '".mysql_escape_string($data)."', '".mysql_escape_string($id)."')";
+                $values[]= "('$lang', '".get_class($this)."', '$field', ".$this->database->quote($data).", '".$this->database->quote($id)."')";
             }
         }
         if ($values) {
