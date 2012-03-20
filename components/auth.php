@@ -37,11 +37,12 @@ class auth
 
         $this->usuario = $user;
         $password_field = $this->getPasswordField($this->password_field);
-
-        $statement = web::instance()->database->query(
+        $sql =
             "SELECT * FROM
             $this->table WHERE
-            $this->user_field=".$this->database->qoute($user)." and $password_field=".$this->database->qoute($pass)."'");
+            $this->user_field=".web::instance()->database->quote($user)." and $password_field=".web::instance()->database->quote($pass);
+
+        $statement = web::instance()->database->query($sql);
         if ($statement) {
             $result = $statement->fetch();
             if ($result['id']) {

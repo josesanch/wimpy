@@ -61,31 +61,31 @@ class html_form_select extends html_form_input
         return $this;
     }
 
-	public function disabled($values)
-	{
-		if (is_string($values)) $values = array_map(trim, explode(",", $values));
+    public function disabled($values)
+    {
+        if (is_string($values)) $values = array_map(trim, explode(",", $values));
         $this->disabledValues = $values;
         return $this;
-	}
+    }
 
-	public function remove($values) {
-		if (is_string($values)) $values = array_map(trim, explode(",", $values));
-		foreach ($values as $value) {
-			if (isset($this->attrs['options'][$value]))
-				unset($this->attrs['options'][$value]);
+    public function remove($values) {
+        if (is_string($values)) $values = array_map(trim, explode(",", $values));
+        foreach ($values as $value) {
+            if (isset($this->attrs['options'][$value]))
+                unset($this->attrs['options'][$value]);
 
-		}
-	}
+        }
+    }
 
-    private function getOptions()
+    protected function getOptions()
     {
-		$values = is_array($this->selectedValues) ?
+        $values = is_array($this->selectedValues) ?
                     $this->selectedValues :
                     array($this->selectedValues);
 
-		$disabledValues = is_array($this->disabledValues) ?
-			$this->disabledValues :
-			array($this->disabledValues);
+        $disabledValues = is_array($this->disabledValues) ?
+            $this->disabledValues :
+            array($this->disabledValues);
 
         foreach ($this->attrs['options'] as $value => $text) {
             $selected = in_array($value, $values) ? " selected='selected'" : "";

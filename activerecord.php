@@ -160,7 +160,7 @@ class ActiveRecord
         $values = array();
         foreach ($this->row_data_l10n as $lang => $rows) {
             foreach ($rows as $field => $data) {
-                $values[]= "('$lang', '".get_class($this)."', '$field', ".$this->database->quote($data).", '".$this->database->quote($id)."')";
+                $values[]= "('$lang', '".get_class($this)."', '$field', ".$this->database->quote($data).", ".$this->database->quote($id).")";
             }
         }
         if ($values) {

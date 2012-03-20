@@ -571,6 +571,7 @@ class html_template extends html_object
             return eval("return \$$var;");
         }
 
+//        echo "return $vars_var;";
         $vars_var  = eval("return $vars_var;");
         // Si no devolvemos el valor de la variable y si es un objeto con la propiedad toHtml .. la llamamos.
 
