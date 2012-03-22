@@ -21,7 +21,7 @@ class ActiveRecord
     private $select_limit;
     private $select_order;
     private $results;
-
+    private $select_joins;
 
     public function __construct()
     {
@@ -233,14 +233,14 @@ class ActiveRecord
 
 
         if ($mode == ActiveRecord::INNER) {
-            $joins = $this->_getLeftJoins();
+            $joins .= $this->_getLeftJoins();
         }
 
         if ($this->select_conditions)   $where = " WHERE ".$this->select_conditions;
         if ($this->select_order)        $order = " ORDER BY ".$this->select_order;
         if ($this->select_group)        $group = " GROUP BY ".$this->select_group;
         if ($this->select_limit)        $limit = " LIMIT ".$this->select_limit;
-        if ($this->select_joins)        $joins = " ".$this->select_limit;
+        if ($this->select_joins)        $joins .= " ".$this->select_joins;
         $sql = "
             SELECT
                 ".$this->select_columns."
@@ -252,8 +252,6 @@ class ActiveRecord
             $group
            ";
 
-
-//		echo "<hr><pre>$sql</pre>";
 
         if ($this->page_size) {
             $sqlPaginacion = "
@@ -305,6 +303,12 @@ class ActiveRecord
         }
 
     }
+/*
+    public function join($type = "INNER", $table, $conditions) {
+        $this->select_joins[]= array($type, $table, $conditions);
+        return this;
+    }
+*/
 
     private function _getLeftJoins()
     {
