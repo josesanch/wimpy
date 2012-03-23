@@ -330,4 +330,27 @@ class helpers_files extends ActiveRecord
         $this->quality = $quality;
 
     }
+
+    private function _getItems($first, $module, $field, $id)
+    {
+        $sql = "module='$module'
+             and iditem='$id'
+             and field='$field'";
+
+        $orden = "order: orden";
+        if ($first)
+            return $this->selectFirst($sql, $orden);
+        else
+            return $this->select($sql, $orden);
+    }
+
+    public function getFirstFor($module, $field, $id)
+    {
+        return $this->_getItems(true, $module, $field, $id);
+    }
+
+    public function getAllFor($module, $field, $id)
+    {
+        return $this->_getItems(false, $module, $field, $id);
+    }
 }

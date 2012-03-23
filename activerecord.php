@@ -435,26 +435,28 @@ class ActiveRecord
     {
         // We can see if is a photo or an file.
         if (array_key_exists($property, $this->getAllFields()) || array_key_exists($property, $this->row_data)) {
-             $field = $this->getFields($property);
-             if ($field['type'] == 'image') {
-                 $primary_key = $this->getFirstPrimaryKey();
-                 $this->$property = new helpers_images();
-                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
-                 $item = $this->$property;
-                 return $this->$property;
-             } elseif ($field['type'] == 'file') {
-                 $primary_key = $this->getFirstPrimaryKey();
-                $this->$property = new helpers_files();
-                $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
-                return $this->$property;
 
-            } elseif ($field['type'] == 'files') {
-                 $primary_key = $this->getFirstPrimaryKey();
-                 $item = new helpers_images();
-                 $item = $item->select("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
-                 $this->$property = $item;
-                 return $item;
-//                return $this->$property;
+            $field      = $this->getFields($property);
+            $primaryKey = $this->getFirstPrimaryKey();
+            $idItem     = $this->row_data[$primaryKey];
+            $moduleName = get_class($this);
+            $fieldName  = $property;
+
+            // Si el field es una archivo o imagenes.
+            switch ($field["type"]) {
+              case "image":
+                  $images = new helpers_images();
+              case "file":
+                  if (!$images) $images = new helpers_files();
+
+                  $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
+                  return $this->$fieldName;
+                  break;
+              case "files":
+                  $images = new helpers_images();
+                  $this->$fieldName = $images->getAllFor($moduleName, $fieldName, $idItem);
+                  return $this->$fieldName;
+                  break;
             }
 
 
@@ -540,7 +542,14 @@ class ActiveRecord
     public function getFirstPrimaryKey()
     {
         $metadata = &$this->getMetadata();
-        return isset($metadata["primary_keys"]) ? array_shift($metadata["primary_keys"]) : null;
+
+        return array_shift(
+            array_keys(
+                array_filter($metadata["fields"], create_function('$a', 'return $a["primary_key"];'))
+            )
+        );
+
+
 
     }
 
