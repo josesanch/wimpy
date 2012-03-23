@@ -436,26 +436,24 @@ class ActiveRecord
         // We can see if is a photo or an file.
         if (array_key_exists($property, $this->getAllFields()) || array_key_exists($property, $this->row_data)) {
              $field = $this->getFields($property);
-
              if ($field['type'] == 'image') {
-                 $primaryKeys = $this->getPrimaryKeys();
-                 $primary_key = array_shift();
+                 $primary_key = $this->getFirstPrimaryKey();
                  $this->$property = new helpers_images();
                  $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                  $item = $this->$property;
                  return $this->$property;
              } elseif ($field['type'] == 'file') {
-                $primary_key = array_shift($this->getPrimaryKeys());
+                 $primary_key = $this->getFirstPrimaryKey();
                 $this->$property = new helpers_files();
                 $this->$property = $this->$property->selectFirst("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
                 return $this->$property;
 
             } elseif ($field['type'] == 'files') {
-                $primary_key = array_shift($this->getPrimaryKeys());
-                $item = new helpers_images();
-                $item = $item->select("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
-                $this->$property = $item;
-                return $item;
+                 $primary_key = $this->getFirstPrimaryKey();
+                 $item = new helpers_images();
+                 $item = $item->select("module='".get_class($this)."' and iditem='".$this->row_data[$primary_key]."' and field='$property'", "order: orden");
+                 $this->$property = $item;
+                 return $item;
 //                return $this->$property;
             }
 
@@ -538,6 +536,12 @@ class ActiveRecord
     {
         $metadata = &$this->getMetadata();
         return isset($metadata["primary_keys"]) ? $metadata["primary_keys"] : array();
+    }
+    public function getFirstPrimaryKey()
+    {
+        $metadata = &$this->getMetadata();
+        return isset($metadata["primary_keys"]) ? array_shift($metadata["primary_keys"]) : null;
+
     }
 
     public function getFields($field = '')
