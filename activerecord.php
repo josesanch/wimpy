@@ -452,10 +452,12 @@ class ActiveRecord
                   $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
                   return $this->$fieldName;
                   break;
+
               case "files":
                   $images = new helpers_images();
-                  $this->$fieldName = $images->getAllFor($moduleName, $fieldName, $idItem);
-                  return $this->$fieldName;
+                  $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
+                  $this->$fieldName = $imgs;
+                  return $imgs;
                   break;
             }
 
@@ -541,16 +543,13 @@ class ActiveRecord
     }
     public function getFirstPrimaryKey()
     {
-        $metadata = &$this->getMetadata();
-
-        return array_shift(
+        $metadata = $this->getMetadata();
+        $primaryKey = array_shift(
             array_keys(
-                array_filter($metadata["fields"], create_function('$a', 'return $a["primary_key"];'))
+                array_filter($metadata["fields"], create_function('$a', 'return array_key_exists("primary_key", $a) && $a["primary_key"];'))
             )
         );
-
-
-
+        return $primaryKey;
     }
 
     public function getFields($field = '')

@@ -331,7 +331,7 @@ class helpers_files extends ActiveRecord
 
     }
 
-    private function _getItems($first, $module, $field, $id)
+    private function _getItems($first = false, $module, $field, $id)
     {
         $sql = "module='$module'
              and iditem='$id'
