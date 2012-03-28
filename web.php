@@ -30,7 +30,7 @@ class Web
     public $gridSize = 25;
     //public $authMethod = Auth::FORM;
     public $authMethod = Auth::REALM;
-
+    public $translator;
     private $_imagesMaxSize = array(1024, 1024);
     private $_htmlTemplateDir = "/templates";
     private $_debug = false;
@@ -92,6 +92,9 @@ class Web
         }
 */
         if(ini_get('display_errors')) $this->reportErrors(true);
+
+        // Zend Translator en rutas
+        $this->_setupRouteTranslator();
     }
 
 
@@ -102,6 +105,76 @@ class Web
       * \param array $langs Array of languages.<br/>
       * example: $web->setLanguages(array('es', 'en', 'pt'));
      */
+
+    public function run($uri = null, $view = null, $render = false)
+    {
+        if ($this->_inProduction) make_link_resources();
+        $this->initialized = true;
+        $_SESSION['initialized'] = true;
+
+        if (is_a($uri, "Zend_Controller_Request_Http")) {
+            $this->request = $uri;
+        } else  {
+            $this->request = new Zend_Controller_Request_Http();
+            if (null !== $uri) {
+                $this->request->setRequestUri($uri);
+            } else {
+                $this->render = $render = true;
+            }
+        }
+
+
+        $this->response = new Zend_Controller_Response_Http();
+
+        $this->DealSpecialCases();  // Robots.txt
+
+        $router = $this->getRouter()->route($this->request);
+        $this->parseInfo();
+
+        $this->controller = $this->request->getControllerName();
+        $this->action = $this->request->getActionName();
+        $this->uri = $this->request->getRequestUri();
+
+        switch ($this->controller) {
+            case 'admin':
+                return $this->_callAdminDispatcher($render);
+                break;
+
+            case 'ajax':
+                $this->_callAjaxDispatcher();
+                break;
+
+            case 'helpers':
+                $this->_callHelpersDispatcher();
+                break;
+
+            case 'resources':
+                if (file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
+                    return $this->_callDefaultDispatcher($render, $view);
+                } else {
+                    $controller = new resourcesController();
+                    $controller->getAction($this->action, $this->params);
+                }
+                break;
+
+            case 'images':
+                $file = new helpers_images();
+                $file->select($this->action);
+                $file->download();
+            break;
+
+            case 'files':
+                $file = new helpers_files();
+                $file->select($this->action);
+                $file->download("inline");
+            break;
+
+        default:
+                return $this->_callDefaultDispatcher($render, $view);
+        }
+
+    }
+
 
     public function setLanguages(array $langs)
     {
@@ -249,75 +322,6 @@ class Web
         return $arr;
     }
 
-    public function run($uri = null, $view = null, $render = false)
-    {
-        if ($this->_inProduction) make_link_resources();
-        $this->initialized = true;
-        $_SESSION['initialized'] = true;
-
-        if (is_a($uri, "Zend_Controller_Request_Http")) {
-            $this->request = $uri;
-        } else  {
-            $this->request = new Zend_Controller_Request_Http();
-            if (null !== $uri) {
-                $this->request->setRequestUri($uri);
-            } else {
-                $this->render = $render = true;
-            }
-        }
-
-
-        $this->response = new Zend_Controller_Response_Http();
-
-        $this->DealSpecialCases();  // Robots.txt
-
-        $router = $this->getRouter()->route($this->request);
-        $this->parseInfo();
-
-        $this->controller = $this->request->getControllerName();
-        $this->action = $this->request->getActionName();
-        $this->uri = $this->request->getRequestUri();
-
-        switch ($this->controller) {
-            case 'admin':
-                return $this->_callAdminDispatcher($render);
-                break;
-
-            case 'ajax':
-                $this->_callAjaxDispatcher();
-                break;
-
-            case 'helpers':
-                $this->_callHelpersDispatcher();
-                break;
-
-            case 'resources':
-                if (file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
-                    return $this->_callDefaultDispatcher($render, $view);
-                } else {
-                    $controller = new resourcesController();
-                    $controller->getAction($this->action, $this->params);
-                }
-                break;
-
-            case 'images':
-                $file = new helpers_images();
-                $file->select($this->action);
-                $file->download();
-            break;
-
-            case 'files':
-                $file = new helpers_files();
-                $file->select($this->action);
-                $file->download("inline");
-            break;
-
-        default:
-                return $this->_callDefaultDispatcher($render, $view);
-        }
-
-    }
-
 
     private function _getController($view = null, $admin = false)
     {
@@ -343,6 +347,7 @@ class Web
                 web::canonize($controllerName)
             )
         )."Controller";
+
 
         $action = $this->processAction($this->action);
 
@@ -393,7 +398,6 @@ class Web
 */
         try {
            list($controller, $action) = $this->_getController($view);
-
            if (!$render) $controller->layout = '';
             call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);
@@ -933,5 +937,96 @@ EOT;
     public function getRequest()
     {
         return $this->request;
+    }
+
+    private function _setupRouteTranslator()
+    {
+        $this->translator = new Zend_Translate(
+            array(
+                'adapter' => 'array',
+                'content' => array(),
+                'locale'  => $this->getDefaultLanguage()
+            )
+        );
+//        $this->translator->setLocale($this->getLanguage());
+        Zend_Controller_Router_Route::setDefaultTranslator($this->translator);
+    }
+
+    public function getTranslator()
+    {
+        return $this->translator;
+    }
+
+    public function route($url)
+    {
+        $request = new Zend_Controller_Request_Http();
+        $request->setRequestUri($url);
+        return $this->getRouter()->route($request);
+
+    }
+
+    public function assemble($params)
+    {
+        return $this->getRouter()->assemble($params);
+    }
+
+    public function addRoute($arr)
+    {
+        static $routeCount;
+        $route = key($arr);
+        $destination = $arr[$route];
+
+        if (is_string($destination)) $destination = $this->route($destination)->getParams();
+
+        $this->getRouter()->addRoute(
+            "route-".($routeCount++),
+            new Zend_Controller_Router_Route($route, $destination)
+        );
+    }
+
+    public function addRoutes($routes)
+    {
+        foreach ($routes as $route => $destination) {
+            $this->addRoute(array($route => $destination));
+        }
+    }
+
+    public function addl10nRoutes($routes)
+    {
+        foreach ($routes as $route => $destination) {
+
+            $params = is_string($route) ? $this->route($route)->getParams() : $route;
+            if ($this->_isRouteTranslatable($params)) {
+                foreach ($this->getLanguages() as $lang) {
+                    $parsedParams = array();
+                    $addRoute = false;
+
+                    foreach ($params as $param => $val) {
+                        $value = $val;
+                        if ($val[0] == "@") {
+                            $value = $this->l10n->get(substr($val, 1), $lang, $false);
+                            if ($value != substr($val, 1) || $lang == $this->getDefaultLanguage()) $addRoute = true;
+                        }
+                        $parsedParams[$param]= $value;
+                    }
+                    if ($addRoute) {
+                        $origin = urldecode($this->assemble($parsedParams));
+                        $routesToAdd[$origin] = $destination;
+                    }
+                }
+            } else {
+                $origin = urldecode($this->assemble($params));
+                $routesToAdd[$origin] = $destination;
+            }
+        }
+        $this->addRoutes($routesToAdd);
+    }
+
+    public function _isRouteTranslatable($route)
+    {
+        foreach ($route as $param => $val) {
+            if ($val[0] == "@") return true;
+        }
+        return false;
     }
 }
