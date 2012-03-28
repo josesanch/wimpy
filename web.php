@@ -993,9 +993,12 @@ EOT;
 
     public function addl10nRoutes($routes)
     {
+        $defaultLanguage = $this->getDefaultLanguage();
         foreach ($routes as $route => $destination) {
-
+            $requestDestination = $this->route($destination);
             $params = is_string($route) ? $this->route($route)->getParams() : $route;
+            $translatable = false;
+
             if ($this->_isRouteTranslatable($params)) {
                 foreach ($this->getLanguages() as $lang) {
                     $parsedParams = array();
@@ -1004,19 +1007,24 @@ EOT;
                     foreach ($params as $param => $val) {
                         $value = $val;
                         if ($val[0] == "@") {
-                            $value = $this->l10n->get(substr($val, 1), $lang, $false);
-                            if ($value != substr($val, 1) || $lang == $this->getDefaultLanguage()) $addRoute = true;
+                            $value = $this->l10n->get(substr($val, 1), $lang, ($lang == $defaultLanguage));
+                            if ($value && ($value != substr($val, 1) || $lang == $defaultLanguage)) {
+                                $addRoute = true;
+                                $translatable = true;
+                            }
                         }
                         $parsedParams[$param]= $value;
                     }
                     if ($addRoute) {
                         $origin = urldecode($this->assemble($parsedParams));
-                        $routesToAdd[$origin] = $destination;
+                        $routesToAdd[$origin] = $this->assemble($requestDestination->setParam("lang", $lang)->getParams());
                     }
                 }
-            } else {
+            }
+
+            if (!$translatable) {
                 $origin = urldecode($this->assemble($params));
-                $routesToAdd[$origin] = $destination;
+                $routesToAdd[$origin] = $this->assemble($requestDestination->setParam("lang", $defaultLanguage)->getParams());
             }
         }
         $this->addRoutes($routesToAdd);
@@ -1029,4 +1037,5 @@ EOT;
         }
         return false;
     }
+
 }
