@@ -371,7 +371,7 @@ class Web
             $controller->setViewRenderer($view);
 
         if (!method_exists($controller, $action."Action")  && !$admin) {
-            throw new Exception('No existe el la acción $controllerClass ->  {$action}Action');
+            throw new Exception("No existe la acción {$action}Action en $controllerClass");
         }
 
 
@@ -978,6 +978,8 @@ EOT;
 
         if (is_string($destination)) $destination = $this->route($destination)->getParams();
 
+//        var_dump("add route", $route, $destination);
+//        echo "----------------------\n";
         $this->getRouter()->addRoute(
             "route-".($routeCount++),
             new Zend_Controller_Router_Route($route, $destination)
@@ -1007,7 +1009,7 @@ EOT;
                     foreach ($params as $param => $val) {
                         $value = $val;
                         if ($val[0] == "@") {
-                            $value = $this->l10n->get(substr($val, 1), $lang, ($lang == $defaultLanguage));
+                            $value = strtolower($this->l10n->get(substr($val, 1), $lang, ($lang == $defaultLanguage)));
                             if ($value && ($value != substr($val, 1) || $lang == $defaultLanguage)) {
                                 $addRoute = true;
                                 $translatable = true;

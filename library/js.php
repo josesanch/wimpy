@@ -18,8 +18,11 @@ class js {
                 js_once("jquery/metadata");
     }
 
-    public static function jquery() {
-        return js_once("jquery")."\n";
+    public static function jquery($version) {
+        if (!$version)
+            return js_once("jquery")."\n";
+
+        return js_once("jquery-$version.min")."\n";
     }
 
     public static function jqueryui()

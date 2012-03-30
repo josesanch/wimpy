@@ -299,15 +299,14 @@ function GridFiles(field, model, vid, vtmp_upload) {
 	var fileDataName = field;
 	if (!fileDataName) fileDataName = "file";
 
-
-
 	this.load = function() {
 		var self = this;
 
-		$('#container-files-' + fieldName).load("/ajax/" + modelName + "/files/read/" + id + "/" + fieldName + "/?tmp_upload=" + tmp_upload, function(data) {
+		$('#container-files-' + fieldName).load(
+            "/ajax/" + modelName + "/files/read/" + id + "/" + fieldName + "/?tmp_upload=" + tmp_upload,
+            function(data) {
 
-
-				$('#container-files-' + fieldName +' a.images-delete').bind('click', function (e) {
+			    $('#container-files-' + fieldName +' a.images-delete').bind('click', function (e) {
 					arr = $(this).attr("id").split("-");
 					tiditem = arr[0]; tmodel = arr[1]; tfield = arr[2]; tid = arr[3]; ttmp_upload = arr[4];
 					if (confirm('¿Está seguro de querer realizar esta operación?')) {
@@ -318,8 +317,15 @@ function GridFiles(field, model, vid, vtmp_upload) {
 					return false;
 				});
 
-	            $('#container-files-' + fieldName + ' .editable').editable('/ajax/secciones/files/update');
-
+                $('#container-files-' + fieldName + ' .editable').change(
+                    function(e) {
+                        arr = $(this).attr("id").split("-");
+                        model = arr[0]; id = arr[1];
+                        $.get("/ajax/" + model  + '/files/update/?id=' + $(this).attr("id") + "&value=" + $(this).val());                        
+                    }
+                );
+                    
+                   
 				$("#container-files-" + fieldName + " ul.sortable").sortable({
 					start: function(event, ui) {
 						$('a.dataview-image').unbind('click');

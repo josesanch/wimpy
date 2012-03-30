@@ -1,135 +1,135 @@
 <?php
 
 class helpers_model_ajax  {
-	protected $model;
+    protected $model;
 
-	public function __construct($model) {
-		$this->model = $model;
-	}
+    public function __construct($model) {
+        $this->model = $model;
+    }
 
-	public function listItems()
-	{
-		$limit = $where = $order = "";
-
-		if(isset($_REQUEST["limit"]))
-		    $limit = "limit: ".$_REQUEST["start"].", ".$_REQUEST["limit"];
-
-		if(isset($_REQUEST["query"]))
-		    $where =  "nombre like '%".$_REQUEST["query"]."%'";
-
-		if(isset($_REQUEST["sort"]))
-		    $order = "order: ".$_REQUEST["sort"]." ".$_REQUEST["dir"];
-
-		$count = $this->model->count($where);
-
-		if ($_REQUEST["fields"])
-		    $columns = "columns: ".$_REQUEST["fields"];
-
-		$data =  $this->model->select($where, $limit, $columns, $order);
-
-		$items = array();
-		foreach($data as $item) $items[] = $item->getRowData();
-		echo json_encode(array("items" => $items, "count" => $count));
-	}
-
-
-	public function files($action, $id, $field)
-	{
-
-		switch ($action) {
-
-			case 'read':
-				$this->model->select($id);
-				$images = new helpers_images();
-				$module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->model->image_label;
-				if(!web::request("tmp_upload")) $cond = " and iditem='$id' ";
-
-				$data =  $images->select("module='$module' $cond and field='$field' ", "order:orden", "columns: id, nombre, extension, tipo");
-				if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY))
-					$sortable= " sortable";
-				$str = "
-				<h5 class='images'>".count($data)." archivos</h5>
-				<ul id='files_$field' class='images-dataview clearfix$sortable'>";
-				foreach($data as $item) {
-					$str .="
-								<li id='images-$item->id'>
-									<div>";
-					if ($item->isImage()) {
-						$str .= "<a href='".$item->url()."' class='dataview-image' rel='images-{$module}'><img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/></a>";
-					} else {
-						$str .= "<img src='".$item->src("80x60", "INABOX")."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>";
-					}
-					$editable = "";
-					if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY)) {
-						$str .="			<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>";
-
-						$editable = "class='editable'";
-					}
-					$str .= "
-										<a href='".$item->url()."' class='images-download' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."' target='_blank' title='Descargar documento'><img src='/resources/admin/images/document-save.png' border='0'/></a>
-									</div>
-									<p $editable id='file-$item->id'>$item->nombre</p>
-								</li>";
-				}
-				$str .= "</ul>";
-				echo $str;
-				exit;
-			break;
-
-			case 'save':
-				$this->model->select($id);
-				$this->model->uploadImage($field);
-				echo "1";
-				exit;
-
-
-			case 'destroy':
-				$image = new helpers_images();
-				$image->delete($id);
-				exit;
-
-			case 'update':
-				list($t, $id) = explode('-', $_REQUEST['id']);
-				web::database()->exec("UPDATE images SET nombre='".$_REQUEST["value"]."' where id=".$id);
-				echo $_REQUEST['value'];
-				exit;
-		}
-
-	}
-
-
-	public function load($id = null)
+    public function listItems()
     {
-		$item = $this->model->select($id);
-		$arr = array();
-		foreach($this->model->getFields() as $field => $attr) {
-			$arr[$field] = $this->model->$field;
-		}
+        $limit = $where = $order = "";
+
+        if(isset($_REQUEST["limit"]))
+            $limit = "limit: ".$_REQUEST["start"].", ".$_REQUEST["limit"];
+
+        if(isset($_REQUEST["query"]))
+            $where =  "nombre like '%".$_REQUEST["query"]."%'";
+
+        if(isset($_REQUEST["sort"]))
+            $order = "order: ".$_REQUEST["sort"]." ".$_REQUEST["dir"];
+
+        $count = $this->model->count($where);
+
+        if ($_REQUEST["fields"])
+            $columns = "columns: ".$_REQUEST["fields"];
+
+        $data =  $this->model->select($where, $limit, $columns, $order);
+
+        $items = array();
+        foreach($data as $item) $items[] = $item->getRowData();
+        echo json_encode(array("items" => $items, "count" => $count));
+    }
+
+
+    public function files($action, $id, $field)
+    {
+
+        switch ($action) {
+
+            case 'read':
+                $this->model->select($id);
+                $images = new helpers_images();
+                $module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->model->image_label;
+                if(!web::request("tmp_upload")) $cond = " and iditem='$id' ";
+
+                $data =  $images->select("module='$module' $cond and field='$field' ", "order:orden", "columns: id, nombre, extension, tipo");
+                if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY))
+                    $sortable= " sortable";
+                $str = "
+                <h5 class='images'>".count($data)." archivos</h5>
+                <ul id='files_$field' class='images-dataview clearfix$sortable'>";
+                foreach($data as $item) {
+                    $str .="
+                                <li id='images-$item->id'>
+                                    <div>";
+                    if ($item->isImage()) {
+                        $str .= "<a href='".$item->url()."' class='dataview-image' rel='images-{$module}'><img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/></a>";
+                    } else {
+                        $str .= "<img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>";
+                    }
+                    $editable = "";
+                    if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY)) {
+                        $str .="			<a href='#' class='images-delete' title='Eliminar archivo' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."'><img src='/resources/icons/cross.gif' border='0'/></a>";
+
+                        $editable = "class='editable'";
+                    }
+                    $str .= "
+                                        <a href='".$item->url()."' class='images-download' id='$id-".get_class($this->model)."-$field-$item->id-".web::request("tmp_upload")."' target='_blank' title='Descargar documento'><img src='/resources/admin/images/document-save.png' border='0'/></a>
+                                    </div>
+                                    <input type='text' $editable id='file-$item->id' value='$item->nombre'/>
+                                </li>";
+                }
+                $str .= "</ul>";
+                echo $str;
+                exit;
+            break;
+
+            case 'save':
+                $this->model->select($id);
+                $this->model->uploadImage($field);
+                echo "1";
+                exit;
+
+
+            case 'destroy':
+                $image = new helpers_images();
+                $image->delete($id);
+                exit;
+
+            case 'update':
+                list($t, $id) = explode('-', $_REQUEST['id']);
+                web::database()->exec("UPDATE images SET nombre='".$_REQUEST["value"]."' where id=".$id);
+                echo $_REQUEST['value'];
+                exit;
+        }
+
+    }
+
+
+    public function load($id = null)
+    {
+        $item = $this->model->select($id);
+        $arr = array();
+        foreach($this->model->getFields() as $field => $attr) {
+            $arr[$field] = $this->model->$field;
+        }
 #		var_dump($arr);
 //		echo  '{ data: '.json_encode($arr).', success: true, "recordCount" : 1}';
 //		echo  json_encode(array('success' => 'true',"data" => $arr));
-		header('Content-type: text/xml;');
-		echo '<?xml version="1.0" encoding="UTF-8"?><response success="true"><data>';
-		foreach($this->model->getFields() as $field => $attr) {
-			if($attr["type"] == 'text')
-				echo "<$field><![CDATA[".$item->$field."]]></$field>";
-		}
+        header('Content-type: text/xml;');
+        echo '<?xml version="1.0" encoding="UTF-8"?><response success="true"><data>';
+        foreach($this->model->getFields() as $field => $attr) {
+            if($attr["type"] == 'text')
+                echo "<$field><![CDATA[".$item->$field."]]></$field>";
+        }
 
-		echo '</data></response>';
+        echo '</data></response>';
 
-		exit;
-	}
+        exit;
+    }
 
 
 
-	public function autocomplete($valor)
-	{
+    public function autocomplete($valor)
+    {
 
-		//if (web::request("term")) $valor = web::request("term");
-		//if (!$valor) exit;
-		$limit = web::request("limit");
-		if (!$limit) $limit = 25;
-		if ($limit) $limit = "limit: $limit";
+        //if (web::request("term")) $valor = web::request("term");
+        //if (!$valor) exit;
+        $limit = web::request("limit");
+        if (!$limit) $limit = 25;
+        if ($limit) $limit = "limit: $limit";
         if(web::request("field")) {
             $attrs = $this->model->getFields(web::request("field"));
             if($attrs["show"]) $name = $attrs["show"];
@@ -138,106 +138,106 @@ class helpers_model_ajax  {
         if(!$name) $name = $this->model->getTitleField();
 
 
-		if (web::request("term"))
-			$q = strtolower(web::request("term"));
-		else
-			$q = strtolower($_GET["q"]);
+        if (web::request("term"))
+            $q = strtolower(web::request("term"));
+        else
+            $q = strtolower($_GET["q"]);
 
-		$primaryKey = array_shift($this->model->getPrimaryKeys());
+        $primaryKey = array_shift($this->model->getPrimaryKeys());
 
 
-		$results = $this->model->select(
-		    "columns: $primaryKey as id, $name as text",
-		    "where: $name like '%$q%'", "order: $name", $limit
-		);
+        $results = $this->model->select(
+            "columns: $primaryKey as id, $name as text",
+            "where: $name like '%$q%'", "order: $name", $limit
+        );
 
-		if (web::request("q")) {
-			foreach($results as $row) {
-				echo $row->text."|".$row->id."\n";
-			}
-		} else {
-			$json = array();
-			foreach($results as $row) {
-				$json[]= array("id" => $row->id, "label" => $row->text, "value" => $row->text);
-			}
+        if (web::request("q")) {
+            foreach($results as $row) {
+                echo $row->text."|".$row->id."\n";
+            }
+        } else {
+            $json = array();
+            foreach($results as $row) {
+                $json[]= array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+            }
 
-			echo json_encode($json);
-		}
-		exit;
-	}
+            echo json_encode($json);
+        }
+        exit;
+    }
 
-	public function reorderImages()
-	{
-		$orden = web::request("orden");
-		$images = explode(",", $orden);
-		$ids = array();
-		$count = 0;
-		foreach ($images as $img) {
-			$id = array_pop(explode("-", $img));
-			web::database()->query("UPDATE images SET orden='".($count++)."' WHERE id='$id'");
-		}
-	}
+    public function reorderImages()
+    {
+        $orden = web::request("orden");
+        $images = explode(",", $orden);
+        $ids = array();
+        $count = 0;
+        foreach ($images as $img) {
+            $id = array_pop(explode("-", $img));
+            web::database()->query("UPDATE images SET orden='".($count++)."' WHERE id='$id'");
+        }
+    }
 
-	/*
-	 * Reordenar las listas de administración.
-	 */
+    /*
+     * Reordenar las listas de administración.
+     */
 
-	public function reorderList()
-	{
-		$orden = web::request("orden");
-		$rows = explode(",", $orden);
-		$ids = array();
+    public function reorderList()
+    {
+        $orden = web::request("orden");
+        $rows = explode(",", $orden);
+        $ids = array();
 
-		// Obtenemos el mínimo
-		foreach ($rows as $row)
-			$ids[]= array_pop(explode("-", $row));
+        // Obtenemos el mínimo
+        foreach ($rows as $row)
+            $ids[]= array_pop(explode("-", $row));
 
-		$result = web::database()->query("SELECT min(orden) as minimo FROM ".$this->model->getDatabaseTable()." where id in (".implode(",", $ids).")")->fetch();
-		$count = $result["minimo"];
+        $result = web::database()->query("SELECT min(orden) as minimo FROM ".$this->model->getDatabaseTable()." where id in (".implode(",", $ids).")")->fetch();
+        $count = $result["minimo"];
 
-		// Ordenamos lo demás
-		foreach ($rows as $row) {
-			$id = array_pop(explode("-", $row));
-			web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET orden='".($count++)."' WHERE id='$id'");
-		}
+        // Ordenamos lo demás
+        foreach ($rows as $row) {
+            $id = array_pop(explode("-", $row));
+            web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET orden='".($count++)."' WHERE id='$id'");
+        }
 
-		exit;
+        exit;
 
-	}
+    }
 
-	public function delete() {
-		$this->model->delete($_REQUEST["id"]);
-	}
+    public function delete() {
+        $this->model->delete($_REQUEST["id"]);
+    }
 
-	private function parse($request) {
-	   return (isset($_REQUEST[$request])) ? json_decode(stripslashes($_REQUEST[$request]), true) : null;
+    private function parse($request) {
+       return (isset($_REQUEST[$request])) ? json_decode(stripslashes($_REQUEST[$request]), true) : null;
 
-	}
+    }
 
-	public function getValue($id)
-	{
-	    $attrs = $this->model->getFields(web::request("field"));
+    public function getValue($id)
+    {
+        $attrs = $this->model->getFields(web::request("field"));
         if($attrs["show"]) $name = $attrs["show"];
         if(!$name) $name = $this->model->getTitleField();
 
         $primaryKey = array_shift($this->model->getPrimaryKeys());
 
         $data = $this->model->selectFirst(
-			"columns: $name as text",
-			"where: $primaryKey='$id'"
+            "columns: $name as text",
+            "where: $primaryKey='$id'"
         );
         /*
         var_dump("columns: $name as text",
-			"where: $primaryKey='$id'");
-			*/
+            "where: $primaryKey='$id'");
+            */
         echo $data->text;
         exit;
-	}
+    }
 
-	public function getValueDialog($id)
-	{
+    public function getValueDialog($id)
+    {
 
-	    $attrs = $this->model->getFields(web::request("field"));
+        $attrs = $this->model->getFields(web::request("field"));
         $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
         $relatedModel = new $relatedModelName;
 
@@ -254,7 +254,7 @@ class helpers_model_ajax  {
 
         echo $data["text"];
         exit;
-	}
+    }
 }
 
 ?>
