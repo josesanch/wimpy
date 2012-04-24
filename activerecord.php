@@ -131,7 +131,8 @@ class ActiveRecord
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
-//        var_dump($sql);
+        //        var_dump($sql);
+        //        orderontime::debug($sql, true));
 //        log::to_file($sql."<br/><hr>");
 //        web::debug(__FILE__, __LINE__, $sql);
 

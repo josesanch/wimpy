@@ -106,6 +106,11 @@ class Web
       * example: $web->setLanguages(array('es', 'en', 'pt'));
      */
 
+    public static function instance()
+    {
+        return web::$_defaultInstance;
+    }
+
     public function run($uri = null, $view = null, $render = false)
     {
         if ($this->_inProduction) make_link_resources();
@@ -170,12 +175,20 @@ class Web
             break;
 
         default:
-                return $this->_callDefaultDispatcher($render, $view);
+            return $this->_callDefaultDispatcher($render, $view);
         }
 
     }
 
 
+    public function getLanguages()
+    {
+        return $this->l10n->getLanguages();
+    }
+
+    /**
+     * Set the maximum size for saving the image files.
+     */
     public function setLanguages(array $langs)
     {
         // Prepare routes for detecting languages.
@@ -198,14 +211,6 @@ class Web
 
     /**
      * Return the array with the languages of the web
-     */
-    public function getLanguages()
-    {
-        return $this->l10n->getLanguages();
-    }
-
-    /**
-     * Set the maximum size for saving the image files.
      */
     public function setImagesMaxSize($height, $width)
     {
@@ -243,11 +248,6 @@ class Web
     public function setHtmlTemplatesDir($templatesDir)
     {
         $this->_htmlTemplateDir = $templatesDir;
-    }
-
-    public static function instance()
-    {
-        return web::$_defaultInstance;
     }
 
     private function parseInfo()
@@ -397,14 +397,16 @@ class Web
 >>>>>>> twig
 */
         try {
-           list($controller, $action) = $this->_getController($view);
-           if (!$render) $controller->layout = '';
+            list($controller, $action) = $this->_getController($view);
+            $this->_controller = $controller;
+            if (!$render) $controller->layout = '';
             call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);
 
             if ($render) {
                 echo $value;
             }
+
         } catch (exception $e) {
 //            var_dump($e);
 //            web::log(var_export($e, true));

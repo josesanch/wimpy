@@ -44,17 +44,17 @@ abstract class view_renderer_abstract implements view_renderer_interface
         return $this;
     }
 
-	public function __set($item, $value)
+    public function __set($item, $value)
     {
         $this->_data[$item] = $value;
         return $this;
-	}
+}
 
-	public function __get($item)
+    public function __get($item)
     {
-		if(isset($this->_data[$item]))
-			return $this->_data[$item];
-	}
+if(isset($this->_data[$item]))
+return $this->_data[$item];
+}
 
     public function hasLayouts()
     {
@@ -83,4 +83,10 @@ abstract class view_renderer_abstract implements view_renderer_interface
         $this->_data = &$data;
         return $this;
     }
+
+    public function getData()
+    {
+        return $this->_data;
+    }
+
 }
