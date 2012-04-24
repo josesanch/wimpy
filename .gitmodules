@@ -4,3 +4,9 @@
 [submodule "vendors/symfony/yaml"]
 	path = vendors/symfony/yaml
 	url = https://github.com/symfony/Yaml.git
+[submodule "vendors/symfony/component/httpfundation"]
+	path = vendors/symfony/component/httpfundation
+	url = https://github.com/symfony/HttpFoundation.git
+[submodule "vendors/symfony/component/yaml"]
+	path = vendors/symfony/component/yaml
+	url = https://github.com/symfony/Yaml.git
