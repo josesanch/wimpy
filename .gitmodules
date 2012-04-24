@@ -1,6 +1,3 @@
-[submodule "vendors/josesanch/php-google-map-api"]
-	path = vendors/josesanch/php-google-map-api
-	url = git@github.com:josesanch/php-google-map-api.git
 [submodule "vendors/symfony/component/httpfundation"]
 	path = vendors/symfony/component/httpfundation
 	url = https://github.com/symfony/HttpFoundation.git
@@ -13,3 +10,6 @@
 [submodule "vendors/symfony/component/routing"]
 	path = vendors/symfony/component/routing
 	url = https://github.com/symfony/Routing.git
+[submodule "vendors/symfony/component/eventdispatcher"]
+	path = vendors/symfony/component/eventdispatcher
+	url = https://github.com/symfony/EventDispatcher.git
