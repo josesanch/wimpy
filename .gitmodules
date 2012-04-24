@@ -13,3 +13,6 @@
 [submodule "vendors/symfony/component/eventdispatcher"]
 	path = vendors/symfony/component/eventdispatcher
 	url = https://github.com/symfony/EventDispatcher.git
+[submodule "vendors/josesanch/php-google-map-api"]
+	path = vendors/josesanch/php-google-map-api
+	url = https://github.com/josesanch/php-google-map-api
