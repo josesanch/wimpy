@@ -1,0 +1,3 @@
+[submodule "vendors/josesanch/php-google-map-api"]
+	path = vendors/josesanch/php-google-map-api
+	url = git@github.com:josesanch/php-google-map-api.git
