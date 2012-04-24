@@ -1,3 +1,6 @@
 [submodule "vendors/josesanch/php-google-map-api"]
 	path = vendors/josesanch/php-google-map-api
 	url = git@github.com:josesanch/php-google-map-api.git
+[submodule "vendors/symfony/yaml"]
+	path = vendors/symfony/yaml
+	url = https://github.com/symfony/Yaml.git

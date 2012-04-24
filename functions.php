@@ -1,5 +1,8 @@
 <?php
 spl_autoload_register("__wimpyAutoload");
+if (file_exists(dirname(__FILE__)."/vendors/autoload.php")) {
+    include(dirname(__FILE__)."/vendors/autoload.php");
+}
 
 function __wimpyAutoload($class)
 {
