@@ -1,4 +1,3 @@
 [submodule "php-google-map-api"]
         path = vendors/josesanch/php-google-map-api
-        fetch = +refs/heads/*:refs/remotes/github/*
         url = git@github.com:josesanch/php-google-map-api.git
