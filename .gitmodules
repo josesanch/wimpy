@@ -19,3 +19,6 @@
 [submodule "vendors/Symfony/Component/Yaml"]
 	path = vendors/Symfony/Component/Yaml
 	url = https://github.com/symfony/Yaml
+[submodule "vendors/Symfony/Component/Validator"]
+	path = vendors/Symfony/Component/Validator
+	url = https://github.com/symfony/Validator
