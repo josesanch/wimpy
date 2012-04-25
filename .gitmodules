@@ -22,3 +22,9 @@
 [submodule "vendors/Symfony/Component/Validator"]
 	path = vendors/Symfony/Component/Validator
 	url = https://github.com/symfony/Validator
+[submodule "vendors/Symfony/Component/EventDispatcher"]
+	path = vendors/Symfony/Component/EventDispatcher
+	url = https://github.com/symfony/EventDispatcher
+[submodule "vendors/Symfony/Component/DependencyInjection"]
+	path = vendors/Symfony/Component/DependencyInjection
+	url = https://github.com/symfony/DependencyInjection
