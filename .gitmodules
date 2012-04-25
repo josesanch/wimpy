@@ -1,3 +1,15 @@
 [submodule "vendors/Symfony/Component/HttpFoundation"]
 	path = vendors/Symfony/Component/HttpFoundation
 	url = https://github.com/symfony/HttpFoundation
+[submodule "vendors/Symfony/Component/ClassLoader"]
+	path = vendors/Symfony/Component/ClassLoader
+	url = https://github.com/symfony/ClassLoader
+[submodule "vendors/Symfony/Component/Routing"]
+	path = vendors/Symfony/Component/Routing
+	url = https://github.com/symfony/Routing
+[submodule "vendors/Symfony/Component/Config"]
+	path = vendors/Symfony/Component/Config
+	url = https://github.com/symfony/Config
+[submodule "vendors/Symfony/Component/HttpKernel"]
+	path = vendors/Symfony/Component/HttpKernel
+	url = https://github.com/symfony/HttpKernel
