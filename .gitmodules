@@ -13,3 +13,9 @@
 [submodule "vendors/Symfony/Component/HttpKernel"]
 	path = vendors/Symfony/Component/HttpKernel
 	url = https://github.com/symfony/HttpKernel
+[submodule "vendors/Symfony/Component/BrowserKit"]
+	path = vendors/Symfony/Component/BrowserKit
+	url = https://github.com/symfony/BrowserKit
+[submodule "vendors/Symfony/Component/Yaml"]
+	path = vendors/Symfony/Component/Yaml
+	url = https://github.com/symfony/Yaml
