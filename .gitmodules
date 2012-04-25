@@ -1,0 +1,3 @@
+[submodule "vendors/Symfony/Component/HttpFoundation"]
+	path = vendors/Symfony/Component/HttpFoundation
+	url = https://github.com/symfony/HttpFoundation
