@@ -42,9 +42,9 @@ class ActiveRecord
         foreach ($this->getPrimaryKeys() as $key) {
             if (isset($this->row_data[$key])){
                 $where[]= " {$key} = '{$this->$key}'";
-            } else {
+                    } else {
                 return false;
-            }
+                    }
         }
         $this->where_primary_keys = implode(" AND ", $where);
     }
@@ -119,8 +119,13 @@ class ActiveRecord
             $insert = true;
             $fields = array(); $values = array();
             foreach ($this->getFields() as $name => $attrs) {
-                if (!$this->row_data[$name] && in_array($attrs['type'], array('int', 'decimal'))) continue;
-                if (isset($this->row_data[$name])) {
+
+                if ((!array_key_exists($name, $this->row_data)
+                     || !$this->row_data[$name])
+                    && in_array($attrs['type'], array('int', 'decimal'))) continue;
+
+                if (array_key_exists($name, $this->row_data)
+                    && isset($this->row_data[$name])) {
                     $fields[] = $name;
                     $values[] = $this->database->quote($this->row_data[$name]);
                 }
@@ -133,8 +138,8 @@ class ActiveRecord
         }
         //        var_dump($sql);
         //        orderontime::debug($sql, true));
-//        log::to_file($sql."<br/><hr>");
-//        web::debug(__FILE__, __LINE__, $sql);
+        //        log::to_file($sql."<br/><hr>");
+        //        web::debug(__FILE__, __LINE__, $sql);
 
         // Execute the query.
         if (!$this->database->exec($sql) && $this->database->errorCode() > 0 ) {
@@ -159,9 +164,11 @@ class ActiveRecord
         $this->database->exec("DELETE FROM l10n WHERE  model='".get_class($this)."' and row='$id'");
         $sql = "INSERT INTO l10n (lang, model, field, data, row) values ";
         $values = array();
-        foreach ($this->row_data_l10n as $lang => $rows) {
-            foreach ($rows as $field => $data) {
-                $values[]= "('$lang', '".get_class($this)."', '$field', ".$this->database->quote($data).", ".$this->database->quote($id).")";
+        if (isset($this->row_data_l10n)) {
+            foreach ($this->row_data_l10n as $lang => $rows) {
+                foreach ($rows as $field => $data) {
+                    $values[]= "('$lang', '".get_class($this)."', '$field', ".$this->database->quote($data).", ".$this->database->quote($id).")";
+                }
             }
         }
         if ($values) {
@@ -203,29 +210,29 @@ class ActiveRecord
             if (strpos($arg, ":")) {
                 list($command, $arguments) = explode(":", $arg);
                 switch ($command) {
-                case 'order':
-                    $this->select_order = $arguments;
-                    break;
+                    case 'order':
+                        $this->select_order = $arguments;
+                        break;
 
-                case 'limit':
-                    $this->select_limit = $arguments;
-                    break;
+                    case 'limit':
+                        $this->select_limit = $arguments;
+                        break;
 
-                case 'columns':
-                    $this->select_columns = $arguments;
-                    break;
+                    case 'columns':
+                        $this->select_columns = $arguments;
+                        break;
 
-                case 'where':
-                    $this->select_conditions = $arguments;
-                    break;
+                    case 'where':
+                        $this->select_conditions = $arguments;
+                        break;
 
-                case 'group':
-                    $this->select_group = $arguments;
-                    break;
+                    case 'group':
+                        $this->select_group = $arguments;
+                        break;
 
-                case 'joins':
-                    $this->select_joins = $arguments;
-                    break;
+                    case 'joins':
+                        $this->select_joins = $arguments;
+                        break;
                 }
             } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
                 $mode = $arg;
@@ -253,7 +260,6 @@ class ActiveRecord
             $group
            ";
 
-
         if ($this->page_size) {
             $sqlPaginacion = "
             select count(*) as total from (
@@ -276,7 +282,7 @@ class ActiveRecord
         }
 
         $sql .= $limit;
-//        echo "<pre>".$sql."</pre><hr/>";
+        //        echo "<pre>".$sql."</pre><hr/>";
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -304,12 +310,12 @@ class ActiveRecord
         }
 
     }
-/*
-    public function join($type = "INNER", $table, $conditions) {
-        $this->select_joins[]= array($type, $table, $conditions);
-        return this;
-    }
-*/
+    /*
+      public function join($type = "INNER", $table, $conditions) {
+      $this->select_joins[]= array($type, $table, $conditions);
+      return this;
+      }
+    */
 
     private function _getLeftJoins()
     {
@@ -344,9 +350,9 @@ class ActiveRecord
 
     protected function dumpValues()
     {
-//        foreach ($this->getFields() as $field => $attrs) {
-//            if (isset($this->results[0]->$field)) $this->$field = $this->results[0]->$field;
-//        }
+        //        foreach ($this->getFields() as $field => $attrs) {
+        //            if (isset($this->results[0]->$field)) $this->$field = $this->results[0]->$field;
+        //        }
         if (isset($this->results[0])) $this->row_data = $this->results[0]->getRowData();
         $this->setWherePK();
     }
@@ -356,7 +362,7 @@ class ActiveRecord
         if (!array_key_exists(
                 $this->database_table,
                 ActiveRecord::$metadata[$this->database->uri])
-           ) {
+        ) {
             if ($this->fields) {
                 $metadata = &$this->getMetadata();
                 $metadata = array("fields" => array(), "primary_keys" => array());
@@ -394,7 +400,7 @@ class ActiveRecord
                     // Set the values of the enum
                     if ($field['type'] == 'enum') {
                         $field['values'] = split_csv($field['size']);
-//                        $field['values'] = split("\'*\s*,\'", $field['size']);
+                        //                        $field['values'] = split("\'*\s*,\'", $field['size']);
                         unset($field['size']);
                     }
                     if (in_array("not_null", $attrs)) $field["not null"] =  true;
@@ -439,35 +445,37 @@ class ActiveRecord
 
             $field      = $this->getFields($property);
             $primaryKey = $this->getFirstPrimaryKey();
-            $idItem     = $this->row_data[$primaryKey];
+            if (array_key_exists($primaryKey, $this->row_data)) {
+                $idItem     = $this->row_data[$primaryKey];
+            }
             $moduleName = get_class($this);
             $fieldName  = $property;
 
             // Si el field es una archivo o imagenes.
             switch ($field["type"]) {
-              case "image":
-                  $images = new helpers_images();
-              case "file":
-                  if (!$images) $images = new helpers_files();
+                case "image":
+                    $images = new helpers_images();
+                case "file":
+                    if (!$images) $images = new helpers_files();
 
-                  $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
-                  return $this->$fieldName;
-                  break;
+                    $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
+                    return $this->$fieldName;
+                    break;
 
-              case "files":
-                  $images = new helpers_images();
-                  $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
-                  $this->$fieldName = $imgs;
-                  return $imgs;
-                  break;
+                case "files":
+                    $images = new helpers_images();
+                    $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
+                    $this->$fieldName = $imgs;
+                    return $imgs;
+                    break;
             }
 
 
-             if (
-                 array_key_exists("l10n", $field)
-                 && $field['l10n']
-                 && web::instance()->l10n->isNotDefault($selected_lang)
-             ) {
+            if (isset($field)
+                && array_key_exists("l10n", $field)
+                && $field['l10n']
+                && web::instance()->l10n->isNotDefault($selected_lang)
+            ) {
                 if (!$selected_lang)
                     $selected_lang = web::instance()->l10n->getSelectedLang();
 
@@ -485,7 +493,7 @@ class ActiveRecord
                         AND row='".$this->row_data['id']."'"
                 );
 
-//                                                                        and field='".$property."'
+                //                                                                        and field='".$property."'
 
                 // If not exists the value
                 if (!$sta || $sta->rowCount() == 0) {
@@ -499,7 +507,9 @@ class ActiveRecord
                     return stripslashes($this->row_data_l10n[$selected_lang][$property]);
                 }
             }
-            return stripslashes($this->row_data[$property]);
+            if (array_key_exists($property, $this->row_data)) {
+                return stripslashes($this->row_data[$property]);
+            }
         }
     }
 
@@ -508,11 +518,13 @@ class ActiveRecord
     {
 
         if (array_key_exists($property, $this->getAllFields()) || array_key_exists($property, $this->row_data)) {
-             $field = $this->getFields($property);
-             if ($field['type'] == 'image' || $field['type'] == 'file') {
-                 $this->$property = $value;
-             } else {
-                if ($field['l10n'] && web::instance()->l10n->isNotDefault()) {
+            $field = $this->getFields($property);
+            if ($field['type'] == 'image' || $field['type'] == 'file') {
+                $this->$property = $value;
+            } else {
+                if (array_key_exists("l10n", $field)
+                    && $field['l10n']
+                    && web::instance()->l10n->isNotDefault()) {
                     $this->set(
                         $property,
                         $value,
@@ -545,11 +557,10 @@ class ActiveRecord
     public function getFirstPrimaryKey()
     {
         $metadata = $this->getMetadata();
-        $primaryKey = array_shift(
-            array_keys(
-                array_filter($metadata["fields"], create_function('$a', 'return array_key_exists("primary_key", $a) && $a["primary_key"];'))
-            )
-        );
+        $pass1 = array_filter($metadata["fields"], create_function('$a', 'return array_key_exists("primary_key", $a) && $a["primary_key"];'));
+        $pass2 = array_keys($pass1);
+        $primaryKey = array_shift($pass2);
+
         return $primaryKey;
     }
 
@@ -588,13 +599,13 @@ class ActiveRecord
         }
     }
 
-  //TODO: Tenemos que borrar archivos si tiene, fotos si tiene y las tablas relaccionadas.
+    //TODO: Tenemos que borrar archivos si tiene, fotos si tiene y las tablas relaccionadas.
     protected function deleteItem()
     {
         $conditions = array();
         $this->setWherePK();
         $sql = "delete from ".$this->getDatabaseTable()." where ".$this->where_primary_keys;
-//        web::debug(__FILE__, __LINE__, $sql);
+        //        web::debug(__FILE__, __LINE__, $sql);
 
         if (is_a($this, "Model")) {
             $this->_deleteAsociatedFiles();
@@ -630,7 +641,10 @@ class ActiveRecord
                         break;
 
                     default:
-                        if ($attrs['autocomplete'] && $attrs["newvalues"] && !$_REQUEST[$field] && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
+                        if (array_key_exists("autocomplete", $attrs)
+                            && array_key_exists("newvalues", $attrs)
+                            && !$_REQUEST[$field]
+                            && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
                             $model_name = $attrs["belongs_to"];
                             $model = new $model_name;
                             $name = $model->getTitleField();
@@ -650,7 +664,7 @@ class ActiveRecord
             }
         }
         $this->setWherePK();
-//        $this->save();
+        //        $this->save();
         $this->select($this->save());
 
         foreach ($images as $image) {
@@ -691,118 +705,118 @@ class ActiveRecord
             );
         }
         return $results[0];
-    }
+            }
 
+    
+        public function __call($method, $args=array())
+        {
+            $model = strtolower(preg_replace("/^get/", "", $method));
 
-    public function __call($method, $args=array())
-    {
-        $model = strtolower(preg_replace("/^get/", "", $method));
+            if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
+                $fk_field = $model."_id";
+                $model = new $model($this->$fk_field);
 
-        if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
-            $fk_field = $model."_id";
-            $model = new $model($this->$fk_field);
+                return $model;
+                //return $model->selectFirst($this->$fk_field);
+            }
 
-            return $model;
-            //return $model->selectFirst($this->$fk_field);
+            if (isset($this->has_many) && in_array($model, $this->has_many)){
+                $fk_field = $model."_id";
+                $model = new $model();
+                return $model->select($this->database_table."_id='$this->id'");
+            }
+
+            if (!web::instance()->isInProduction() || web::instance()->inDevelopment) {
+                web::error('No existe el método:'.$method);
+                throw new Exception("No existe el método: $method en la clase ".get_class($this));
+                //            echo
+            }
         }
 
-        if (isset($this->has_many) && in_array($model, $this->has_many)){
-            $fk_field = $model."_id";
-            $model = new $model();
-            return $model->select($this->database_table."_id='$this->id'");
+        public function setCurrentPage($page = 1)
+        {
+            if (is_numeric($page)) $this->current_page = $page;
+            return $this;
         }
 
-        if (!web::instance()->isInProduction() || web::instance()->inDevelopment) {
-            web::error('No existe el método:'.$method);
-            throw new Exception("No existe el método: $method en la clase ".get_class($this));
-//            echo
-        }
-    }
-
-    public function setCurrentPage($page = 1)
-    {
-        if (is_numeric($page)) $this->current_page = $page;
-        return $this;
-    }
-
-    public function setPageSize($page_size)
-    {
-        $this->page_size = $page_size;
-        return $this;
-    }
-
-    public function setPrivateData($data)
-    {
-        $this->row_data = $data;
-        $this->row_data_l10n = null;
-    }
-
-    public function getRowData() {
-        return $this->row_data;
-    }
-
-    public function getSelectedColumns()
-    {
-        return $this->select_columns ? split(" ?, ?", $this->select_columns) : array_keys($this->getFields());
-    }
-
-    public function getDatabaseTable()
-    {
-        return $this->database_table;
-    }
-
-    public function fields($field) {
-        return new fields(
-            ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
-            $field,
-            $this->database_table
-        );
-    }
-
-    public function getAllFieldsForForm()
-    {
-        return $this->fields;
-    }
-
-    public function toArray($fields)
-    {
-        $datos = array();
-        if ($fields) {
-            foreach ($fields as $field)
-                $datos[$field] = $this->get($field);
-        } else {
-            foreach ($this->getFields() as $field => $attrs)
-                $datos[$field] = $this->get($field);
+        public function setPageSize($page_size)
+        {
+            $this->page_size = $page_size;
+            return $this;
         }
 
-        return $datos;
-    }
-
-    public function toJson($fields)
-    {
-        return json_encode($this->toArray($fields));
-    }
-
-    public function forceCreation()
-    {
-        unset($this->where_primary_keys);
-    }
-
-    public function &getMetadata()
-    {
-        if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
-            ActiveRecord::$metadata[$this->database->uri] = array();
+        public function setPrivateData($data)
+        {
+            $this->row_data = $data;
+            $this->row_data_l10n = null;
         }
 
-        if (!array_key_exists($this->getDatabaseTable(), ActiveRecord::$metadata[$this->database->uri])) {
-            ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()] = array(
-                "created" => false
+        public function getRowData() {
+            return $this->row_data;
+        }
+
+        public function getSelectedColumns()
+        {
+            return $this->select_columns ? split(" ?, ?", $this->select_columns) : array_keys($this->getFields());
+        }
+
+        public function getDatabaseTable()
+        {
+            return $this->database_table;
+        }
+
+        public function fields($field) {
+            return new fields(
+                ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
+                $field,
+                $this->database_table
             );
         }
 
-        $metadata = &ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()];
-        return $metadata;
-    }
+        public function getAllFieldsForForm()
+        {
+            return $this->fields;
+        }
+
+        public function toArray($fields)
+        {
+            $datos = array();
+            if ($fields) {
+                foreach ($fields as $field)
+                    $datos[$field] = $this->get($field);
+            } else {
+                foreach ($this->getFields() as $field => $attrs)
+                    $datos[$field] = $this->get($field);
+            }
+
+            return $datos;
+        }
+
+        public function toJson($fields)
+        {
+            return json_encode($this->toArray($fields));
+        }
+
+        public function forceCreation()
+        {
+            unset($this->where_primary_keys);
+        }
+
+        public function &getMetadata()
+        {
+            if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
+                ActiveRecord::$metadata[$this->database->uri] = array();
+            }
+
+            if (!array_key_exists($this->getDatabaseTable(), ActiveRecord::$metadata[$this->database->uri])) {
+                ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()] = array(
+                    "created" => false
+                );
+            }
+
+            $metadata = &ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()];
+            return $metadata;
+        }
 
 }
 

@@ -81,7 +81,9 @@ class auth
 
     public function get($item)
     {
-        return $_SESSION["auth_session_".$this->table][$item];
+        if (isset($_SESSION["auth_session_".$this->table][$item])) {
+            return $_SESSION["auth_session_".$this->table][$item];
+        }
     }
 
 

@@ -26,7 +26,7 @@ class html_form extends html_object implements Iterator
 
     public function toHtml()
     {
-        if($this->attrs["onsubmit"] == "return form(this);") {
+        if(array_key_exists("onsubmit", $this->attrs) && $this->attrs["onsubmit"] == "return form(this);") {
             kernel::loadJS("form");
         }
 
@@ -68,8 +68,10 @@ class html_form extends html_object implements Iterator
     protected function process()
     {
         foreach($this->inputs as $input) {
-            if(is_a($input, 'html_form_file'))
+            if(is_a($input, 'html_form_file')) {
                 $this->attrs['enctype'] = 'multipart/form-data';
+            }
+
             $this->data .= $input;
         }
         $this->data .= $this->getJs();
@@ -91,16 +93,16 @@ class html_form extends html_object implements Iterator
                 || isset($attrs["belongsTo"]))) {
             $relatedModelName = $attrs["belongs_to"] ? $attrs["belongs_to"] : $attrs["belongsTo"];
 
-            if (!$attrs['autocomplete'] && !$attrs["dialog"]) {
+            if (!array_key_exists("autocomplete", $attrs) && !array_key_exists("dialog", $attrs)) {
                 $relatedModel = new $relatedModelName();
-                if ($attrs["show"])
+                if (array_key_exists("show", $attrs))
                     $name  = $attrs["show"];
                 else
                     $name = $relatedModel->getTitleField();
 
                 $input = new html_form_select($field);
 
-                $input	->add(
+                $input->add(
                     $relatedModel->select(
                         "columns: id as value, $name as text",
                         "order: text"
@@ -183,7 +185,7 @@ class html_form extends html_object implements Iterator
                 $input->setData($inputAutocomplete);
 
                 }
-        } elseif ($attrs['primary_key'] || $attrs["hidden"]) {
+        } elseif (array_key_exists("primary_key", $attrs) || array_key_exists("hidden", $attrs)) {
                  $input = new html_form_hidden($field);
                  $input->value($this->model->$field);
         } else {
@@ -266,20 +268,21 @@ class html_form extends html_object implements Iterator
                     $inputName = $lang ? $field."|".$lang : $field;
                     $input = new html_form_input($inputName);
 
-                    if(!$size)
+                    if(!isset($size))
                         $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
 
+                    $validate = array_key_exists("validate", $attrs) ? $attrs["validate"] : "";
                     $input->size($size);
                     if($attrs['size']) $input->maxsize($attrs['size']);
-                    $input->class($input->class()." ".$attrs['validate']);
-                    if($attrs['not null']) $input->class($input->class()." required");
+                    $input->class($input->class()." ".$validate);
+                    if(array_key_exists("not null", $attrs)) $input->class($input->class()." required");
                     $value = $this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()));
 
                     $input->value(str_replace('"', '&quot;', $value), false);
             }
         }
 
-        if (!$attrs['primary_key'] && !$attrs["hidden"]) {
+        if (!array_key_exists("primary_key", $attrs) && !array_key_exists("hidden", $attrs)) {
             if($lang)
                 $input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
             else
@@ -289,7 +292,7 @@ class html_form extends html_object implements Iterator
 
 
         $this->inputs[]= $input;
-        if($attrs['l10n'] && !$lang) {
+        if(array_key_exists("l10n", $attrs) && $attrs['l10n'] && !$lang) {
             foreach(l10n::instance()->getNotDefaultLanguages() as $lang)
                 $this->auto($field, $lang);
         }
@@ -357,12 +360,13 @@ class html_form extends html_object implements Iterator
 
     public function getJs()
     {
+        $str = "";
         if ($this->_javascriptOnload)
             $str .= "
                     $(document).ready(function() {
                             $this->_javascriptOnload
-                    });
-                    ";
+                    });";
+
         if ($this->_javascript)
             $str .= $this->_javascript;
 

@@ -730,7 +730,7 @@ class Web
             $mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
         }
 
-        if (web::instance()->showErrors)
+        if (web::instance()->showErrors && isset($notificando))
             echo $str."$notificando</pre>";
     }
 

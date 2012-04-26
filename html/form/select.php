@@ -5,20 +5,20 @@ class html_form_select extends html_form_input
     protected $selectedValues = array();
     protected $disabledValues = array();
     protected $attrs = array
-    (
-        'type'    => 'select',
-        'class'   => 'select',
-        'value'   => '',
-        'options' => array()
+        (
+            'type'    => 'select',
+            'class'   => 'select',
+            'value'   => '',
+            'options' => array()
 
-    );
+        );
 
     public function toHtml()
     {
-        if ($this->attrs['label']) {
+        if (array_key_exists("label", $this->attrs)) {
             $str = "\n<label for='".(
-                $this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name']
-                )."' class='autoform'>
+                array_key_exists("id", $this->attrs) ? $this->attrs['id'] : $this->attrs['name']
+            )."' class='autoform'>
                 <span>".$this->attrs['label']."</span>\n";
         }
 
@@ -26,8 +26,9 @@ class html_form_select extends html_form_input
             array('value', 'type', 'options', 'selectedOptions')
         ).">".$this->getOptions()."</select>\n";
 
-        if($this->attrs['label'])
+        if (array_key_exists("label", $this->attrs)) {
             $str .= "</label>\n";
+        }
         return $str;
     }
 
@@ -79,19 +80,24 @@ class html_form_select extends html_form_input
 
     protected function getOptions()
     {
+        $html = "";
+
         $values = is_array($this->selectedValues) ?
-                    $this->selectedValues :
-                    array($this->selectedValues);
+            $this->selectedValues :
+            array($this->selectedValues);
 
         $disabledValues = is_array($this->disabledValues) ?
             $this->disabledValues :
             array($this->disabledValues);
 
-        foreach ($this->attrs['options'] as $value => $text) {
-            $selected = in_array($value, $values) ? " selected='selected'" : "";
-            $disabled = in_array($value, $disabledValues) ? " disabled='disabled'" : "";
-            $html .= "
+        if (array_key_exists("options", $this->attrs) && is_array($this->attrs["options"])) {
+
+            foreach ($this->attrs['options'] as $value => $text) {
+                $selected = in_array($value, $values) ? " selected='selected'" : "";
+                $disabled = in_array($value, $disabledValues) ? " disabled='disabled'" : "";
+                $html .= "
                        <option value=\"$value\"$selected{$disabled}>$text</option>";
+            }
         }
         return $html;
 

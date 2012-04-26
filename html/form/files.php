@@ -10,7 +10,9 @@ class html_form_files extends html_form_input {
     (
         'type'    => 'file',
         'class'   => 'textbox',
-        'value'   => ''
+        'value'   => '',
+        "name" => "",
+        "id" => ""
     );
 
     public function __construct($field, $model, $tmp_upload, $form = null) {
@@ -32,28 +34,32 @@ class html_form_files extends html_form_input {
 
     public function toHtml()
     {
+        $str = "";
         $model_name = get_class($this->model);
         $iditem = $this->model->id;
         $field = $this->attrs['name'];
         $tmp_upload = $this->tmp_upload;
         $fileDataName = $field ? $field : "file";
+        $javascript = "new GridFiles('$field', '$model_name', '$iditem', '$tmp_upload');";
 
         $str .= "
-        <label for='".($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] )."'
+        <label for='".(array_key_exists("id", $this->attrs) ? $this->attrs['id'] : $this->attrs['name'] )."'
             class='autoform no-margin' style='clear: both;'>
             ".$this->attrs['label']."
         </label>
         <div id='container-files-$field'></div>
         <div id='fileQueue_$field'></div>";
+
+
         if (web::auth()->hasPermission($this->model, auth::MODIFY)) {
             $str .= "
         <div class='contenedor-boton-upload'>
             <input type='file' name='uploadify_$field' id='uploadify_$field'/>
         </div>";
         }
-        $javascript = "new GridFiles('$field', '$model_name', '$iditem', '$tmp_upload');";
 
-        if($this->form) {
+
+        if(isset($this->form)) {
             $this->form->addJS($javascript, true);
         } else {
             $str .= "<script type='text/javascript'>
@@ -64,4 +70,3 @@ class html_form_files extends html_form_input {
         return $this->prepend."$str";
     }
 }
-?>

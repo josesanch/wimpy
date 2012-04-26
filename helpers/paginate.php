@@ -10,7 +10,7 @@ class helpers_paginate {
         $nextPages = "&rsaquo;&rsaquo;";
         $previousPages = "&lsaquo;&lsaquo;";
         $arrowStyle = "paginas";
-        if(!is_array($array)) return;
+        if(!is_array($array) || count($array) == 0) return;
         $object = $array[0];
 
         $total_pages = ceil($object->total_results / $object->page_size);

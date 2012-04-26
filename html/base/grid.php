@@ -14,8 +14,15 @@ class html_base_grid extends html_object
     //'return do_search(this);';
     private $_instance = true;
 
-    public function toHtml($model, $sql = null, $columns = null, $order = null)
+    //    public function toHtml($model, $sql = null, $columns = null, $order = null)
+    public function toHtml()
     {
+        $order = "";
+        $args = func_get_args();
+        if (count($args) > 0) $model = array_shift($args);
+        if (count($args) > 0) $sql = array_shift($args);
+        if (count($args) > 0) $columns = array_shift($args);
+        if (count($args) > 0) $order = array_shift($args);
 
         $modelName  = get_class($model);
         $orderField = "order-$modelName";

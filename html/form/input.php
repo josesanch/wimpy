@@ -7,7 +7,7 @@ class html_form_input extends html_object {
         'class'   => 'textbox',
         'value'   => ''
     );
-	protected $_labelFor;
+    protected $_labelFor;
     // Protected data keys
     protected $protect = array();
 
@@ -29,16 +29,16 @@ class html_form_input extends html_object {
         $this->attrs['name'] = $name;
     }
 
-	public function labelFor($for)
-	{
-		$this->_labelFor = $for;
-	}
+    public function labelFor($for)
+    {
+        $this->_labelFor = $for;
+    }
 
-	protected function _getLabelFor()
-	{
-		if ($this->_labelFor) return $this->_labelFor;
-		//return ($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] );
-	}
+    protected function _getLabelFor()
+    {
+        if (isset($this->_labelFor)) return $this->_labelFor;
+        //return ($this->attrs['id'] ? $this->attrs['id'] : $this->attrs['name'] );
+    }
 
     public function __call($method, $args)
     {
@@ -71,14 +71,15 @@ class html_form_input extends html_object {
     public function toHtml()
     {
         $str = "";
-        if($this->attrs['label']) {
-			if ($this->_getLabelFor()) $for = " for='".$this->_getLabelFor()."'";
+        $for = "";
+        if (array_key_exists("label", $this->attrs)) {
+            if ($this->_getLabelFor()) $for = " for='".$this->_getLabelFor()."'";
             $str .= "\n<label$for class='autoform'>\n
                         <span>".$this->attrs['label']."</span>\n";
-		}
+        }
         $str .= "     <input ".$this->getAttributes()."/>";
-        if($this->data) $str .= "\n".$this->data;
-        if($this->attrs['label']) $str.= "\n</label>";
+        if ($this->data) $str .= "\n".$this->data;
+        if (array_key_exists("label", $this->attrs)) $str.= "\n</label>";
         return $str;
     }
 

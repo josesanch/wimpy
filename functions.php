@@ -232,7 +232,7 @@ function notildes($txt) {
 
 function query_string($no = array()) {
     if(!is_array($no)) $no = explode(",", $no);
-     $variables = $request ? $request : $_REQUEST;
+    $variables = isset($request) ? $request : $_REQUEST;
     $postString  ="";
     while(list($key, $val) = each($variables)) {
         $key = stripslashes($key); $val = stripslashes($val);
