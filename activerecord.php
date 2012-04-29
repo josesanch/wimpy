@@ -107,8 +107,11 @@ class ActiveRecord
             $sql = "UPDATE $this->database_table SET ";
             $fields_to_update = array();
             foreach ($this->getFields() as $name => $attrs) {
-
-                if (is_null($this->row_data[$name]) || ($this->row_data[$name] == "" && in_array($attrs['type'], array('int', 'decimal')))) {
+                if (
+                    (!array_key_exists($name, $this->row_data)
+                     || (array_key_exists($name, $this->row_data) && is_null($this->row_data[$name]))
+                     || (array_key_exists($name, $this->row_data) && $this->row_data[$name] == ""))
+                    && in_array($attrs['type'], array('int', 'decimal', 'bool'))) {
                     $fields_to_update[] = $name."=Null";
                 } else {
                     $fields_to_update[] = $name."=".$this->database->quote($this->row_data[$name]);
@@ -136,7 +139,8 @@ class ActiveRecord
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
-        //        var_dump($sql);
+        //var_dump($sql);
+        //        exit;
         //        orderontime::debug($sql, true));
         //        log::to_file($sql."<br/><hr>");
         //        web::debug(__FILE__, __LINE__, $sql);
@@ -146,16 +150,18 @@ class ActiveRecord
             var_dump($sql, $this->database->errorInfo());
         } else {
             $id =  $this->lastInsertId();
-        }
-        if (!$insert) $id = $this->row_data['id'];
-        $this->savel10n($id);
-        $this->id = $id;
-        $this->setWherePK();
-        // Save the changes in the log.
-        if (is_a($this, "Model"))
-            log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
 
-        return $id;
+            if (!$insert) $id = $this->row_data['id'];
+            $this->savel10n($id);
+            $this->id = $id;
+            $this->setWherePK();
+            // Save the changes in the log.
+            if (is_a($this, "Model"))
+                log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
+
+            return $id;
+        }
+
 
     }
 
@@ -442,7 +448,7 @@ class ActiveRecord
     {
         // We can see if is a photo or an file.
         if (array_key_exists($property, $this->getAllFields()) || array_key_exists($property, $this->row_data)) {
-
+            $idItem = null;
             $field      = $this->getFields($property);
             $primaryKey = $this->getFirstPrimaryKey();
             if (array_key_exists($primaryKey, $this->row_data)) {
@@ -457,7 +463,6 @@ class ActiveRecord
                     $images = new helpers_images();
                 case "file":
                     if (!$images) $images = new helpers_files();
-
                     $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
                     return $this->$fieldName;
                     break;
@@ -623,6 +628,7 @@ class ActiveRecord
     {
         $images = array();
         $files = array();
+
         foreach ($this->getAllFields() as $field => $attrs) {
             if (array_key_exists($field, $_REQUEST) || array_key_exists($field, $_FILES) ) {
                 switch($attrs['type']) {
@@ -637,7 +643,8 @@ class ActiveRecord
 
                     case 'date':
                         $fecha = explode('/', $_REQUEST[$field]);
-                        $this->$field = $fecha[2]."-".$fecha[1].'-'.$fecha[0];
+                        $this->$field = $fecha[2].'-'.$fecha[1].'-'.$fecha[0];
+
                         break;
 
                     default:
@@ -666,10 +673,9 @@ class ActiveRecord
         $this->setWherePK();
         //        $this->save();
         $this->select($this->save());
-
         foreach ($images as $image) {
             if (!$this->uploadImage($image)) {
-                if ($_REQUEST['_file_'.$image] != 'no-delete') {
+                if (!array_key_exists('_file_'.$image, $_REQUEST) || $_REQUEST['_file_'.$image] != 'no-delete') {
                     if ($this->$image) {
                         $this->$image->delete();
                     }
@@ -679,7 +685,7 @@ class ActiveRecord
 
         foreach ($files as $file) {
             if (!$this->uploadFile($file)) {
-                if ($_REQUEST['_file_'.$file] != 'no-delete') {
+                if (!array_key_exists('_file_'.$file, $_REQUEST) || $_REQUEST['_file_'.$file] != 'no-delete') {
                     if ($this->$file) $this->$file->delete();
                 }
             }
@@ -853,11 +859,11 @@ class fields
                 break;
 
             case "getSql":
-                if ($this->_attrs["getSql"]) return $this->_attrs["getSql"];
+                if (array_key_exists('getSql', $this->_attrs) && $this->_attrs["getSql"]) return $this->_attrs["getSql"];
 
-                if ($this->_attrs["show"]) {
+                if (array_key_exists('show', $this->_attrs) && $this->_attrs["show"]) {
                     $this->_attrs["getSql"] = $this->_attrs["show"];
-                } elseif($relatedTable = $this->_attrs['belongs_to']) {
+                } elseif(array_key_exists('belongs_to', $this->_attrs) && $relatedTable = $this->_attrs['belongs_to']) {
                     $relatedModel = new $relatedTable;
                     $fieldToSelect = $relatedModel->getTitleField();
 
@@ -876,7 +882,7 @@ class fields
             case "getSqlColumn":
                 if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
 
-                if (isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
+                if (array_key_exists('belongs_to', $this->_attrs) && isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
 
                 if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
                     $this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";

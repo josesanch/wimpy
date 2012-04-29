@@ -35,7 +35,7 @@ class helpers_model_ajax  {
 
     public function files($action, $id, $field)
     {
-
+        $cond = "";
         switch ($action) {
 
             case 'read':
@@ -50,14 +50,16 @@ class helpers_model_ajax  {
                 $str = "
                 <h5 class='images'>".count($data)." archivos</h5>
                 <ul id='files_$field' class='images-dataview clearfix$sortable'>";
+                $filters = new html_template_filters();
                 foreach($data as $item) {
                     $str .="
                                 <li id='images-$item->id'>
                                     <div>";
                     if ($item->isImage()) {
-                        $str .= "<a href='".$item->url()."' class='dataview-image' rel='images-{$module}'><img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/></a>";
+                        $str .= "<a href='".$item->url()."' class='dataview-image' rel='images-{$module}'><img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".$filters->bytes($item->size())."'/></a>";
                     } else {
-                        $str .= "<img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".html_template_filters::bytes($item->size())."'/>";
+
+                        $str .= "<img src='".$item->src("100x80", thumb::CROP)."' title='$item->nombre ".$filters->bytes($item->size())."'/>";
                     }
                     $editable = "";
                     if (web::auth()->hasPermission($this->model, auth::DELETE) || web::auth()->hasPermission($this->model, auth::MODIFY)) {
@@ -77,6 +79,8 @@ class helpers_model_ajax  {
             break;
 
             case 'save':
+
+                web::log("$action, $id, $field");
                 $this->model->select($id);
                 $this->model->uploadImage($field);
                 echo "1";
@@ -189,15 +193,19 @@ class helpers_model_ajax  {
         $ids = array();
 
         // Obtenemos el mínimo
-        foreach ($rows as $row)
-            $ids[]= array_pop(explode("-", $row));
+        foreach ($rows as $row) {
+            $explode = explode('-', $row);
+            $ids[]= array_pop($explode);
+        }
 
         $result = web::database()->query("SELECT min(orden) as minimo FROM ".$this->model->getDatabaseTable()." where id in (".implode(",", $ids).")")->fetch();
         $count = $result["minimo"];
 
         // Ordenamos lo demás
         foreach ($rows as $row) {
-            $id = array_pop(explode("-", $row));
+            $explode = explode('-', $row);
+            $id = array_pop($explode);
+
             web::database()->query("UPDATE ".$this->model->getDatabaseTable()." SET orden='".($count++)."' WHERE id='$id'");
         }
 
@@ -256,5 +264,3 @@ class helpers_model_ajax  {
         exit;
     }
 }
-
-?>

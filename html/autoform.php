@@ -21,12 +21,14 @@ class html_autoform extends html_form
 
     private function construct_head()
     {
+        $tmpUpload = "";
         $this->add(
             "
                 <div id='alert-messages'></div>
                 <fieldset class='admin_form ".get_class($this->model)."'>
                 <legend>".$this->model->getTitle()."</legend>"
         );
+
 
         if (!$this->model->id) {
             $tmpUpload = get_class($this->model)."_".rand();
@@ -37,7 +39,12 @@ class html_autoform extends html_form
             $attrs = $this->model->getFields($field);
             $this->auto($field, null, $tmpUpload, $type);
             if ($this->css) $this->css($this->css);
-            if(array_key_exists("newline", $attrs) && $attrs["newline"]) $this->add("<div class='newline'></div>");
+            if(isset($attrs)
+               && array_key_exists("newline", $attrs)
+               && $attrs["newline"]) {
+                $this->add("<div class='newline'></div>");
+
+            }
             $this->add("\n");
         }
 

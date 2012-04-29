@@ -28,6 +28,7 @@ class Web
     public $auth;
     public $enableTidy = false;
     public $gridSize = 25;
+    public $inDevelopment = false;
     //public $authMethod = Auth::FORM;
     public $authMethod = Auth::REALM;
     public $translator;
@@ -111,11 +112,8 @@ class Web
         return web::$_defaultInstance;
     }
 
-    public function run($uri = null, $view = null, $render = false)
+    public function boot($uri = null, $render = false)
     {
-        if ($this->_inProduction) make_link_resources();
-        $this->initialized = true;
-        $_SESSION['initialized'] = true;
 
         if (is_a($uri, "Zend_Controller_Request_Http")) {
             $this->request = $uri;
@@ -128,18 +126,25 @@ class Web
             }
         }
 
-
-        $this->response = new Zend_Controller_Response_Http();
-
-        $this->DealSpecialCases();  // Robots.txt
-
         $router = $this->getRouter()->route($this->request);
         $this->parseInfo();
 
         $this->controller = $this->request->getControllerName();
         $this->action = $this->request->getActionName();
         $this->uri = $this->request->getRequestUri();
+        return $render;
 
+    }
+    public function run($uri = null, $view = null, $render = false)
+    {
+        if ($this->_inProduction) make_link_resources();
+        $this->initialized = true;
+        $_SESSION['initialized'] = true;
+
+        $render = $this->boot($uri, $render);
+
+        $this->DealSpecialCases();  // Robots.txt
+        $this->response = new Zend_Controller_Response_Http();
         switch ($this->controller) {
             case 'admin':
                 return $this->_callAdminDispatcher($render);
@@ -387,35 +392,24 @@ class Web
 
     private function _callDefaultDispatcher($render = true, $view = null)
     {
-/*
-        <<<<<<< HEAD
-        list($controller, $action) = $this->_getController($view);
-        if (!$render) $controller->layout = '';
-//        echo "<h2>".get_class($controller)." -> $action</h2>";
-        call_user_func_array(array($controller, $action."Action"), $this->params);
-=======
->>>>>>> twig
-*/
+        $value = "";
         try {
             list($controller, $action) = $this->_getController($view);
             $this->_controller = $controller;
             if (!$render) $controller->layout = '';
             call_user_func_array(array($controller, $action."Action"), $this->params);
             $value = $controller->renderHtml($this->action);
-
             if ($render) {
                 echo $value;
             }
 
+            if (method_exists($controller, "afterFilter")) {
+                call_user_func_array(array($controller, "afterFilter"), $this->params);
+            }
+
         } catch (exception $e) {
-//            var_dump($e);
 //            web::log(var_export($e, true));
             $this->_callErrorController($e);
-        }
-
-
-        if (method_exists($controller, "afterFilter")) {
-            call_user_func_array(array($controller, "afterFilter"), $this->params);
         }
 
         return $value;
@@ -499,7 +493,11 @@ class Web
         $controllerClass = "ErrorController";
         array_unshift($this->params, $this->controller, $this->action);
 
-        $this->loadController("ErrorController");
+        if (!$this->loadController("ErrorController")) {
+            var_dump("No existe ErrorController");
+            exit;
+        }
+
         $controller = new $controllerClass(
             null, null,
             array("viewRenderer" => $this->_viewRendererClass)

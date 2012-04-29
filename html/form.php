@@ -79,6 +79,7 @@ class html_form extends html_object implements Iterator
 
     public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
+        $div = "";
         if (substr($type, 0, 3) == "---" or $type == "separation") {
             $attrs["type"] = "---";
             $words = explode(" ", $type);
@@ -116,7 +117,7 @@ class html_form extends html_object implements Iterator
                 $value = $this->model->$field;
                 $relatedModel = new $relatedModelName($value);
 
-                if ($attrs["show"]) {
+                if (array_key_exists('show', $attrs) && $attrs["show"]) {
                     $model = clone $this->model;
                     $data = $model->selectFirst(
                         "columns: ".$attrs["show"]." as text",
@@ -145,7 +146,7 @@ class html_form extends html_object implements Iterator
                 $input->value($value)->class("");
 
                 // Text field that contain the name of the field.
-                $size = $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
+                $size = array_key_exists('size', $attrs) && $attrs['size'] ? ($attrs['size'] < 45 ? $attrs['size'] : 45) : 45;
                 $inputAutocomplete = new html_form_input($field."_autocomplete");
                 $inputAutocomplete->value($text)->size($size)->class("autocomplete textbox");
                 $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
@@ -164,7 +165,7 @@ class html_form extends html_object implements Iterator
                     $this->addToEnd("<div id='{$field}_dialog'></div>");
                 }
                 $options = array();
-                if(!$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
+                if(!array_key_exists('newvalues', $attrs) || !$attrs["newvalues"]) $inputAutocomplete->class("autocomplete textbox nonew");
                 $options[]= "source : '/ajax/$relatedModelName/autocomplete/field=$field'";
                 $options[]= "
                             select : function(event, ui) {
@@ -181,7 +182,7 @@ class html_form extends html_object implements Iterator
                 );
 
                 $input->labelFor($field."_autocomplete");
-                if($attrs['not null']) $input->class($input->class()." required");
+                if(array_key_exists('not null', $attrs) && $attrs['not null']) $input->class($input->class()." required");
                 $input->setData($inputAutocomplete);
 
                 }
@@ -191,14 +192,14 @@ class html_form extends html_object implements Iterator
         } else {
             switch($attrs['type']) {
                 case 'text':
-                    if($attrs['html']) {
+                    if(array_key_exists('html', $attrs) && $attrs['html']) {
                         $input = new html_form_htmleditor($lang ? $field."|".$lang : $field);
                         $input->width('100%')->height(300)->css($this->css);
                     } else {
                         $input = new html_form_textarea($lang ? $field."|".$lang : $field);
                         $input->rows(10)->cols(60);
                     }
-                    if($attrs['not null']) $input->class($input->class()." required");
+                    if(array_key_exists('not null', $attrs) && $attrs['not null']) $input->class($input->class()." required");
                     $input->value($this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()), false));
                 break;
 
@@ -284,9 +285,9 @@ class html_form extends html_object implements Iterator
 
         if (!array_key_exists("primary_key", $attrs) && !array_key_exists("hidden", $attrs)) {
             if($lang)
-                $input->label($attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
+                $input->label(array_key_exists('label', $attrs) && $attrs['label'] ? $attrs['label']." ($lang)" : ucfirst($field)." ($lang)");
             else
-                $input->label($attrs['label'] ? $attrs['label'] : ucfirst($field));
+                $input->label(array_key_exists('label', $attrs) && $attrs['label'] ? $attrs['label'] : ucfirst($field));
         }
 
 

@@ -62,8 +62,8 @@ class html_template extends html_object
     public function toHtml($file = null)
     {
         $this->loadFile($file);
-        $data = $this->execute($this->dataPrepared);
 
+        $data = $this->execute($this->dataPrepared);
         if ($this->_layout) {
             $this->_layout->content = $data;
             return $this->_layout->toHtml();

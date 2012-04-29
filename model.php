@@ -86,7 +86,7 @@ class Model extends ActiveRecord
 
             $module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 
-            $primary_key = array_shift($this->getPrimaryKeys());
+            $primary_key = $this->getFirstPrimaryKeys();
 
             $p = pathinfo($file["name"]); $extension = strtolower($p["extension"]);
             $items = $type == 'image' ? new helpers_images() : new helpers_files();

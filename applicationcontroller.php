@@ -2,9 +2,9 @@
 
 class ApplicationController
 {
-	public $view;
-	public $layout;
-	public $action, $controller;
+    public $view;
+    public $layout;
+    public $action, $controller;
     public $template = null;
     public $components = array();
     public $request, $response;
@@ -14,19 +14,19 @@ class ApplicationController
     protected $_viewRendererClass;
     protected $_templateFile = null;
 
-	public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
-	{
+    public function __construct(Zend_Controller_Request_Abstract $request = null, Zend_Controller_Response_Abstract $response = null, array $invokeArgs = array())
+    {
         $this->setRequest($request)
             ->setResponse($response)
             ->_setInvokeArgs($invokeArgs)
             ->_setupViewRenderer();
 
-		// Create the compoments
-		foreach ($this->components as $component => $params) {
-			if (is_numeric($component)) { $component = $params; $params = null; }
-			$this->$component = new $component($params);
-		}
-	}
+        // Create the compoments
+        foreach ($this->components as $component => $params) {
+            if (is_numeric($component)) { $component = $params; $params = null; }
+            $this->$component = new $component($params);
+        }
+    }
 
     private function _setupViewRenderer()
     {
@@ -44,11 +44,11 @@ class ApplicationController
         }
     }
 
-	public function setApplicationPath($path)
-	{
-		$this->_applicationPath = $path;
+    public function setApplicationPath($path)
+    {
+        $this->_applicationPath = $path;
         return $this;
-	}
+    }
 
     public function setRequest($request)
     {
@@ -84,28 +84,28 @@ class ApplicationController
         return $this;
     }
 
-	public function setLayout($layout)
-	{
-		$this->layout = $layout;
+    public function setLayout($layout)
+    {
+        $this->layout = $layout;
         return $this;
-	}
+    }
 
-	protected function getLayoutFile()
+    protected function getLayoutFile()
     {
         return $this->view->getDirectory()."layouts/".$this->layout.".".$this->_viewFileSuffix;
     }
 
-	public function getControllerName()
+    public function getControllerName()
     {
         return $this->getRequest()->getControllerName();
     }
 
-	public function getActionName()
+    public function getActionName()
     {
         return $this->getRequest()->getActionName();
     }
 
-	protected function getViewFile($viewFile)
+    protected function getViewFile($viewFile)
     {
         if (null !== $this->template) {
             return $this->template;
@@ -114,12 +114,12 @@ class ApplicationController
     }
 
 
-	public function afterFilter($controller, $action)
-	{
-		if(get_class($this) == 'ErrorController') {
-			web::instance()->error404();
-		}
-	}
+    public function afterFilter($controller, $action)
+    {
+        if(get_class($this) == 'ErrorController') {
+            web::instance()->error404();
+        }
+    }
 
     public function setTemplate($file)
     {
@@ -127,29 +127,30 @@ class ApplicationController
         return $this;
     }
 
-	public function renderHtml($viewFile)
-	{
+    public function renderHtml($viewFile)
+    {
         /*
         if (null !== $this->_templateFile) {
             $viewFile = $this->_templateFile;
         }
         */
+
         if ($this->layout && $this->view->hasLayouts()) {
             $this->view->setLayout($this->getLayoutFile());
         }
 
         $this->view->loadTemplate($this->getViewFile($viewFile));
         return $this->view->render();
-	}
+    }
 
-	public function render($viewFile)
-	{
-	    if(web::instance()->enableTidy)
-    		echo web::instance()->tidy($this->renderHtml($viewFile));
-    	else
-        	echo $this->renderHtml($viewFile);
+    public function render($viewFile)
+    {
+        if(web::instance()->enableTidy)
+            echo web::instance()->tidy($this->renderHtml($viewFile));
+        else
+            echo $this->renderHtml($viewFile);
 
-	}
+    }
 
     public function setViewRenderer($view = null)
     {

@@ -56,7 +56,14 @@ class html_form_select extends html_form_input
 
     public function select($values)
     {
-        if (is_string($values)) $values = array_map(trim, explode(",", $values));
+
+        if (is_string($values)) {
+            $arrValues = explode(",", $values);
+            $values = array();
+            foreach ($arrValues as $val) {
+                $values[]= trim($val);
+            }
+        }
 
         $this->selectedValues = $values;
         return $this;

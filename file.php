@@ -13,7 +13,7 @@ class file
 {
     var $file;
 
-    function file($url)
+    function file($url = null)
     {
         $this->file = $url;
     }

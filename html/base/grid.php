@@ -18,6 +18,7 @@ class html_base_grid extends html_object
     public function toHtml()
     {
         $order = "";
+        $formData = "";
         $args = func_get_args();
         if (count($args) > 0) $model = array_shift($args);
         if (count($args) > 0) $sql = array_shift($args);
@@ -304,7 +305,7 @@ class html_base_grid extends html_object
                 }";
 
 
-        $formData .= "GridResults.init('$modelName', ".($ordenation ? "true" : "false").");</script>";
+        $formData .= "GridResults.init('$modelName', ".(isset($ordenation) ? "true" : "false").");</script>";
 
         $form->action(web::uri(null, null, array($searchField)));
         if (!$this->_instance || $this->showSearch) {

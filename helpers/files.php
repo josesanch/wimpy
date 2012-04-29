@@ -23,11 +23,11 @@ class helpers_files extends ActiveRecord
     );
 
 
-    public function __construct($url)
+    public function __construct($url = null)
     {
         require_once(dirname(__FILE__)."/files/thumbnail.php");
         parent::__construct();
-        if(!is_numeric($url)) {
+        if(is_string($url)) {
             $this->local_file = $url;
             $this->nombre = basename($url);
             $this->tipo = image_type_to_mime_type(exif_imagetype($this->local_file));

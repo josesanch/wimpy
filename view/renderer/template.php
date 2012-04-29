@@ -11,22 +11,23 @@ class view_renderer_template extends view_renderer_abstract implements view_rend
 
     public function render(Array $data = null)
     {
+
         if (null != $data) $this->_data = $data;
         $template = $this->_htmltemplate;
         $template->setData($this->_data);
 
 
-		if ($this->_layoutFile) {
+        if ($this->_layoutFile) {
 
-			$layout = clone $template;
-			if (file_exists($this->_getPhisicalTemplateFile())) {
-				$layout->content = $template->toHtml($this->_getPhisicalTemplateFile());
-			}
+            $layout = clone $template;
+            if (file_exists($this->_getPhisicalTemplateFile())) {
+                $layout->content = $template->toHtml($this->_getPhisicalTemplateFile());
+            }
 
             return $layout->toHtml($this->_getPhisicalLayoutFile());
-		}
+        }
 
-		return $template->toHtml($this->_getPhisicalTemplateFile());
+        return $template->toHtml($this->_getPhisicalTemplateFile());
     }
 
 
@@ -35,7 +36,7 @@ class view_renderer_template extends view_renderer_abstract implements view_rend
         $this->_data[$item] = $value;
         $this->_htmltemplate->assign($item, $value);
         return $this;
-	}
+    }
 
     // Tiene soporte para layouts
     public function hasLayouts()
