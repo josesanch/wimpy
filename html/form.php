@@ -262,7 +262,7 @@ class html_form extends html_object implements Iterator
                 break;
 
                 case 'int':
-                    $size = $attrs['size'] ? $attrs['size'] : 11;
+                    $size = array_key_exists('size', $attrs) && $attrs['size'] ? $attrs['size'] : 11;
 
                 case 'varchar':
                 default:
@@ -274,7 +274,7 @@ class html_form extends html_object implements Iterator
 
                     $validate = array_key_exists("validate", $attrs) ? $attrs["validate"] : "";
                     $input->size($size);
-                    if($attrs['size']) $input->maxsize($attrs['size']);
+                    if(array_key_exists('size', $attrs) && $attrs['size']) $input->maxsize($attrs['size']);
                     $input->class($input->class()." ".$validate);
                     if(array_key_exists("not null", $attrs)) $input->class($input->class()." required");
                     $value = $this->model->get($field, ($lang ? $lang : l10n::instance()->getDefaultLanguage()));

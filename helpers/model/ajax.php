@@ -33,7 +33,7 @@ class helpers_model_ajax  {
     }
 
 
-    public function files($action, $id, $field)
+    public function files($action, $field, $id)
     {
         $cond = "";
         switch ($action) {
@@ -79,11 +79,12 @@ class helpers_model_ajax  {
             break;
 
             case 'save':
-
                 web::log("$action, $id, $field");
-                $this->model->select($id);
-                $this->model->uploadImage($field);
-                echo "1";
+                web::log(var_export($_FILES, true));
+                if (isset($id)) {
+                    $this->model->select($id);
+                }
+                echo ($this->model->uploadImage($field)) ? "1"  : "0";
                 exit;
 
 

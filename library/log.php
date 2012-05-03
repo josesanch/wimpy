@@ -32,7 +32,7 @@ class log extends Model {
                             ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
         }
         web::database()->query("insert into log (user, ip, status, message, modified, query)
-                            values ('$user', '".$_SERVER['REMOTE_ADDR']."', '$status', '$message', NOW(), '".web::instance()->database->quote($sql)."')");
+                            values ('$user', '".$_SERVER['REMOTE_ADDR']."', '$status', '$message', NOW(), ".web::instance()->database->quote($sql).")");
     }
 
     public function adminList() {

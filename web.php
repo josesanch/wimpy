@@ -145,6 +145,7 @@ class Web
 
         $this->DealSpecialCases();  // Robots.txt
         $this->response = new Zend_Controller_Response_Http();
+
         switch ($this->controller) {
             case 'admin':
                 return $this->_callAdminDispatcher($render);
@@ -224,29 +225,34 @@ class Web
 
     public function setDatabase($database)
     {
-        $arr = explode(":", $database[0]);
-        $proto = array_shift($arr);
-        switch ($proto) {
-            case "mysql":
-                $dbConector = "database_mysql";
-                break;
-            case "pgsql":
-                $dbConector = "database_pgsql";
-                break;
-        }
+        if (is_array($database)) {
+            $arr = explode(":", $database[0]);
+            $proto = array_shift($arr);
+            switch ($proto) {
+                case "mysql":
+                    $dbConector = "database_mysql";
+                    break;
+                case "pgsql":
+                    $dbConector = "database_pgsql";
+                    break;
+            }
 
-        try {
-            $this->database = new $dbConector($database);
-        } catch (PDOException $e) {
-            web::error("Error conectando con la base de datos");
-            exit;
-        }
+            try {
+                $this->database = new $dbConector($database);
+            } catch (PDOException $e) {
+                web::error("Error conectando con la base de datos");
+                exit;
+            }
 
-        if (!$this->database->tableExists('images')) {
-            create_images_and_files_tables($this->database);
+            if (!$this->database->tableExists('images')) {
+                create_images_and_files_tables($this->database);
+            }
+            $this->database->exec('SET character_set_results = utf8;');
+            $this->database->exec('SET character_set_client = utf8;');
+        } else {
+            $this->database = new database_dbal($database);
+
         }
-        $this->database->exec('SET character_set_results = utf8;');
-        $this->database->exec('SET character_set_client = utf8;');
 
     }
 
@@ -426,9 +432,9 @@ class Web
             );
         } else {
             list($controller, $action) = $this->_getController(null, true);
+
             $this->model = $model = $this->action;
             $this->action = $action = array_shift($this->params);
-
             // By default we call to list method of the model.
             if (!$action) {
                 $this->redirect("/admin/$model/list");

@@ -139,7 +139,7 @@ class ActiveRecord
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
-        //var_dump($sql);
+        //        var_dump($sql);
         //        exit;
         //        orderontime::debug($sql, true));
         //        log::to_file($sql."<br/><hr>");
@@ -157,7 +157,12 @@ class ActiveRecord
             $this->setWherePK();
             // Save the changes in the log.
             if (is_a($this, "Model"))
-                log::add(web::auth()->get("user"), $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"), log::OK, $sql);
+                log::add(
+                    web::auth()->get("user"),
+                    $this->getTitle()." [$id] ".($insert ? "CREATED" : "MODIFIED"),
+                    log::OK,
+                    $sql
+                );
 
             return $id;
         }
@@ -192,8 +197,10 @@ class ActiveRecord
         $args = func_get_args();
         $table = $this->getDatabaseTable();
 
+        $firstArgument = isset($args[0]) ? $args[0] : "";
+
         // Toma el primer elemento como where
-        $explodeArgs = explode(":", $args[0]);
+        $explodeArgs = explode(":", $firstArgument);
         if (count($args) > 0 && !in_array(array_shift($explodeArgs), array("order", "limit", "columns"))) {
             $what = array_shift($args);
         }
@@ -265,6 +272,7 @@ class ActiveRecord
             $order
             $group
            ";
+        //                        echo "<pre>".$sql."</pre><hr/>";
 
         if ($this->page_size) {
             $sqlPaginacion = "
@@ -289,6 +297,7 @@ class ActiveRecord
 
         $sql .= $limit;
         //        echo "<pre>".$sql."</pre><hr/>";
+                //                exit;
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -458,21 +467,23 @@ class ActiveRecord
             $fieldName  = $property;
 
             // Si el field es una archivo o imagenes.
-            switch ($field["type"]) {
-                case "image":
-                    $images = new helpers_images();
-                case "file":
-                    if (!$images) $images = new helpers_files();
-                    $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
-                    return $this->$fieldName;
-                    break;
+            if (isset($field) && array_key_exists('type', $field)) {
+                switch ($field["type"]) {
+                    case "image":
+                        $images = new helpers_images();
+                    case "file":
+                        if (!$images) $images = new helpers_files();
+                        $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
+                        return $this->$fieldName;
+                        break;
 
-                case "files":
-                    $images = new helpers_images();
-                    $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
-                    $this->$fieldName = $imgs;
-                    return $imgs;
-                    break;
+                    case "files":
+                        $images = new helpers_images();
+                        $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
+                        $this->$fieldName = $imgs;
+                        return $imgs;
+                        break;
+                }
             }
 
 
@@ -882,7 +893,7 @@ class fields
             case "getSqlColumn":
                 if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
 
-                if (array_key_exists('belongs_to', $this->_attrs) && isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
+                if (isset($this->_attrs) && array_key_exists('belongs_to', $this->_attrs) && isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
 
                 if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
                     $this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";

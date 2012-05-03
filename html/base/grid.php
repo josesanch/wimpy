@@ -189,7 +189,7 @@ class html_base_grid extends html_object
                 $arrow = '';
             }
             $attrs = $model->getFields($column);
-            $label = $attrs['label'] ? $attrs['label'] : $column;
+            $label = array_key_exists('label', $attrs) && $attrs['label'] ? $attrs['label'] : $column;
             $formData .= "
                 <th class=grid_header>
                     <a href='".web::uri("/$orderField=$column/$descField=$desc")."' class='header $dialog'>$label</a>
@@ -239,28 +239,31 @@ class html_base_grid extends html_object
                 $attrs = $row->getFields($column);
                 $value = $row->get($column);
                 $style = "";
-                switch ($attrs["type"]) {
-                    case "bool":
-                        if($value == 1) {
-                            $value = '<img src="/resources/admin/images/check.png"/>';
-                            $style = "align='center'";
-                        } else {
-                            $value = "";
-                        }
-                    break;
-                    case "date":
-                        if($value != "0000-00-00")
-                            $value = format::date($value);
-                        else
-                            $value = "";
-                    break;
-                case "datetime":
-                        if($value != "0000-00-00" && $value != "0000-00-00 00:00:00")
-                            $value = format::date($value, "d/m/Y H:i");
-                        else
-                            $value = "";
-                    break;
+                if (array_key_exists('type', $attrs)) {
+                    switch ($attrs["type"]) {
+                        case "bool":
+                            if($value == 1) {
+                                $value = '<img src="/resources/admin/images/check.png"/>';
+                                $style = "align='center'";
+                            } else {
+                                $value = "";
+                            }
+                            break;
+                        case "date":
+                            if($value != "0000-00-00")
+                                $value = format::date($value);
+                            else
+                                $value = "";
+                            break;
+                        case "datetime":
+                            if($value != "0000-00-00" && $value != "0000-00-00 00:00:00")
+                                $value = format::date($value, "d/m/Y H:i");
+                            else
+                                $value = "";
+                            break;
+                    }
                 }
+
                 if (isset($attrs["money"]) && $attrs["money"]) $value = number_format($value, 0, ',', '.');
 
                 $formData .= "

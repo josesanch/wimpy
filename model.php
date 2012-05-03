@@ -80,10 +80,9 @@ class Model extends ActiveRecord
     {
 
         if($ajax) $file = $_FILES['file'];
-        else $file = $field ? $_FILES[$field] : $_FILES['file'];
+        else $file = array_key_exists($field, $_FILES) && $field ? $_FILES[$field] : $_FILES['file'];
 
         if (is_uploaded_file($file['tmp_name']) && checkFileSafety($file)) {
-
             $module = web::request("tmp_upload") ? web::request("tmp_upload") : $this->image_label;
 
             $primary_key = $this->getFirstPrimaryKeys();
@@ -217,7 +216,7 @@ class Model extends ActiveRecord
 
     protected function _deleteAsociatedFiles()
     {
-        $primary_key = array_shift($this->getPrimaryKeys());
+        $primary_key = $this->getFirstPrimaryKey();
 
         $images = new helpers_images();
         $images =  $images->select("module='".$this->image_label."' and iditem='".$this->$primary_key."'", "order:orden");

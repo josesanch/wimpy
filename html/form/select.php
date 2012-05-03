@@ -36,7 +36,7 @@ class html_form_select extends html_form_input
     {
         if(is_array($values)) {
             if(count($values) > 0) {
-                if(is_a($values[0], 'activerecord')) {
+                if(isset($values[0]) && is_a($values[0], 'activerecord')) {
                     foreach($values as $value) {
                         $row = array_values($value->getRowData());
                         $this->attrs['options'][$row[0]] = $row[1];

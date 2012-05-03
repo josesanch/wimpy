@@ -324,7 +324,7 @@ function checkFileSafety($file) {
     $extension = $path_parts['extension'];
 
     if(!in_array(strtolower($extension), $safeExtensions)) {
-        error_log("Upload file:".$file['tmp_name']." not allowed");
+        web::log("Upload file:".$file['tmp_name']." not allowed");
         unlink($file['tmp_name']);
         return false;
     }
