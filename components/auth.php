@@ -40,7 +40,8 @@ class auth
         $sql =
             "SELECT * FROM
             $this->table WHERE
-            $this->user_field=".web::instance()->database->quote($user)." and $password_field=".web::instance()->database->quote($pass);
+            $this->user_field=".web::instance()->database->quote($user)."
+            and $password_field=".web::instance()->database->quote($pass);
 
         $statement = web::instance()->database->query($sql);
         if ($statement) {
@@ -68,13 +69,14 @@ class auth
 
     public function isLogged()
     {
-        return ($_SESSION["auth_session_".$this->table]);
+        if (array_key_exists("auth_session_".$this->table, $_SESSION))
+            return ($_SESSION["auth_session_".$this->table]);
     }
 
     public function logout()
     {
         $_SESSION['logout'] = true;
-        log::add($result['user'], "LOGOUT $user", log::OK);
+        log::add('', "LOGOUT", log::OK);
         unset($_SESSION["auth_session_".$this->table]);
 
     }
@@ -116,9 +118,14 @@ class auth
         $view->title = $this->title;
         $view->showLogo = $this->showLogo;
         $view->message = $this->message;
-        if ($_POST["username"] && $_POST["password"]) {
-            $usuario = mysql_escape_string($_POST["username"]);
-            $clave = mysql_escape_string($_POST["password"]);
+        $view->titulo = $view->css_files = $view->js_files = $view->error =  '';
+
+        if (array_key_exists('username', $_POST)
+            && $_POST["username"]
+            && array_key_exists('password', $_POST)
+            && $_POST["password"]) {
+            $usuario = $_POST["username"];
+            $clave = $_POST["password"];
             if ($this->login($usuario, $clave) == true) {
                 return true; unset($_SESSION['logout']);
             }

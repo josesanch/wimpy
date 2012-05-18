@@ -339,7 +339,7 @@ class html_template extends html_object
 
                 $t->__vars = &$vars;
                 $t->__blocks =  $this->__blocks;
-                return $nobr ? $t->toHtml() : nl2br($t->toHtml());
+                return isset($nobr) && $nobr ? $t->toHtml() : nl2br($t->toHtml());
 
 
             case "eval:":

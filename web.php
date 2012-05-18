@@ -284,7 +284,7 @@ class Web
         $this->params = array_slice(explode("/", $this->request->getPathInfo()), 3);
     }
 
-    public static function uri($params, $allParams = true, $exclude = array())
+    public static function uri($params = null, $allParams = true, $exclude = array())
     {
         $uri = web::params($params, $allParams, true, $exclude);
         return "/".web::instance()->controller."/".(
