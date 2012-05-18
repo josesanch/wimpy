@@ -2,7 +2,7 @@
 //if (file_exists(dirname(__FILE__)."/vendors/autoload.php")) {
     //    include(dirname(__FILE__)."/vendors/autoload.php");
     //}
-/*
+
 function __wimpyAutoload($class)
 {
     $file = str_replace("_", "/", $class).".php";
@@ -37,7 +37,6 @@ function __wimpyAutoload($class)
         }
     }
 }
-*/
 
 function setIncludePathForZend()
 {
