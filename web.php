@@ -58,9 +58,9 @@ class Web
     protected $_viewsDirectory;
     public function __construct($database = null, $languages = null)
     {
-        if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
-            @session_start();
-        }
+        //        if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
+        @session_start();
+            //        }
         if (isset($_SESSION['initialized'])) $this->initialized = true;
 
         error_reporting(E_ERROR);// ^ E_NOTICE ^ E_WARNING ^ E_STRICT);
