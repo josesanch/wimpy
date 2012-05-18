@@ -2,11 +2,16 @@
 require dirname(__FILE__)."/functions.php";
 require dirname(__FILE__)."/applicationcontroller.php";
 require dirname(__FILE__)."/database.php";
+require dirname(__FILE__)."/database/mysql.php";
+require dirname(__FILE__)."/database/dbal.php";
 require dirname(__FILE__)."/l10n.php";
 require dirname(__FILE__)."/html/object.php";
 require dirname(__FILE__)."/html/template.php";
+require dirname(__FILE__)."/activerecord.php";
 require dirname(__FILE__)."/model.php";
 require dirname(__FILE__)."/library/log.php";
+require dirname(__FILE__)."/library/bench.php";
+require dirname(__FILE__)."/components/auth.php";
 /**
 *
 * Base class of the framework
@@ -53,8 +58,11 @@ class Web
     protected $_viewsDirectory;
     public function __construct($database = null, $languages = null)
     {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
+            session_start();
+        }
         if (isset($_SESSION['initialized'])) $this->initialized = true;
+
         error_reporting(E_ERROR);// ^ E_NOTICE ^ E_WARNING ^ E_STRICT);
         //error_reporting(E_ALL);
         //error_reporting(E_STRICT);
@@ -66,6 +74,7 @@ class Web
             $this->l10n = new l10n();
             $this->bench = new bench();
             $this->auth = new auth();
+            spl_autoload_register("__wimpyAutoload");
             try {
                 if ($this->database) $this->data = new webdata(1);
             } catch (Exception $e) {
@@ -114,7 +123,6 @@ class Web
 
     public function boot($uri = null, $render = false)
     {
-
         if (is_a($uri, "Zend_Controller_Request_Http")) {
             $this->request = $uri;
         } else  {
@@ -135,6 +143,7 @@ class Web
         return $render;
 
     }
+
     public function run($uri = null, $view = null, $render = false)
     {
         if ($this->_inProduction) make_link_resources();
@@ -263,7 +272,7 @@ class Web
 
     private function parseInfo()
     {
-        if (in_array($this->request->getParam("lang"), $this->l10n->getLanguages())) {
+        if (isset($this->l10n) && in_array($this->request->getParam("lang"), $this->l10n->getLanguages())) {
             $this->l10n->setLanguage($this->request->getParam("lang"));
 
             if ($uri = $this->request->getParam("uri")) {
@@ -523,6 +532,11 @@ class Web
     {
         return $this->_applicationPath;
     }
+    public function setApplicationPath($path)
+    {
+        $this->_applicationPath = $path;
+        return $this;
+    }
 
 
     public function loadController($name)
@@ -560,7 +574,9 @@ class Web
     }
     public function getDefaultLanguage()
     {
-        return $this->l10n->getDefaultLanguage();
+        if (isset($this->l10n)) {
+            return $this->l10n->getDefaultLanguage();
+        }
     }
 
     public function setInProduction($p)
@@ -947,15 +963,17 @@ EOT;
 
     private function _setupRouteTranslator()
     {
-        $this->translator = new Zend_Translate(
-            array(
-                'adapter' => 'array',
-                'content' => array(),
-                'locale'  => $this->getDefaultLanguage()
-            )
-        );
-//        $this->translator->setLocale($this->getLanguage());
-        Zend_Controller_Router_Route::setDefaultTranslator($this->translator);
+        if (isset($this->l10n)) {
+            $this->translator = new Zend_Translate(
+                array(
+                    'adapter' => 'array',
+                    'content' => array(),
+                    'locale'  => $this->getDefaultLanguage()
+                )
+            );
+            //        $this->translator->setLocale($this->getLanguage());
+            Zend_Controller_Router_Route::setDefaultTranslator($this->translator);
+        }
     }
 
     public function getTranslator()

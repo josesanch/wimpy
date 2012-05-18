@@ -1,8 +1,7 @@
 <?php
-spl_autoload_register("__wimpyAutoload");
-if (file_exists(dirname(__FILE__)."/vendors/autoload.php")) {
-    include(dirname(__FILE__)."/vendors/autoload.php");
-}
+//if (file_exists(dirname(__FILE__)."/vendors/autoload.php")) {
+    //    include(dirname(__FILE__)."/vendors/autoload.php");
+    //}
 
 function __wimpyAutoload($class)
 {
@@ -12,8 +11,8 @@ function __wimpyAutoload($class)
 //	$file = strtolower($class).".php";
 //
 
-//	$application_path = web::instance()->getApplicationPath();
-    $application_path = $_SERVER["DOCUMENT_ROOT"]."/../application/";
+    $application_path = web::instance()->getApplicationPath();
+    //    $application_path = web
     $dirs = array(
         $application_path."models/$class.php",
         $application_path."models/$lowerClass.php",
@@ -33,8 +32,7 @@ function __wimpyAutoload($class)
     foreach($dirs as $file)	{
         if(file_exists($file))	{
             include_once($file);
-//			echo("* Autoloading: $file\n");
-
+            //            echo("* Autoloading: $file\n<br>");
             break;
         }
     }
@@ -211,6 +209,11 @@ function convert_from_url($url)
     $arr = array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u');
     $url = implode("/", array_map("rawurldecode", explode("/", $url)));
     return str_replace('_', ' ', str_replace('-', ' ', strtr(strtolower($url), $arr)));
+}
+
+function slugForLike($url)
+{
+    return str_replace(' ', '_', convert_from_url($url));
 }
 
 function url_to_sql($url) {	// for using with regexp

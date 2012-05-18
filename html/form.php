@@ -80,6 +80,7 @@ class html_form extends html_object implements Iterator
     public function auto($field, $lang = null, $tmp_upload = null, $type = null)
     {
         $div = "";
+        $class = "";
         if (substr($type, 0, 3) == "---" or $type == "separation") {
             $attrs["type"] = "---";
             $words = explode(" ", $type);
@@ -250,7 +251,7 @@ class html_form extends html_object implements Iterator
                 }
 
                 if (isset($attrs["accordion"])) $class = "accordion";
-                if ($attrs["accordion"] === "collapsed") $class = "accordion collapsed";
+                if (isset($attrs['accordion']) && $attrs["accordion"] === "collapsed") $class = "accordion collapsed";
                 $input->value(
                     "$div
                      <div class='$class'>

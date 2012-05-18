@@ -568,12 +568,16 @@ class ActiveRecord
     public function getPrimaryKeys()
     {
         $metadata = &$this->getMetadata();
-        return isset($metadata["primary_keys"]) ? $metadata["primary_keys"] : array();
+        return isset($metadata["primary_keys"]) ? $metadata["primary_keys"] : array('id');
     }
+
     public function getFirstPrimaryKey()
     {
         $metadata = $this->getMetadata();
+        if (!array_key_exists('fields', $metadata)) return 'id';
+
         $pass1 = array_filter($metadata["fields"], create_function('$a', 'return array_key_exists("primary_key", $a) && $a["primary_key"];'));
+
         $pass2 = array_keys($pass1);
         $primaryKey = array_shift($pass2);
 
@@ -792,7 +796,7 @@ class ActiveRecord
 
         public function getAllFieldsForForm()
         {
-            return $this->fields;
+            return isset($this->fields) ? $this->fields : array();
         }
 
         public function toArray($fields)
