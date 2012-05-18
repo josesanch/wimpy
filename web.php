@@ -59,7 +59,7 @@ class Web
     public function __construct($database = null, $languages = null)
     {
         if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
-            session_start();
+            @session_start();
         }
         if (isset($_SESSION['initialized'])) $this->initialized = true;
 
