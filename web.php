@@ -249,8 +249,6 @@ class Web
             try {
                 $this->database = new $dbConector($database);
             } catch (PDOException $e) {
-                web::mail("Error conectando con la base de datos", "ERROR en".$_SERVER["SERVER_NAME"], "jose@o2w.es");
-
                 web::error("Error conectando con la base de datos");
                 exit;
             }
