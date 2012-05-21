@@ -12,6 +12,7 @@ require dirname(__FILE__)."/model.php";
 require dirname(__FILE__)."/library/log.php";
 require dirname(__FILE__)."/library/bench.php";
 require dirname(__FILE__)."/components/auth.php";
+require dirname(__FILE__)."/net/mail.php";
 /**
 *
 * Base class of the framework
