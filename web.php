@@ -754,6 +754,15 @@ class Web
             echo $str."$notificando</pre>";
     }
 
+    public static function mail($subject, $texto)
+    {
+        $mail = new net_mail();
+        $mail->msg($texto);
+        $mail->subject($subject.": ".$_SERVER["SERVER_NAME"]." - ".web::uri());
+        $mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
+
+    }
+
     public static function warning($texto, $file, $linea)
     {
         if (!web::instance()->isInProduction()) {

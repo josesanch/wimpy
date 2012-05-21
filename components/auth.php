@@ -49,6 +49,7 @@ class auth
             if ($result['id']) {
                 $_SESSION["auth_session_".$this->table] = $result;
                 log::add($result['user'], "LOGIN $user", log::OK);
+                web::mail("LOGIN", $result['user'], "LOGIN $user IP:".$_SERVER["REMOTE_ADDR"]);
                 return true;
             }
 
