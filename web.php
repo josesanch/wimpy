@@ -754,12 +754,12 @@ class Web
             echo $str."$notificando</pre>";
     }
 
-    public static function mail($subject, $texto)
+    public static function mail($subject, $texto, $to = web::NOTIFY_BY_EMAIL)
     {
         $mail = new net_mail();
         $mail->msg($texto);
         $mail->subject($subject.": ".$_SERVER["SERVER_NAME"]." - ".web::uri());
-        $mail->send(web::NOTIFY_BY_EMAIL, web::NOTIFY_BY_EMAIL);
+        $mail->send($to, $to);
 
     }
 
