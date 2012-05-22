@@ -21,7 +21,7 @@ class Database extends PDO
         } catch(Exception $e) {
             web::mail(
                 "Error conectando con la base de datos",
-                "ERROR en ".$_SERVER["SERVER_NAME"]." Error conectar con $database[0] -".$_SERVER['HTTP_REFERER'] ,
+                "ERROR en ".$_SERVER["SERVER_NAME"]." Error conectar con $database[0] - ".$_SERVER['HTTP_REFERER'] ,
                 "jose@o2w.es"
             );
             echo "<h4 style='color: red'>Error conectar con $database[0]</h4>";
