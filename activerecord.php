@@ -223,29 +223,29 @@ class ActiveRecord
             if (strpos($arg, ":")) {
                 list($command, $arguments) = explode(":", $arg);
                 switch ($command) {
-                    case 'order':
-                        $this->select_order = $arguments;
-                        break;
+                case 'order':
+                    $this->select_order = $arguments;
+                    break;
 
-                    case 'limit':
-                        $this->select_limit = $arguments;
-                        break;
+                case 'limit':
+                    $this->select_limit = $arguments;
+                    break;
 
-                    case 'columns':
-                        $this->select_columns = $arguments;
-                        break;
+                case 'columns':
+                    $this->select_columns = $arguments;
+                    break;
 
-                    case 'where':
-                        $this->select_conditions = $arguments;
-                        break;
+                case 'where':
+                    $this->select_conditions = $arguments;
+                    break;
 
-                    case 'group':
-                        $this->select_group = $arguments;
-                        break;
+                case 'group':
+                    $this->select_group = $arguments;
+                    break;
 
-                    case 'joins':
-                        $this->select_joins = $arguments;
-                        break;
+                case 'joins':
+                    $this->select_joins = $arguments;
+                    break;
                 }
             } elseif($arg == ActiveRecord::NORMAL || $arg == ActiveRecord::INNER) {
                 $mode = $arg;
@@ -297,7 +297,7 @@ class ActiveRecord
 
         $sql .= $limit;
         //        echo "<pre>".$sql."</pre><hr/>";
-                //                exit;
+        //                exit;
 
         $statement =  $this->database->query($sql, PDO::FETCH_ASSOC);
 
@@ -375,8 +375,8 @@ class ActiveRecord
     private function readMetadata()
     {
         if (!array_key_exists(
-                $this->database_table,
-                ActiveRecord::$metadata[$this->database->uri])
+            $this->database_table,
+            ActiveRecord::$metadata[$this->database->uri])
         ) {
             if ($this->fields) {
                 $metadata = &$this->getMetadata();
@@ -469,20 +469,20 @@ class ActiveRecord
             // Si el field es una archivo o imagenes.
             if (isset($field) && array_key_exists('type', $field)) {
                 switch ($field["type"]) {
-                    case "image":
-                        $images = new helpers_images();
-                    case "file":
-                        if (!$images) $images = new helpers_files();
-                        $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
-                        return $this->$fieldName;
-                        break;
+                case "image":
+                    $images = new helpers_images();
+                case "file":
+                    if (!$images) $images = new helpers_files();
+                    $this->$fieldName = $images->getFirstFor($moduleName, $fieldName, $idItem);
+                    return $this->$fieldName;
+                    break;
 
-                    case "files":
-                        $images = new helpers_images();
-                        $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
-                        $this->$fieldName = $imgs;
-                        return $imgs;
-                        break;
+                case "files":
+                    $images = new helpers_images();
+                    $imgs = $images->getAllFor($moduleName, $fieldName, $idItem);
+                    $this->$fieldName = $imgs;
+                    return $imgs;
+                    break;
                 }
             }
 
@@ -648,38 +648,38 @@ class ActiveRecord
             if (array_key_exists($field, $_REQUEST) || array_key_exists($field, $_FILES) ) {
                 switch($attrs['type']) {
 
-                    case 'image':
-                        $images[]= $field;
-                        break;
+                case 'image':
+                    $images[]= $field;
+                    break;
 
-                    case "file":
-                        $files[] = $field;
-                        break;
+                case "file":
+                    $files[] = $field;
+                    break;
 
-                    case 'date':
-                        $fecha = explode('/', $_REQUEST[$field]);
-                        $this->$field = $fecha[2].'-'.$fecha[1].'-'.$fecha[0];
+                case 'date':
+                    $fecha = explode('/', $_REQUEST[$field]);
+                    $this->$field = $fecha[2].'-'.$fecha[1].'-'.$fecha[0];
 
-                        break;
+                    break;
 
-                    default:
-                        if (array_key_exists("autocomplete", $attrs)
-                            && array_key_exists("newvalues", $attrs)
-                            && !$_REQUEST[$field]
-                            && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
-                            $model_name = $attrs["belongs_to"];
-                            $model = new $model_name;
-                            $name = $model->getTitleField();
-                            $primary_key = array_shift($model->getPrimaryKeys());
-                            $model->$name = $_REQUEST[$field."_autocomplete"];
-                            $model->save();
-                            $this->set($field, $model->$primary_key);
-                        } else {
-                            $this->set($field, $_REQUEST[$field]);
-                        }
-                        foreach (l10n::instance()->getNotDefaultLanguages() as $lang) {
-                            if ($_REQUEST[$field."|$lang"]) $this->set($field, $_REQUEST[$field."|$lang"], $lang);
-                        }
+                default:
+                    if (array_key_exists("autocomplete", $attrs)
+                        && array_key_exists("newvalues", $attrs)
+                        && !$_REQUEST[$field]
+                        && $_REQUEST[$field."_autocomplete"]) {    // We've to insert the new value in the related table.
+                        $model_name = $attrs["belongs_to"];
+                        $model = new $model_name;
+                        $name = $model->getTitleField();
+                        $primary_key = array_shift($model->getPrimaryKeys());
+                        $model->$name = $_REQUEST[$field."_autocomplete"];
+                        $model->save();
+                        $this->set($field, $model->$primary_key);
+                    } else {
+                        $this->set($field, $_REQUEST[$field]);
+                    }
+                    foreach (l10n::instance()->getNotDefaultLanguages() as $lang) {
+                        if ($_REQUEST[$field."|$lang"]) $this->set($field, $_REQUEST[$field."|$lang"], $lang);
+                    }
 
                 }
 
@@ -728,116 +728,116 @@ class ActiveRecord
         return $results[0];
             }
 
-    
-        public function __call($method, $args=array())
-        {
-            $model = strtolower(preg_replace("/^get/", "", $method));
 
-            if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
-                $fk_field = $model."_id";
-                $model = new $model($this->$fk_field);
+    public function __call($method, $args=array())
+    {
+        $model = strtolower(preg_replace("/^get/", "", $method));
 
-                return $model;
-                //return $model->selectFirst($this->$fk_field);
-            }
+        if (isset($this->belongs_to) && in_array($model, $this->belongs_to)) {
+            $fk_field = $model."_id";
+            $model = new $model($this->$fk_field);
 
-            if (isset($this->has_many) && in_array($model, $this->has_many)){
-                $fk_field = $model."_id";
-                $model = new $model();
-                return $model->select($this->database_table."_id='$this->id'");
-            }
-
-            if (!web::instance()->isInProduction() || web::instance()->inDevelopment) {
-                web::error('No existe el método:'.$method);
-                throw new Exception("No existe el método: $method en la clase ".get_class($this));
-                //            echo
-            }
+            return $model;
+            //return $model->selectFirst($this->$fk_field);
         }
 
-        public function setCurrentPage($page = 1)
-        {
-            if (is_numeric($page)) $this->current_page = $page;
-            return $this;
+        if (isset($this->has_many) && in_array($model, $this->has_many)){
+            $fk_field = $model."_id";
+            $model = new $model();
+            return $model->select($this->database_table."_id='$this->id'");
         }
 
-        public function setPageSize($page_size)
-        {
-            $this->page_size = $page_size;
-            return $this;
+        if (!web::instance()->isInProduction() || web::instance()->inDevelopment) {
+            web::error('No existe el método:'.$method);
+            throw new Exception("No existe el método: $method en la clase ".get_class($this));
+            //            echo
+        }
+    }
+
+    public function setCurrentPage($page = 1)
+    {
+        if (is_numeric($page)) $this->current_page = $page;
+        return $this;
+    }
+
+    public function setPageSize($page_size)
+    {
+        $this->page_size = $page_size;
+        return $this;
+    }
+
+    public function setPrivateData($data)
+    {
+        $this->row_data = $data;
+        $this->row_data_l10n = null;
+    }
+
+    public function getRowData() {
+        return $this->row_data;
+    }
+
+    public function getSelectedColumns()
+    {
+        return $this->select_columns ? split(" ?, ?", $this->select_columns) : array_keys($this->getFields());
+    }
+
+    public function getDatabaseTable()
+    {
+        return $this->database_table;
+    }
+
+    public function fields($field) {
+        return new fields(
+            ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
+            $field,
+            $this->database_table
+        );
+    }
+
+    public function getAllFieldsForForm()
+    {
+        return isset($this->fields) ? $this->fields : array();
+    }
+
+    public function toArray($fields)
+    {
+        $datos = array();
+        if ($fields) {
+            foreach ($fields as $field)
+                $datos[$field] = $this->get($field);
+        } else {
+            foreach ($this->getFields() as $field => $attrs)
+                $datos[$field] = $this->get($field);
         }
 
-        public function setPrivateData($data)
-        {
-            $this->row_data = $data;
-            $this->row_data_l10n = null;
+        return $datos;
+    }
+
+    public function toJson($fields)
+    {
+        return json_encode($this->toArray($fields));
+    }
+
+    public function forceCreation()
+    {
+        unset($this->where_primary_keys);
+    }
+
+    public function &getMetadata()
+    {
+        if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
+            ActiveRecord::$metadata[$this->database->uri] = array();
         }
 
-        public function getRowData() {
-            return $this->row_data;
-        }
-
-        public function getSelectedColumns()
-        {
-            return $this->select_columns ? split(" ?, ?", $this->select_columns) : array_keys($this->getFields());
-        }
-
-        public function getDatabaseTable()
-        {
-            return $this->database_table;
-        }
-
-        public function fields($field) {
-            return new fields(
-                ActiveRecord::$metadata[$this->database->uri][$this->database_table]["AllFields"][$field],
-                $field,
-                $this->database_table
+        if (!array_key_exists($this->getDatabaseTable(), ActiveRecord::$metadata[$this->database->uri])) {
+            ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()] = array(
+                "created" => false
             );
         }
 
-        public function getAllFieldsForForm()
-        {
-            return isset($this->fields) ? $this->fields : array();
-        }
-
-        public function toArray($fields)
-        {
-            $datos = array();
-            if ($fields) {
-                foreach ($fields as $field)
-                    $datos[$field] = $this->get($field);
-            } else {
-                foreach ($this->getFields() as $field => $attrs)
-                    $datos[$field] = $this->get($field);
-            }
-
-            return $datos;
-        }
-
-        public function toJson($fields)
-        {
-            return json_encode($this->toArray($fields));
-        }
-
-        public function forceCreation()
-        {
-            unset($this->where_primary_keys);
-        }
-
-        public function &getMetadata()
-        {
-            if (!array_key_exists($this->database->uri, ActiveRecord::$metadata)) {
-                ActiveRecord::$metadata[$this->database->uri] = array();
-            }
-
-            if (!array_key_exists($this->getDatabaseTable(), ActiveRecord::$metadata[$this->database->uri])) {
-                ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()] = array(
-                    "created" => false
-                );
-            }
-
-            $metadata = &ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()];
-            return $metadata;
-        }
+        $metadata = &ActiveRecord::$metadata[$this->database->uri][$this->getDatabaseTable()];
+        return $metadata;
+    }
 
 }
 
@@ -857,71 +857,71 @@ class fields
     public function __call($method, $args)
     {
         switch($method) {
-            case "belongsTo":
-                if (empty($args)) {
-                    return $this->_attrs[$method] ? $this->_attrs[$method] : $this->_attrs["belongs_to"];
-                } else {
-                    $this->_attrs[$method] = $args[0];
-                    $this->_attrs["belongs_to"] = $args[0];
-                }
-                break;
+        case "belongsTo":
+            if (empty($args)) {
+                return $this->_attrs[$method] ? $this->_attrs[$method] : $this->_attrs["belongs_to"];
+            } else {
+                $this->_attrs[$method] = $args[0];
+                $this->_attrs["belongs_to"] = $args[0];
+            }
+            break;
 
-            case 'required':
-                if (empty($args))
-                    $this->_attrs["not null"] = true;
-                else
-                    $this->_attrs["not null"] = $args[0];
-                break;
+        case 'required':
+            if (empty($args))
+                $this->_attrs["not null"] = true;
+            else
+                $this->_attrs["not null"] = $args[0];
+            break;
 
-            case "getSql":
-                if (array_key_exists('getSql', $this->_attrs) && $this->_attrs["getSql"]) return $this->_attrs["getSql"];
+        case "getSql":
+            if (array_key_exists('getSql', $this->_attrs) && $this->_attrs["getSql"]) return $this->_attrs["getSql"];
 
-                if (array_key_exists('show', $this->_attrs) && $this->_attrs["show"]) {
-                    $this->_attrs["getSql"] = $this->_attrs["show"];
-                } elseif(array_key_exists('belongs_to', $this->_attrs) && $relatedTable = $this->_attrs['belongs_to']) {
-                    $relatedModel = new $relatedTable;
-                    $fieldToSelect = $relatedModel->getTitleField();
+            if (array_key_exists('show', $this->_attrs) && $this->_attrs["show"]) {
+                $this->_attrs["getSql"] = $this->_attrs["show"];
+            } elseif(array_key_exists('belongs_to', $this->_attrs) && $relatedTable = $this->_attrs['belongs_to']) {
+                $relatedModel = new $relatedTable;
+                $fieldToSelect = $relatedModel->getTitleField();
 
-                    $field = $this->_name;
-                    if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
-                    $this->_attrs["getSql"] = "$field.$fieldToSelect";
-                } elseif($this->_attrs) {
-                    $this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
-                } else {
-                    $this->_attrs["getSql"] = $this->_name;
+                $field = $this->_name;
+                if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+                $this->_attrs["getSql"] = "$field.$fieldToSelect";
+            } elseif($this->_attrs) {
+                $this->_attrs["getSql"] = $this->_table.'.'.$this->_name;
+            } else {
+                $this->_attrs["getSql"] = $this->_name;
 
-                }
-                return $this->_attrs["getSql"];
+            }
+            return $this->_attrs["getSql"];
 
 
-            case "getSqlColumn":
-                if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
+        case "getSqlColumn":
+            if (isset($this->_attrs["getSqlColumn"])) return $this->_attrs["getSqlColumn"];
 
-                if (isset($this->_attrs) && array_key_exists('belongs_to', $this->_attrs) && isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
+            if (isset($this->_attrs) && array_key_exists('belongs_to', $this->_attrs) && isset($this->_attrs['belongs_to'])) $relatedTable = $this->_attrs['belongs_to'];
 
-                if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
-                    $this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
-                } elseif (isset($relatedTable)) {
-                    $relatedModel = new $relatedTable;
-                    $fieldToSelect = $relatedModel->getTitleField();
+            if (isset($this->_attrs["show"]) && $this->_attrs["show"]) {
+                $this->_attrs["getSqlColumn"] = $this->_attrs["show"]." as $this->_name";
+            } elseif (isset($relatedTable)) {
+                $relatedModel = new $relatedTable;
+                $fieldToSelect = $relatedModel->getTitleField();
 
-                    $field = $this->_name;
-                    if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
-                    if ($field == $this->_table) $field.="2";
-                    $this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
-                } elseif($this->_attrs) {
-                    $this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
-                } else {
-                    $this->_attrs["getSqlColumn"] = $this->_name;
-                }
-                return $this->_attrs["getSqlColumn"];
+                $field = $this->_name;
+                if (substr($field, -3) == "_id") $field = substr($field, 0, -3);
+                if ($field == $this->_table) $field.="2";
+                $this->_attrs["getSqlColumn"] = "$field.$fieldToSelect as $this->_name";
+            } elseif($this->_attrs) {
+                $this->_attrs["getSqlColumn"] = $this->_table.'.'.$this->_name;
+            } else {
+                $this->_attrs["getSqlColumn"] = $this->_name;
+            }
+            return $this->_attrs["getSqlColumn"];
 
-            default:
-                if (empty($args)) {
-                    return $this->_attrs[$method];
-                } else {
-                    $this->_attrs[$method] = $args[0];
-                }
+        default:
+            if (empty($args)) {
+                return $this->_attrs[$method];
+            } else {
+                $this->_attrs[$method] = $args[0];
+            }
         }
 
         return $this;

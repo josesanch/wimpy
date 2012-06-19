@@ -90,7 +90,6 @@ class helpers_files_thumbnail
             case "INABOX":
             case "THUMB":
             default:
-                echo "default";
                 if (!(($operation & thumb::NO_RESIZE_SMALLER) == thumb::NO_RESIZE_SMALLER && $this->_isSmaller($width, $height))) {
 
                     if ($width > $height)
