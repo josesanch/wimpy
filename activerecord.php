@@ -110,7 +110,7 @@ class ActiveRecord
                 if (
                     (!array_key_exists($name, $this->row_data)
                      || (array_key_exists($name, $this->row_data) && is_null($this->row_data[$name]))
-                     || (array_key_exists($name, $this->row_data) && $this->row_data[$name] == ""))
+                     || (array_key_exists($name, $this->row_data) && $this->row_data[$name] === ""))
                     && in_array($attrs['type'], array('int', 'decimal', 'bool'))) {
                     $fields_to_update[] = $name."=Null";
                 } else {
@@ -123,8 +123,11 @@ class ActiveRecord
             $fields = array(); $values = array();
             foreach ($this->getFields() as $name => $attrs) {
 
-                if ((!array_key_exists($name, $this->row_data)
-                     || !$this->row_data[$name])
+                if (
+                    (!array_key_exists($name, $this->row_data)
+                     || is_null($this->row_data[$name])
+                     || $this->row_data[$name] === ''
+                    )
                     && in_array($attrs['type'], array('int', 'decimal'))) continue;
 
                 if (array_key_exists($name, $this->row_data)
@@ -141,9 +144,9 @@ class ActiveRecord
         }
         //        var_dump($sql);
         //        exit;
-        //        orderontime::debug($sql, true));
+        //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
-        //        web::debug(__FILE__, __LINE__, $sql);
+        //       web::debug(__FILE__, __LINE__, $sql);
 
         // Execute the query.
         if (!$this->database->exec($sql) && $this->database->errorCode() > 0 ) {
