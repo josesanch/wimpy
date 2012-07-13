@@ -106,12 +106,14 @@ class ActiveRecord
             $insert = false;
             $sql = "UPDATE $this->database_table SET ";
             $fields_to_update = array();
+            var_dump($this->row_data);
             foreach ($this->getFields() as $name => $attrs) {
                 if (
                     (!array_key_exists($name, $this->row_data)
                      || (array_key_exists($name, $this->row_data) && is_null($this->row_data[$name]))
                      || (array_key_exists($name, $this->row_data) && $this->row_data[$name] === ""))
-                    && in_array($attrs['type'], array('int', 'decimal', 'bool'))) {
+                    && in_array($attrs['type'], array('int', 'decimal', 'bool'))
+                ) {
                     $fields_to_update[] = $name."=Null";
                 } else {
                     $fields_to_update[] = $name."=".$this->database->quote($this->row_data[$name]);
@@ -142,8 +144,9 @@ class ActiveRecord
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
-        //        var_dump($sql);
-        //        exit;
+        var_dump($_REQUEST);
+        var_dump($sql);
+        exit;
         //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
         //       web::debug(__FILE__, __LINE__, $sql);
@@ -686,6 +689,10 @@ class ActiveRecord
 
                 }
 
+            } else {
+              if (in_array($attrs['type'], array('bool'))) {
+                $this->set($field, 0);
+              }
             }
         }
         $this->setWherePK();
