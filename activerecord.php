@@ -106,7 +106,7 @@ class ActiveRecord
             $insert = false;
             $sql = "UPDATE $this->database_table SET ";
             $fields_to_update = array();
-            var_dump($this->row_data);
+
             foreach ($this->getFields() as $name => $attrs) {
                 if (
                     (!array_key_exists($name, $this->row_data)
@@ -144,9 +144,9 @@ class ActiveRecord
             $sql = "INSERT into $this->database_table ($fields) values ($values)";
 
         }
-        var_dump($_REQUEST);
-        var_dump($sql);
-        exit;
+        /* var_dump($_REQUEST); */
+        /* var_dump($sql); */
+        /* exit; */
         //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
         //       web::debug(__FILE__, __LINE__, $sql);
