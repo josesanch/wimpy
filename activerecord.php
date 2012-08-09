@@ -106,17 +106,24 @@ class ActiveRecord
             $insert = false;
             $sql = "UPDATE $this->database_table SET ";
             $fields_to_update = array();
+            $info_localidad = localeconv();
 
             foreach ($this->getFields() as $name => $attrs) {
+                $type = strtolower($attrs['type']);
                 if (
                     (!array_key_exists($name, $this->row_data)
                      || (array_key_exists($name, $this->row_data) && is_null($this->row_data[$name]))
                      || (array_key_exists($name, $this->row_data) && $this->row_data[$name] === ""))
-                    && in_array($attrs['type'], array('int', 'decimal', 'bool'))
+                    && in_array($type, array('int', 'decimal', 'bool'))
                 ) {
                     $fields_to_update[] = $name."=Null";
                 } else {
-                    $fields_to_update[] = $name."=".$this->database->quote($this->row_data[$name]);
+                    $val = (string)$this->row_data[$name];
+                    orderontime::debug($type);
+                    if (in_array($type, array('int', 'decimal', 'bool', 'float'))) {
+                        $val = str_replace(",", ".", $val);
+                    }
+                    $fields_to_update[] = $name."=".$this->database->quote($val);
                 }
             }
             $sql .= join(", ", $fields_to_update)." where ".$this->where_primary_keys;
@@ -145,7 +152,7 @@ class ActiveRecord
 
         }
         /* var_dump($_REQUEST); */
-        /* var_dump($sql); */
+        //        /var_dump($sql); */
         /* exit; */
         //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
