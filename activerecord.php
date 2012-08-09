@@ -130,7 +130,7 @@ class ActiveRecord
             $insert = true;
             $fields = array(); $values = array();
             foreach ($this->getFields() as $name => $attrs) {
-
+                $type = strtolower($attrs['type']);
                 if (
                     (!array_key_exists($name, $this->row_data)
                      || is_null($this->row_data[$name])
