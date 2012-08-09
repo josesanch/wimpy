@@ -119,7 +119,6 @@ class ActiveRecord
                     $fields_to_update[] = $name."=Null";
                 } else {
                     $val = (string)$this->row_data[$name];
-                    orderontime::debug($type);
                     if (in_array($type, array('int', 'decimal', 'bool', 'float'))) {
                         $val = str_replace(",", ".", $val);
                     }
@@ -142,7 +141,13 @@ class ActiveRecord
                 if (array_key_exists($name, $this->row_data)
                     && isset($this->row_data[$name])) {
                     $fields[] = $name;
-                    $values[] = $this->database->quote($this->row_data[$name]);
+
+                    $val = (string)$this->row_data[$name];
+                    if (in_array($type, array('int', 'decimal', 'bool', 'float'))) {
+                        $val = str_replace(",", ".", $val);
+                    }
+
+                    $values[] = $this->database->quote($val);
                 }
             }
             $fields = join(", ", $fields);
@@ -154,7 +159,7 @@ class ActiveRecord
         /* var_dump($_REQUEST); */
         //        /var_dump($sql); */
         /* exit; */
-        orderontime::debug($sql);
+        //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
         //       web::debug(__FILE__, __LINE__, $sql);
 
