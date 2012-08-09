@@ -154,7 +154,7 @@ class ActiveRecord
         /* var_dump($_REQUEST); */
         //        /var_dump($sql); */
         /* exit; */
-        //        orderontime::debug($sql);
+        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
         //       web::debug(__FILE__, __LINE__, $sql);
 
