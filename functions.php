@@ -30,9 +30,10 @@ function __wimpyAutoload($class)
     );
 
     foreach($dirs as $file)	{
+        //echo ("* Search : $file\n<br>");
         if(file_exists($file))	{
             include_once($file);
-            //            echo("* Autoloading: $file\n<br>");
+            //echo("* Autoloading: $file\n<br>");
             break;
         }
     }

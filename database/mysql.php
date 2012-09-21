@@ -53,7 +53,7 @@ class database_mysql extends database
 
             $sql .= implode(", \n", $sqlLines)."\n";
             if ($primaryKeys) $sql .= ", PRIMARY KEY(".implode(", ", $primaryKeys).")";
-            $sql .= ") DEFAULT CHARSET=utf8;";
+            $sql .= ") DEFAULT CHARSET=utf8 ENGINE = MYISAM;";
         }
         $exec = $this->exec($sql);
         return $exec !== False;
