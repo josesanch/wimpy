@@ -19,6 +19,7 @@ class log extends Model {
     const ERROR = "ERROR";
 
     public static function add($user, $message, $status = log::OK, $sql = '') {
+        if (!web::instance()->logging) return;
         if(!web::database()->tableExists("log")) {
             web::database()->query("CREATE TABLE  `log` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
