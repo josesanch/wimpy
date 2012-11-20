@@ -53,7 +53,7 @@ class Web
     public $jsFiles = array();
     public $pageTitle = "";
     public $adminController;
-    public $logging = False;
+    public $logging = True;
     protected $_router;
     protected $_viewRendererClass = "view_renderer_template";
     protected $_viewsDirectory;
