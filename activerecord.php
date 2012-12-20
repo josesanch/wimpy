@@ -161,7 +161,7 @@ class ActiveRecord
         /* exit; */
         //        orderontime::debug($sql);
         //        log::to_file($sql."<br/><hr>");
-        //       web::debug(__FILE__, __LINE__, $sql);
+        //        web::debug(__FILE__, __LINE__, $sql);
 
         // Execute the query.
         if (!$this->database->exec($sql) && $this->database->errorCode() > 0 ) {

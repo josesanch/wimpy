@@ -424,7 +424,8 @@ class Web
             }
 
         } catch (exception $e) {
-//            web::log(var_export($e, true));
+            //            web::log(var_export($e, true));
+            //            var_dump($e);
             $this->_callErrorController($e);
         }
 

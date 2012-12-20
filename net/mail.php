@@ -2,7 +2,7 @@
 /** \ingroup net */
 /**
 *  net::mail Clase
-* @author   José Sánchez Moreno
+* @author   JosÃ© SÃ¡nchez Moreno
 * @version  v 0.0.3
 * @package net
 * @access   public
@@ -37,6 +37,7 @@ class Net_Mail_mail
 {
     private $__headers = array();
     private $__cc = array();
+    private $__bcc = array(); //aÃ±adido por daniel 17/12/12
     private $__to,  $__from, $msg;
     private $__parts = array();
     private $__boundary;
@@ -91,19 +92,22 @@ class Net_Mail_mail
 
     public function message($subject, $msg)	{  $this->subject($subject); $this->msg($msg);	}
     public function addCC($to, $email) { $this->__cc[] = "$to <$email>"; }
+    public function addBCC($to,$email) { $this->__bcc[] = "$to <$email>";}//aÃ±adido daniel 17/12/12
 
     /**
-     * @desc Envia un correo electrónico
-     * @param from Quién envia el correo.
-     * @param to Dirección a quien envia el correo
+     * @desc Envia un correo electrÃ³nico
+     * @param from QuiÃ©n envia el correo.
+     * @param to DirecciÃ³n a quien envia el correo
      * @param subject Asunto del mensaje
      * @param msg Contenido del mensaje
      * @return bool
      */
-    public function send($from = null, $to = null, $subject = null, $msg = null)
+    //public function send($from = null, $to = null, $subject = null, $msg = null)
+    public function send($from = null, $to = null,$bcc = null, $subject = null, $msg = null)
     {
         if($from) $this->from($from);
         if($to) $this->to($to);
+        if($bcc) $this->bcc($bcc);//18/12/12
         if($subject) $this->subject($subject);
         if(isset($msg)) $this->msg($msg);
 
@@ -194,6 +198,11 @@ class Net_Mail_mail
         {
             $headers .= "CC: ".join($this->__cc, ",");
         }
+        //daniel 14/12/12 revisar esto.
+        if(count($this->__bcc) > 0){
+            $headers .= "BCC: ".join($this->__bcc, ",");
+        }
+
         $headers .= "X-Mailer: ".$this->xmailer;
         foreach ($this->_additionalHeaders as $item => $value) {
             $headers .= "$item: $value\n";
@@ -232,7 +241,12 @@ class Net_Mail_phpmailer
     {
         $this->_mail->Subject = $subject;
     }
-
+   /* //18/12/12
+	public function bcc($bcc)
+	{
+		  $this->_mail->bcc = $bcc;
+	}
+	*/
     public function addHtml($text)
     {
         $this->_mail->MsgHTML($text);
@@ -274,9 +288,11 @@ class Net_Mail_phpmailer
     }
 
     public function send($from = null, $to = null, $subject = null, $msg = null)
+    //public function send($from = null, $to = null, $bcc = null, $subject = null, $msg = null) //18-12-12
     {
         if($from) $this->from($from);
         if($to) $this->to($to);
+        //if($bcc) $this->bcc($bcc);//18/12/12
         if($subject) $this->subject($subject);
         if($msg) $this->msg($msg);
 

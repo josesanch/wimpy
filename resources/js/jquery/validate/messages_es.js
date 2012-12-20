@@ -21,7 +21,7 @@ jQuery.extend(jQuery.validator.messages, {
   max: jQuery.validator.format("Por favor, escribe un valor menor o igual a {0}."),
   min: jQuery.validator.format("Por favor, escribe un valor mayor o igual a {0}.")
 });
-/*
+
 $.validator.addMethod(
     "date",
     function ( value, element ) {
@@ -33,4 +33,4 @@ $.validator.addMethod(
     },
    "Please enter a date in the format dd/mm/yyyy"
 
-);*/
+);
