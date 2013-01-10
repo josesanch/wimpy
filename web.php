@@ -328,7 +328,6 @@ require dirname(__FILE__)."/functions.php";
             }
             if ($query) $uri .= "?".implode("&", $query);
         }
-        echo $uri;
         return $uri;
     }
 
