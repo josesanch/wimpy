@@ -1,179 +1,179 @@
 <?php
 require dirname(__FILE__)."/functions.php";
-require dirname(__FILE__)."/applicationcontroller.php";
-require dirname(__FILE__)."/database.php";
-require dirname(__FILE__)."/database/mysql.php";
-require dirname(__FILE__)."/database/dbal.php";
-require dirname(__FILE__)."/l10n.php";
-require dirname(__FILE__)."/html/object.php";
-require dirname(__FILE__)."/html/template.php";
-require dirname(__FILE__)."/activerecord.php";
-require dirname(__FILE__)."/model.php";
-require dirname(__FILE__)."/library/log.php";
-require dirname(__FILE__)."/library/bench.php";
-require dirname(__FILE__)."/components/auth.php";
-require dirname(__FILE__)."/net/mail.php";
-/**
-*
-* Base class of the framework
-*/
-setIncludePathForZend();
+                         require dirname(__FILE__)."/applicationcontroller.php";
+                                                  require dirname(__FILE__)."/database.php";
+                                                                           require dirname(__FILE__)."/database/mysql.php";
+                                                                                                    require dirname(__FILE__)."/database/dbal.php";
+                                                                                                                             require dirname(__FILE__)."/l10n.php";
+                                                                                                                                                      require dirname(__FILE__)."/html/object.php";
+                                                                                                                                                                               require dirname(__FILE__)."/html/template.php";
+                                                                                                                                                                                                        require dirname(__FILE__)."/activerecord.php";
+                                                                                                                                                                                                                                 require dirname(__FILE__)."/model.php";
+                                                                                                                                                                                                                                                          require dirname(__FILE__)."/library/log.php";
+                                                                                                                                                                                                                                                                                   require dirname(__FILE__)."/library/bench.php";
+                                                                                                                                                                                                                                                                                                            require dirname(__FILE__)."/components/auth.php";
+                                                                                                                                                                                                                                                                                                                                     require dirname(__FILE__)."/net/mail.php";
+                                                                                                                                                                                                                                                                                                                                                              /**
+                                                                                                                                                                                                                                                                                                                                                               *
+                                                                                                                                                                                                                                                                                                                                                               * Base class of the framework
+                                                                                                                                                                                                                                                                                                                                                               */
+                                                                                                                                                                                                                                                                                                                                                              setIncludePathForZend();
 
 
-class Web
-{
-    const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
+                                                                                                                                                                                                                                                                                                                                                              class Web
+                                                                                                                                                                                                                                                                                                                                     {
+                                                                                                                                                                                                                                                                                                                                         const NOTIFY_BY_EMAIL = "desarrollo@o2w.es";
 
-    public $laguages = array("es");
-    public $database;
-    public $defaultHtmlEditor = "ckeditor";
-    public $controller, $action, $params, $uri, $model;
-    public $l10n;
-    public $initialized = false;
-    public $bench;
-    public $auth;
-    public $enableTidy = false;
-    public $gridSize = 25;
-    public $inDevelopment = false;
-    //public $authMethod = Auth::FORM;
-    public $authMethod = Auth::REALM;
-    public $translator;
-    private $_imagesMaxSize = array(1024, 1024);
-    private $_htmlTemplateDir = "/templates";
-    private $_debug = false;
-    private $_inProduction = true;
-    private $_reportErrors = false;
-    private static $_defaultInstance;    // La primera clase que se crea
-    private $_defaultController = "index";
-    private $_applicationPath;
-    private $_l10nControllerMaps;
-    public $showErrors = true;
-    private $_metaTags;
-    public $cssFiles = array("/css/main.css");
-    public $jsFiles = array();
-    public $pageTitle = "";
-    public $adminController;
-    public $logging = True;
-    protected $_router;
-    protected $_viewRendererClass = "view_renderer_template";
-    protected $_viewsDirectory;
-    public function __construct($database = null, $languages = null)
-    {
-        //        if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
-        @session_start();
-            //        }
-        if (isset($_SESSION['initialized'])) $this->initialized = true;
+                                                                                                                                                                                                                                                                                                                                         public $laguages = array("es");
+                                                                                                                                                                                                                                                                                                                                         public $database;
+                                                                                                                                                                                                                                                                                                                                         public $defaultHtmlEditor = "ckeditor";
+                                                                                                                                                                                                                                                                                                                                         public $controller, $action, $params, $uri, $model;
+                                                                                                                                                                                                                                                                                                                                         public $l10n;
+                                                                                                                                                                                                                                                                                                                                         public $initialized = false;
+                                                                                                                                                                                                                                                                                                                                         public $bench;
+                                                                                                                                                                                                                                                                                                                                         public $auth;
+                                                                                                                                                                                                                                                                                                                                         public $enableTidy = false;
+                                                                                                                                                                                                                                                                                                                                         public $gridSize = 25;
+                                                                                                                                                                                                                                                                                                                                         public $inDevelopment = false;
+                                                                                                                                                                                                                                                                                                                                         //public $authMethod = Auth::FORM;
+                                                                                                                                                                                                                                                                                                                                         public $authMethod = Auth::REALM;
+                                                                                                                                                                                                                                                                                                                                         public $translator;
+                                                                                                                                                                                                                                                                                                                                         private $_imagesMaxSize = array(1024, 1024);
+                                                                                                                                                                                                                                                                                                                                         private $_htmlTemplateDir = "/templates";
+                                                                                                                                                                                                                                                                                                                                         private $_debug = false;
+                                                                                                                                                                                                                                                                                                                                         private $_inProduction = true;
+                                                                                                                                                                                                                                                                                                                                         private $_reportErrors = false;
+                                                                                                                                                                                                                                                                                                                                         private static $_defaultInstance;    // La primera clase que se crea
+                                                                                                                                                                                                                                                                                                                                         private $_defaultController = "index";
+                                                                                                                                                                                                                                                                                                                                         private $_applicationPath;
+                                                                                                                                                                                                                                                                                                                                         private $_l10nControllerMaps;
+                                                                                                                                                                                                                                                                                                                                         public $showErrors = true;
+                                                                                                                                                                                                                                                                                                                                         private $_metaTags;
+                                                                                                                                                                                                                                                                                                                                         public $cssFiles = array("/css/main.css");
+                                                                                                                                                                                                                                                                                                                                         public $jsFiles = array();
+                                                                                                                                                                                                                                                                                                                                         public $pageTitle = "";
+                                                                                                                                                                                                                                                                                                                                         public $adminController;
+                                                                                                                                                                                                                                                                                                                                         public $logging = True;
+                                                                                                                                                                                                                                                                                                                                         protected $_router;
+                                                                                                                                                                                                                                                                                                                                         protected $_viewRendererClass = "view_renderer_template";
+                                                                                                                                                                                                                                                                                                                                         protected $_viewsDirectory;
+                                                                                                                                                                                                                                                                                                                                         public function __construct($database = null, $languages = null)
+                                                                                                                                                                                                                                                                                                                                         {
+                                                                                                                                                                                                                                                                                                                                             //        if (session_status() == PHP_SESSION_NONE && session_status() != PHP_SESSION_DISABLED) {
+                                                                                                                                                                                                                                                                                                                                             @session_start();
+                                                                                                                                                                                                                                                                                                                                             //        }
+                                                                                                                                                                                                                                                                                                                                             if (isset($_SESSION['initialized'])) $this->initialized = true;
 
-        error_reporting(E_ERROR);// ^ E_NOTICE ^ E_WARNING ^ E_STRICT);
-        //error_reporting(E_ALL);
-        //error_reporting(E_STRICT);
+                                                                                                                                                                                                                                                                                                                                             error_reporting(E_ERROR);// ^ E_NOTICE ^ E_WARNING ^ E_STRICT);
+                                                                                                                                                                                                                                                                                                                                             //error_reporting(E_ALL);
+                                                                                                                                                                                                                                                                                                                                             //error_reporting(E_STRICT);
 
-        if ($database) $this->setDatabase($database);
+                                                                                                                                                                                                                                                                                                                                             if ($database) $this->setDatabase($database);
 
-        if (!web::$_defaultInstance) {
-            web::$_defaultInstance = $this;
-            $this->l10n = new l10n();
-            $this->bench = new bench();
-            $this->auth = new auth();
-            spl_autoload_register("__wimpyAutoload");
-            try {
-                if ($this->database) $this->data = new webdata(1);
-            } catch (Exception $e) {
-            }
-        }
-//        if ($languages) $this->setLanguages($languages);
+                                                                                                                                                                                                                                                                                                                                             if (!web::$_defaultInstance) {
+                                                                                                                                                                                                                                                                                                                                                 web::$_defaultInstance = $this;
+                                                                                                                                                                                                                                                                                                                                                 $this->l10n = new l10n();
+                                                                                                                                                                                                                                                                                                                                                 $this->bench = new bench();
+                                                                                                                                                                                                                                                                                                                                                 $this->auth = new auth();
+                                                                                                                                                                                                                                                                                                                                                 spl_autoload_register("__wimpyAutoload");
+                                                                                                                                                                                                                                                                                                                                                 try {
+                                                                                                                                                                                                                                                                                                                                                     if ($this->database) $this->data = new webdata(1);
+                                                                                                                                                                                                                                                                                                                                                 } catch (Exception $e) {
+                                                                                                                                                                                                                                                                                                                                                 }
+                                                                                                                                                                                                                                                                                                                                             }
+                                                                                                                                                                                                                                                                                                                                             //        if ($languages) $this->setLanguages($languages);
 
-        $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
-        $this->_viewsDirectory = $this->_applicationPath."views/";
+                                                                                                                                                                                                                                                                                                                                             $this->_applicationPath =  $_SERVER["DOCUMENT_ROOT"]."/../application/";
+                                                                                                                                                                                                                                                                                                                                             $this->_viewsDirectory = $this->_applicationPath."views/";
 
-        if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
+                                                                                                                                                                                                                                                                                                                                             if (web::request("debug")) $_SESSION['debug'] = web::request("debug");
 
-        $this->_metaTags = array(
-            "Content-Type" => array("http-equiv", "text/html; charset=UTF-8"),
-            "Cache-Control" => array("http-equiv", "max-age=200"),
-            "Content-Script-Type" => array("name", "text/javascript"),
-            "Content-language" => array("name", web::instance()->getLanguage()),
-            "robots" => array("name", "all"),
-            "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
-            "google-site-verification" => array("name", web::instance()->googleVerification)
-        );
-/*
-        if (array_pop(explode(".", $_SERVER["SERVER_NAME"], 2)) == "o2w.es") {
-            $this->inDevelopment = true;
-        }
-*/
-        if(ini_get('display_errors')) $this->reportErrors(true);
+                                                                                                                                                                                                                                                                                                                                             $this->_metaTags = array(
+                                                                                                                                                                                                                                                                                                                                                 "Content-Type" => array("http-equiv", "text/html; charset=UTF-8"),
+                                                                                                                                                                                                                                                                                                                                                 "Cache-Control" => array("http-equiv", "max-age=200"),
+                                                                                                                                                                                                                                                                                                                                                 "Content-Script-Type" => array("name", "text/javascript"),
+                                                                                                                                                                                                                                                                                                                                                 "Content-language" => array("name", web::instance()->getLanguage()),
+                                                                                                                                                                                                                                                                                                                                                 "robots" => array("name", "all"),
+                                                                                                                                                                                                                                                                                                                                                 "Author" => array("name", "O2W eSolutions, http://www.o2w.es"),
+                                                                                                                                                                                                                                                                                                                                                 "google-site-verification" => array("name", web::instance()->googleVerification)
+                                                                                                                                                                                                                                                                                                                                             );
+                                                                                                                                                                                                                                                                                                                                             /*
+                                                                                                                                                                                                                                                                                                                                               if (array_pop(explode(".", $_SERVER["SERVER_NAME"], 2)) == "o2w.es") {
+                                                                                                                                                                                                                                                                                                                                               $this->inDevelopment = true;
+                                                                                                                                                                                                                                                                                                                                               }
+                                                                                                                                                                                                                                                                                                                                             */
+                                                                                                                                                                                                                                                                                                                                             if(ini_get('display_errors')) $this->reportErrors(true);
 
-        // Zend Translator en rutas
-        $this->_setupRouteTranslator();
-    }
+                                                                                                                                                                                                                                                                                                                                             // Zend Translator en rutas
+                                                                                                                                                                                                                                                                                                                                             $this->_setupRouteTranslator();
+                                                                                                                                                                                                                                                                                                                                         }
 
 
-    /**
-     * Set the available languages in the website.
-     *
-     * Pone los idiomas disponibles en la web
-      * \param array $langs Array of languages.<br/>
-      * example: $web->setLanguages(array('es', 'en', 'pt'));
-     */
+                                                                                                                                                                                                                                                                                                                                         /**
+                                                                                                                                                                                                                                                                                                                                          * Set the available languages in the website.
+                                                                                                                                                                                                                                                                                                                                          *
+                                                                                                                                                                                                                                                                                                                                          * Pone los idiomas disponibles en la web
+                                                                                                                                                                                                                                                                                                                                          * \param array $langs Array of languages.<br/>
+                                                                                                                                                                                                                                                                                                                                          * example: $web->setLanguages(array('es', 'en', 'pt'));
+                                                                                                                                                                                                                                                                                                                                          */
 
-    public static function instance()
-    {
-        return web::$_defaultInstance;
-    }
+                                                                                                                                                                                                                                                                                                                                         public static function instance()
+                                                                                                                                                                                                                                                                                                                                         {
+                                                                                                                                                                                                                                                                                                                                             return web::$_defaultInstance;
+                                                                                                                                                                                                                                                                                                                                         }
 
-    public function boot($uri = null, $render = false)
-    {
-        if (is_a($uri, "Zend_Controller_Request_Http")) {
-            $this->request = $uri;
-        } else  {
-            $this->request = new Zend_Controller_Request_Http();
-            if (null !== $uri) {
-                $this->request->setRequestUri($uri);
-            } else {
-                $this->render = $render = true;
-            }
-        }
+                                                                                                                                                                                                                                                                                                                                         public function boot($uri = null, $render = false)
+                                                                                                                                                                                                                                                                                                                                         {
+                                                                                                                                                                                                                                                                                                                                             if (is_a($uri, "Zend_Controller_Request_Http")) {
+                                                                                                                                                                                                                                                                                                                                                 $this->request = $uri;
+                                                                                                                                                                                                                                                                                                                                             } else  {
+                                                                                                                                                                                                                                                                                                                                                 $this->request = new Zend_Controller_Request_Http();
+                                                                                                                                                                                                                                                                                                                                                 if (null !== $uri) {
+                                                                                                                                                                                                                                                                                                                                                     $this->request->setRequestUri($uri);
+                                                                                                                                                                                                                                                                                                                                                 } else {
+                                                                                                                                                                                                                                                                                                                                                     $this->render = $render = true;
+                                                                                                                                                                                                                                                                                                                                                 }
+                                                                                                                                                                                                                                                                                                                                             }
 
-        $router = $this->getRouter()->route($this->request);
-        $this->parseInfo();
+                                                                                                                                                                                                                                                                                                                                             $router = $this->getRouter()->route($this->request);
+                                                                                                                                                                                                                                                                                                                                             $this->parseInfo();
 
-        $this->controller = $this->request->getControllerName();
-        $this->action = $this->request->getActionName();
-        $this->uri = $this->request->getRequestUri();
-        return $render;
+                                                                                                                                                                                                                                                                                                                                             $this->controller = $this->request->getControllerName();
+                                                                                                                                                                                                                                                                                                                                             $this->action = $this->request->getActionName();
+                                                                                                                                                                                                                                                                                                                                             $this->uri = $this->request->getRequestUri();
+                                                                                                                                                                                                                                                                                                                                             return $render;
 
-    }
+                                                                                                                                                                                                                                                                                                                                         }
 
-    public function run($uri = null, $view = null, $render = false)
-    {
-        if ($this->_inProduction) make_link_resources();
-        $this->initialized = true;
-        $_SESSION['initialized'] = true;
+                                                                                                                                                                                                                                                                                                                                         public function run($uri = null, $view = null, $render = false)
+                                                                                                                                                                                                                                                                                                                                         {
+                                                                                                                                                                                                                                                                                                                                             if ($this->_inProduction) make_link_resources();
+                                                                                                                                                                                                                                                                                                                                             $this->initialized = true;
+                                                                                                                                                                                                                                                                                                                                             $_SESSION['initialized'] = true;
 
-        $render = $this->boot($uri, $render);
+                                                                                                                                                                                                                                                                                                                                             $render = $this->boot($uri, $render);
 
-        $this->DealSpecialCases();  // Robots.txt
-        $this->response = new Zend_Controller_Response_Http();
+                                                                                                                                                                                                                                                                                                                                             $this->DealSpecialCases();  // Robots.txt
+                                                                                                                                                                                                                                                                                                                                             $this->response = new Zend_Controller_Response_Http();
 
-        switch ($this->controller) {
-            case 'admin':
-                return $this->_callAdminDispatcher($render);
-                break;
+                                                                                                                                                                                                                                                                                                                                             switch ($this->controller) {
+                                                                                                                                                                                                                                                                                                                                             case 'admin':
+                                                                                                                                                                                                                                                                                                                                                 return $this->_callAdminDispatcher($render);
+                                                                                                                                                                                                                                                                                                                                                 break;
 
-            case 'ajax':
-                $this->_callAjaxDispatcher();
-                break;
+                                                                                                                                                                                                                                                                                                                                             case 'ajax':
+                                                                                                                                                                                                                                                                                                                                                 $this->_callAjaxDispatcher();
+                                                                                                                                                                                                                                                                                                                                                 break;
 
-            case 'helpers':
-                $this->_callHelpersDispatcher();
-                break;
+                                                                                                                                                                                                                                                                                                                                             case 'helpers':
+                                                                                                                                                                                                                                                                                                                                                 $this->_callHelpersDispatcher();
+                                                                                                                                                                                                                                                                                                                                                 break;
 
-            case 'resources':
-                if (file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
-                    return $this->_callDefaultDispatcher($render, $view);
-                } else {
-                    $controller = new resourcesController();
+                                                                                                                                                                                                                                                                                                                                             case 'resources':
+                                                                                                                                                                                                                                                                                                                                                 if (file_exists($_SERVER['DOCUMENT_ROOT']."/resources")) {
+                                                                                                                                                                                                                                                                                                                                                     return $this->_callDefaultDispatcher($render, $view);
+                                                                                                                                                                                                                                                                                                                                                 } else {
+                                                                                                                                                                                                                                                                                                                                                     $controller = new resourcesController();
                     $controller->getAction($this->action, $this->params);
                 }
                 break;
@@ -316,15 +316,19 @@ class Web
         if ($_SERVER["QUERY_STRING"] && $queryString) {
             $query = array();
             foreach ($_GET as $item => $value) {
-                if (!array_key_exists($item, $arr) && !in_array($item, $exclude))
-                if (is_array($value)) {
-                    foreach ($value as $v) $query[]= $item."[]=".urlencode($v);
-                } else {
-                    $query[]= "$item=".urlencode($value);
+                $item = str_replace("?", "", $item);
+                if ($item && !array_key_exists($item, $arr) && !in_array($item, $exclude)) {
+                    if (is_array($value)) {
+                        foreach ($value as $v) $query[]= $item."[]=".urlencode($v);
+                    } else {
+                        $value = urlencode(str_replace("?", "", $value));
+                        $query[]= "$item=$value";
+                    }
                 }
             }
-            $uri .= "?".implode("&", $query);
+            if ($query) $uri .= "?".implode("&", $query);
         }
+        echo $uri;
         return $uri;
     }
 
