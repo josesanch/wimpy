@@ -107,7 +107,7 @@ class Net_Mail_mail
     {
         if($from) $this->from($from);
         if($to) $this->to($to);
-        if($bcc) $this->bcc($bcc);//18/12/12
+        //        if($bcc) $this->bcc($bcc);//18/12/12
         if($subject) $this->subject($subject);
         if(isset($msg)) $this->msg($msg);
 
