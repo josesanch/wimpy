@@ -82,7 +82,8 @@ class Net_Mail_mail
         }
     }
 
-    public function subject($subject = null) {
+    public function subject($subject = null)
+    {
         if($subject) {
             $this->__subject = $subject;
         } else {
@@ -102,8 +103,9 @@ class Net_Mail_mail
      * @param msg Contenido del mensaje
      * @return bool
      */
-    //public function send($from = null, $to = null, $subject = null, $msg = null)
-    public function send($from = null, $to = null,$bcc = null, $subject = null, $msg = null)
+
+    //public function send($from = null, $to = null,$bcc = null, $subject = null, $msg = null)
+    public function send($from = null, $to = null, $subject = null, $msg = null)
     {
         if($from) $this->from($from);
         if($to) $this->to($to);
